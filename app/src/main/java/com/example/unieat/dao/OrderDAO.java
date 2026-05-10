@@ -62,7 +62,7 @@ public class OrderDAO {
                     cursor.getString(cursor.getColumnIndexOrThrow("id")),
                     findItemsByOrderId(id, db),
                     OrderStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("order_status"))),
-                    new Date(cursor.getLong(cursor.getColumnIndexOrThrow("time"))), 
+                    new Date(cursor.getLong(cursor.getColumnIndexOrThrow("time"))),
                     cursor.getString(cursor.getColumnIndexOrThrow("annotation"))
             );
         }
