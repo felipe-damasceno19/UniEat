@@ -2,8 +2,6 @@ package com.example.unieat.model;
 
 import com.example.unieat.enums.FoodType;
 
-import java.util.UUID;
-
 public class Dish {
 
     private String id;

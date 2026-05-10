@@ -1,0 +1,94 @@
+package com.example.unieat.dao;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import com.example.unieat.data.DatabaseHelper;
+import com.example.unieat.enums.FoodType;
+import com.example.unieat.model.Dish;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class DishDAO {
+
+    private DatabaseHelper dbHelper;
+
+    public DishDAO(Context context){
+        dbHelper = new DatabaseHelper(context);
+    }
+
+    public void insert(Dish dish){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id", dish.getId());
+        values.put("name", dish.getName());
+        values.put("description", dish.getDescription());
+        values.put("price", dish.getPrice());
+        values.put("food_'type", dish.getType().name());
+        values.put("available", dish.isAvailable() ? 1 : 0);
+        db.insert("dish", null, values);
+        db.close();
+    }
+
+    public List<Dish> findAll(){
+        List<Dish> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM dish", null);
+
+        if(cursor.moveToFirst()){
+            do{
+                Dish d = new Dish(
+                        cursor.getString(cursor.getColumnIndexOrThrow("id")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("name")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("description")),
+                        cursor.getDouble(cursor.getColumnIndexOrThrow("price")),
+                        FoodType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("food_type")))
+                );
+                d.setAvailable(cursor.getInt(cursor.getColumnIndexOrThrow("available")) == 1);
+                list.add(d);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return list;
+    }
+
+    public Dish findById(String id){
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Dish dish = null;
+        Cursor cursor = db.query("dish", null, "id = ?", new String[]{id}, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            dish = new Dish(
+                    cursor.getString(cursor.getColumnIndexOrThrow("id")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("name")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("description")),
+                    cursor.getDouble(cursor.getColumnIndexOrThrow("price")),
+                    FoodType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("food_type")))
+            );
+            dish.setAvailable(cursor.getInt(cursor.getColumnIndexOrThrow("available")) == 1);
+        }
+
+        cursor.close();
+        db.close();
+        return dish;
+    }
+
+    public void updateAvailability(String id, boolean available){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("available", available ? 1 : 0);
+        db.update("dish", values, "id = ?", new String[]{id});
+        db.close();
+    }
+
+    public void delete(String id){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.delete("dish", "id = ?", new String[]{id});
+        db.close();
+    }
+}
