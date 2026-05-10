@@ -2,9 +2,15 @@ package com.example.unieat.model;
 
 import com.example.unieat.enums.FoodType;
 
+import java.util.UUID;
+
 public class Dish {
 
+    private UUID id;
+
     private String name;
+
+    private String description;
 
     private Double price;
 
@@ -13,14 +19,24 @@ public class Dish {
     public Dish(){
     }
 
-    public Dish(String name, Double price, FoodType type){
+    public Dish(UUID id,String name, String description, Double price, FoodType type){
+        this.id = id;
         this.name = name;
+        this.description = description;
         this.price = price;
         this.type = type;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
     public String getName(){
         return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public FoodType getType() {
@@ -31,8 +47,16 @@ public class Dish {
         return price;
     }
 
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setPrice(Double price) {
@@ -41,5 +65,16 @@ public class Dish {
 
     public void setType(FoodType type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "Dish{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", type=" + type +
+                '}';
     }
 }
