@@ -1,7 +1,9 @@
-package com.example.unieat;
+package com.example.unieat.view;
 
 import android.app.Activity;
 import android.content.Intent;
+
+import com.example.unieat.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class NavigationHelper {

@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public class User {
 
-    private UUID id;
+    private String id;
 
     private String name;
 
@@ -22,7 +22,7 @@ public class User {
 
     public User() {}
 
-    public User(UUID id, String name, String username, String password, String email, Double balance, UserType type) {
+    public User(String id, String name, String username, String password, String email, Double balance, UserType type) {
         this.id = id;
         this.name = name;
         this.username = username;
@@ -32,7 +32,7 @@ public class User {
         this.type = type;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
@@ -60,7 +60,7 @@ public class User {
         return type;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 

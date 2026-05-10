@@ -1,13 +1,11 @@
-package com.example.unieat;
+package com.example.unieat.view;
 
 import android.os.Bundle;
 import android.widget.ImageView;
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.unieat.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class OrderActivity extends AppCompatActivity {

@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public class Dish {
 
-    private UUID id;
+    private String id;
 
     private String name;
 
@@ -21,7 +21,7 @@ public class Dish {
     public Dish(){
     }
 
-    public Dish(UUID id,String name, String description, Double price, FoodType type){
+    public Dish(String id,String name, String description, Double price, FoodType type){
         this.id = id;
         this.name = name;
         this.description = description;
@@ -30,7 +30,7 @@ public class Dish {
         this.available = true;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
@@ -54,7 +54,7 @@ public class Dish {
         return available;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 

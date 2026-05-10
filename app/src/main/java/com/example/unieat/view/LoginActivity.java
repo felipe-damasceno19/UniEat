@@ -1,4 +1,4 @@
-package com.example.unieat;
+package com.example.unieat.view;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.example.unieat.R;
 
 public class LoginActivity extends AppCompatActivity {
 

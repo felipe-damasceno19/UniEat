@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class Avaliation {
 
-    private UUID dishId;
+    private String dishId;
 
     private Integer rating;
 
@@ -13,17 +13,17 @@ public class Avaliation {
     public Avaliation() {
     }
 
-    public Avaliation(UUID dishId, Integer rating, String comment) {
+    public Avaliation(String dishId, Integer rating, String comment) {
         this.dishId = dishId;
         this.rating = rating;
         this.comment = comment;
     }
 
-    public UUID getDishId() {
+    public String getDishId() {
         return dishId;
     }
 
-    public void setDishId(UUID dishId) {
+    public void setDishId(String dishId) {
         this.dishId = dishId;
     }
 

@@ -1,4 +1,4 @@
-package com.example.unieat;
+package com.example.unieat.view;
 
 import android.os.Bundle;
 
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.example.unieat.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class StudentHomeActivity extends AppCompatActivity {

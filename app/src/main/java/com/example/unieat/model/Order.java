@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class Order {
 
-    private UUID id;
+    private String id;
 
     private List<OrderItem> items;
 
@@ -21,7 +21,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(UUID id, List<OrderItem> items, OrderStatus status, Date time, String annotation) {
+    public Order(String id, List<OrderItem> items, OrderStatus status, Date time, String annotation) {
         this.id = id;
         this.items = items;
         this.status = status;
@@ -29,11 +29,11 @@ public class Order {
         this.annotation = annotation;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class OrderItem {
 
-    private UUID id;
+    private String id;
 
     private Dish dish;
 
@@ -13,7 +13,7 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    public OrderItem(UUID id, Integer quantity, Dish dish) {
+    public OrderItem(String id, Integer quantity, Dish dish) {
         this.id = id;
         this.quantity = quantity;
         this.dish = dish;
@@ -35,11 +35,11 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
