@@ -220,7 +220,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="48dp"
-            android:text="© 2024 UniEat — UNINTA Food Management System"
+            android:text="© 2026 UniEat — UNINTA Food Management System"
             android:textSize="11sp"
             android:textColor="#AAAAAA" />
 
