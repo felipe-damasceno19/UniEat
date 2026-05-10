@@ -16,6 +16,8 @@ public class Dish {
 
     private FoodType type;
 
+    private boolean available;
+
     public Dish(){
     }
 
@@ -25,6 +27,7 @@ public class Dish {
         this.description = description;
         this.price = price;
         this.type = type;
+        this.available = true;
     }
 
     public UUID getId() {
@@ -47,6 +50,10 @@ public class Dish {
         return price;
     }
 
+    public boolean isAvailable() {
+        return available;
+    }
+
     public void setId(UUID id) {
         this.id = id;
     }
@@ -65,6 +72,10 @@ public class Dish {
 
     public void setType(FoodType type) {
         this.type = type;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 
     @Override
