@@ -23,8 +23,9 @@ public class NavigationHelper {
                 intent = new Intent(activity, MenuActivity.class);
             } else if (itemId == R.id.nav_orders) {
                 intent = new Intent(activity, OrderActivity.class);
+            } else if (itemId == R.id.nav_history) {
+                intent = new Intent(activity, HistoryActivity.class);
             }
-            // Histórico activity is likely not created yet, so I'll leave it or add it if found
 
             if (intent != null) {
                 activity.startActivity(intent);

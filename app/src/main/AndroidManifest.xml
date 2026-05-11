@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UniEat">
         <activity
+            android:name=".view.HistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.MenuActivity"
             android:exported="false" />
         <activity
