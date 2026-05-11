@@ -1,32 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- res/menu/bottom_nav_menu.xml -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item
         android:id="@+id/nav_home"
         android:title="Home"
         android:icon="@android:drawable/ic_menu_compass" />
-    <!--
-        SUBSTITUIR os ícones abaixo pelos seus drawables:
-        nav_home     -> @drawable/ic_home
-        nav_menu     -> @drawable/ic_menu_book
-        nav_orders   -> @drawable/ic_cart
-        nav_history  -> @drawable/ic_history
-    -->
-
     <item
         android:id="@+id/nav_menu"
         android:title="Menu"
         android:icon="@android:drawable/ic_menu_agenda" />
-
     <item
         android:id="@+id/nav_orders"
         android:title="Pedidos"
         android:icon="@android:drawable/ic_menu_add" />
-
     <item
         android:id="@+id/nav_history"
         android:title="Histórico"
         android:icon="@android:drawable/ic_menu_recent_history" />
-
 </menu>
+

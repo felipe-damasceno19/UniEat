@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="#F5F0EB"
     android:fillViewport="true">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,10 +13,6 @@
         android:paddingStart="28dp"
         android:paddingEnd="28dp"
         android:paddingBottom="32dp">
-
-        <!-- Logo area (fundo branco arredondado no topo) -->
-
-        <!-- Título e subtítulo -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="200dp"
@@ -26,15 +21,6 @@
             android:orientation="vertical"
             android:paddingTop="32dp"
             android:paddingBottom="32dp">
-
-            <!--
-                SUBSTITUIR: Troque este TextView por um ImageView com o logo real:
-                <ImageView
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:src="@drawable/logo_unieat"
-                    android:contentDescription="Logo UniEat" />
-            -->
             <TextView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
@@ -43,7 +29,6 @@
                 android:gravity="center"
                 android:text="🎓🍴"
                 android:textSize="48sp" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -52,9 +37,7 @@
                 android:textColor="#7B1C1C"
                 android:textSize="22sp"
                 android:textStyle="bold" />
-
         </LinearLayout>
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,7 +47,6 @@
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="#7B1C1C" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -73,8 +55,6 @@
             android:text="Sua alimentação no campus, simplificada."
             android:textSize="14sp"
             android:textColor="#888888" />
-
-        <!-- Toggle: Sou Aluno / Sou Cozinha -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -83,7 +63,6 @@
             android:gravity="center"
             android:background="@drawable/shape_toggle_bg"
             android:padding="4dp">
-
             <Button
                 android:id="@+id/btnSouAluno"
                 android:layout_width="0dp"
@@ -95,7 +74,6 @@
                 android:backgroundTint="#7B1C1C"
                 android:stateListAnimator="@null"
                 style="@style/Widget.Material3.Button" />
-
             <Button
                 android:id="@+id/btnSouCozinha"
                 android:layout_width="0dp"
@@ -107,10 +85,7 @@
                 android:backgroundTint="@android:color/transparent"
                 android:stateListAnimator="@null"
                 style="@style/Widget.Material3.Button" />
-
         </LinearLayout>
-
-        <!-- Campo E-mail -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -118,7 +93,6 @@
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             app:boxStrokeColor="#CCCCCC"
             app:hintTextColor="#888888">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
@@ -127,10 +101,7 @@
                 android:inputType="textEmailAddress"
                 android:textSize="15sp"
                 android:textColor="#222222" />
-
         </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Campo Senha -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -140,7 +111,6 @@
             app:hintTextColor="#888888"
             app:passwordToggleEnabled="true"
             app:endIconMode="password_toggle">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etSenha"
                 android:layout_width="match_parent"
@@ -149,10 +119,7 @@
                 android:inputType="textPassword"
                 android:textSize="15sp"
                 android:textColor="#222222" />
-
         </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Botão Entrar -->
         <Button
             android:id="@+id/btnEntrar"
             android:layout_width="match_parent"
@@ -165,8 +132,6 @@
             android:backgroundTint="#7B1C1C"
             android:stateListAnimator="@null"
             style="@style/Widget.Material3.Button" />
-
-        <!-- Esqueceu senha -->
         <TextView
             android:id="@+id/tvEsqueceuSenha"
             android:layout_width="wrap_content"
@@ -178,8 +143,6 @@
             android:textColor="#7B1C1C"
             android:clickable="true"
             android:focusable="true" />
-
-        <!-- Cadastrar -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -187,14 +150,12 @@
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Não tem uma conta? "
                 android:textSize="14sp"
                 android:textColor="#888888" />
-
             <TextView
                 android:id="@+id/tvCadastrar"
                 android:layout_width="wrap_content"
@@ -205,16 +166,11 @@
                 android:textColor="#7B1C1C"
                 android:clickable="true"
                 android:focusable="true" />
-
         </LinearLayout>
-
-        <!-- Espaço flexível -->
         <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
-
-        <!-- Rodapé -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -223,7 +179,6 @@
             android:text="© 2026 UniEat — UNINTA Food Management System"
             android:textSize="11sp"
             android:textColor="#AAAAAA" />
-
     </LinearLayout>
-
 </ScrollView>
+

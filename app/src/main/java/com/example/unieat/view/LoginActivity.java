@@ -29,27 +29,22 @@ public class LoginActivity extends AppCompatActivity {
         Button btnSouAluno = findViewById(R.id.btnSouAluno);
         Button btnSouCozinha = findViewById(R.id.btnSouCozinha);
 
-        // Define as cores
         int colorRed = Color.parseColor("#7B1C1C");
         int colorWhite = Color.WHITE;
-        int colorInactive = Color.parseColor("#F0E8E8"); // Cor de fundo do toggle (desativado)
+        int colorInactive = Color.parseColor("#F0E8E8");
 
         btnSouAluno.setOnClickListener(v -> {
-            // Selecionar Aluno (Fica Vermelho)
             btnSouAluno.setBackgroundTintList(ColorStateList.valueOf(colorRed));
             btnSouAluno.setTextColor(colorWhite);
-            
-            // Desmarcar Cozinha (Fica Transparente/Cinza)
+
             btnSouCozinha.setBackgroundTintList(ColorStateList.valueOf(colorInactive));
             btnSouCozinha.setTextColor(colorRed);
         });
 
         btnSouCozinha.setOnClickListener(v -> {
-            // Selecionar Cozinha (Fica Vermelho)
             btnSouCozinha.setBackgroundTintList(ColorStateList.valueOf(colorRed));
             btnSouCozinha.setTextColor(colorWhite);
-            
-            // Desmarcar Aluno (Fica Transparente/Cinza)
+
             btnSouAluno.setBackgroundTintList(ColorStateList.valueOf(colorInactive));
             btnSouAluno.setTextColor(colorRed);
         });

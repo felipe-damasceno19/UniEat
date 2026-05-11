@@ -27,7 +27,7 @@ public class DishDAO {
         values.put("name", dish.getName());
         values.put("description", dish.getDescription());
         values.put("price", dish.getPrice());
-        values.put("food_'type", dish.getType().name());
+        values.put("food_type", dish.getType().name());
         values.put("available", dish.isAvailable() ? 1 : 0);
         db.insert("dish", null, values);
         db.close();

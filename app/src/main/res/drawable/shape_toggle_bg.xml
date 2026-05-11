@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- res/drawable/shape_toggle_bg.xml -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <solid android:color="#F0E8E8" />
@@ -8,3 +7,4 @@
         android:color="#D4BBBB" />
     <corners android:radius="8dp" />
 </shape>
+
