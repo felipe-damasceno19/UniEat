@@ -19,10 +19,12 @@ public class NavigationHelper {
             Intent intent = null;
             if (itemId == R.id.nav_home) {
                 intent = new Intent(activity, StudentHomeActivity.class);
+            } else if (itemId == R.id.nav_menu) {
+                intent = new Intent(activity, MenuActivity.class);
             } else if (itemId == R.id.nav_orders) {
                 intent = new Intent(activity, OrderActivity.class);
             }
-            // Add other navigation cases here (nav_menu, nav_history) when activities are ready
+            // Histórico activity is likely not created yet, so I'll leave it or add it if found
 
             if (intent != null) {
                 activity.startActivity(intent);
