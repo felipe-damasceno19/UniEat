@@ -53,6 +53,25 @@ public class PaymentDAO {
         return payment;
     }
 
+    public Payment findById(String id) {
+        SQLiteDatabase db = dbhelper.getReadableDatabase();
+        Payment payment = null;
+        Cursor cursor = db.query("payment", null, "id = ?", new String[]{id}, null, null, null);
+
+        if(cursor.moveToFirst()){
+            payment = new Payment(
+                    cursor.getString(cursor.getColumnIndexOrThrow("id")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("order_id")),
+                    PaymentMethod.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("method"))),
+                    cursor.getFloat(cursor.getColumnIndexOrThrow("amount")),
+                    new Date(cursor.getLong(cursor.getColumnIndexOrThrow("time")))
+            );
+        }
+        cursor.close();
+        db.close();
+        return payment;
+    }
+
     public List<Payment> findAll() {
         List<Payment> list = new ArrayList<>();
         SQLiteDatabase db = dbhelper.getReadableDatabase();

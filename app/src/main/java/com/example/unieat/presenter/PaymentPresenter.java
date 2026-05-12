@@ -7,6 +7,7 @@ import com.example.unieat.enums.PaymentMethod;
 import com.example.unieat.model.Payment;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class PaymentPresenter {
@@ -32,6 +33,14 @@ public class PaymentPresenter {
 
     public Payment getPaymentByOrderId(String orderId) {
         return paymentDAO.findByOrderId(orderId);
+    }
+
+    public Payment getPaymentById(String id) {
+        return paymentDAO.findById(id);
+    }
+
+    public List<Payment> findAll() {
+        return paymentDAO.findAll();
     }
 
     public Double calculateServiceFee(double amount) {
