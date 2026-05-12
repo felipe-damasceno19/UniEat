@@ -9,24 +9,19 @@ import com.example.unieat.util.DateUtils;
 import com.example.unieat.util.OrderUtils;
 
 import java.util.Date;
-import java.util.List;
 
-public class HistoryPresenter {
+public class OrderStatusPresenter {
 
     private OrderDAO orderDAO;
 
-    public HistoryPresenter(Context context) {
+    public OrderStatusPresenter(Context context) {
         orderDAO = new OrderDAO(context);
     }
 
-    public List<Order> getHistory() {
-        return orderDAO.findAll();
+    public Order getOrderById(String orderId){
+        return orderDAO.findById(orderId);
     }
-    
-    public List<Order> getHistoryByStatus(OrderStatus status) {
-        return orderDAO.findByStatus(status);
-    }
-    
+
     public String formatDate(Date date) {
         return DateUtils.formatDate(date);
     }
