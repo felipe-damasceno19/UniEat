@@ -1,7 +1,5 @@
 package com.example.unieat.model;
 
-import java.util.UUID;
-
 public class Avaliation {
 
     private String id;
