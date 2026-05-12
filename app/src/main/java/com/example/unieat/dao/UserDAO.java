@@ -113,6 +113,14 @@ public class UserDAO {
         db.update("user", values, "id = ?", new String[]{user.getId()});
         db.close();
     }
+
+    public void updateBalance(String id, double balance) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("balance", balance);
+        db.update("user", values, "id = ?", new String[]{id});
+        db.close();
+    }
     
     public void delete(String id){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
