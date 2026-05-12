@@ -1,6 +1,8 @@
 package com.example.unieat.view;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +19,12 @@ public class OrderActivity extends AppCompatActivity {
 
         ImageView btnClose = findViewById(R.id.btnClose);
         btnClose.setOnClickListener(v -> finish());
+
+        Button btnGoToPayment = findViewById(R.id.btnGoToPayment);
+        btnGoToPayment.setOnClickListener(v -> {
+            Intent intent = new Intent(OrderActivity.this, PaymentActivity.class);
+            startActivity(intent);
+        });
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         NavigationHelper.setupBottomNavigation(this, bottomNavigationView, R.id.nav_orders);
