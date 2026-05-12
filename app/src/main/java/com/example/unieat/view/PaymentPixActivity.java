@@ -41,10 +41,8 @@ public class PaymentPixActivity extends AppCompatActivity {
 
         Button btnConfirmOrder = findViewById(R.id.btnConfirmOrder);
         btnConfirmOrder.setOnClickListener(v -> {
-            // Aqui iria para a tela de conclusão (Passo 3)
-            Toast.makeText(this, "Pedido Confirmado!", Toast.LENGTH_SHORT).show();
-            // Intent intent = new Intent(this, OrderSuccessActivity.class);
-            // startActivity(intent);
+            Intent intent = new Intent(this, OrderSuccessActivity.class);
+            startActivity(intent);
         });
 
         TextView tvChangePayment = findViewById(R.id.tvChangePayment);

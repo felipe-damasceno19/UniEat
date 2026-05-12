@@ -60,7 +60,8 @@ public class PaymentActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, PaymentPixActivity.class);
                 startActivity(intent);
             } else {
-                Toast.makeText(this, "Pagamento em dinheiro selecionado. Dirija-se ao caixa.", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this, OrderSuccessActivity.class);
+                startActivity(intent);
             }
         });
     }
