@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "unieat.db";
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
 
     public DatabaseHelper(Context context){
         super(context, DB_NAME, null, VERSION);
@@ -55,6 +55,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "rating INTEGER,"+
                 "comment TEXT,"+
                 "FOREIGN KEY(dish_id) REFERENCES dish(id))"
+        );
+
+        db.execSQL("CREATE TABLE payment("+
+                "id TEXT PRIMARY KEY,"+
+                "order_id TEXT,"+
+                "method TEXT,"+
+                "amount REAL,"+
+                "time TEXT,"+
+                "FOREIGN KEY(order_id) REFERENCES orders(id))"
         );
     }
 
