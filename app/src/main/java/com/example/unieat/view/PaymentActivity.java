@@ -1,9 +1,12 @@
 package com.example.unieat.view;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.unieat.R;
 import com.google.android.material.card.MaterialCardView;
@@ -12,6 +15,8 @@ public class PaymentActivity extends AppCompatActivity {
 
     private MaterialCardView cardPix, cardCash;
     private ImageView imgPix, imgCash;
+    private Button btnConfirmOrder;
+    private boolean isPixSelected = true;
 
     private int colorSelected, colorDefault;
     private int iconBgSelected, iconBgDefault;
@@ -35,6 +40,7 @@ public class PaymentActivity extends AppCompatActivity {
         cardCash = findViewById(R.id.cardCash);
         imgPix = findViewById(R.id.imgPix);
         imgCash = findViewById(R.id.imgCash);
+        btnConfirmOrder = findViewById(R.id.btnConfirmOrder);
     }
 
     private void setupColors() {
@@ -49,9 +55,18 @@ public class PaymentActivity extends AppCompatActivity {
     private void setupListeners() {
         cardPix.setOnClickListener(v -> selectPix());
         cardCash.setOnClickListener(v -> selectCash());
+        btnConfirmOrder.setOnClickListener(v -> {
+            if (isPixSelected) {
+                Intent intent = new Intent(this, PaymentPixActivity.class);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Pagamento em dinheiro selecionado. Dirija-se ao caixa.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void selectPix() {
+        isPixSelected = true;
         // Selecionar Pix
         cardPix.setStrokeColor(colorSelected);
         cardPix.setStrokeWidth(6);
@@ -66,6 +81,7 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     private void selectCash() {
+        isPixSelected = false;
         // Selecionar Dinheiro
         cardCash.setStrokeColor(colorSelected);
         cardCash.setStrokeWidth(6);
