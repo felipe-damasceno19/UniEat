@@ -18,28 +18,15 @@
             android:layout_height="64dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp">
-            <LinearLayout
+            <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
+                android:layout_height="32dp"
+                android:src="@drawable/logo_unieat"
+                android:contentDescription="UniEat"
+                android:adjustViewBounds="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🍴"
-                    android:textSize="24sp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="UniEat"
-                    android:textColor="#7B1C1C"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                app:layout_constraintTop_toTopOf="parent" />
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"

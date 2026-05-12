@@ -24,15 +24,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp">
 
-                <TextView
+                <ImageView
                     android:id="@+id/tvLogo"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:layout_centerVertical="true"
-                    android:text="UniEat"
-                    android:textColor="#7B1C1C"
-                    android:textSize="28sp"
-                    android:textStyle="bold" />
+                    android:src="@drawable/logo_unieat"
+                    android:contentDescription="UniEat"
+                    android:adjustViewBounds="true" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
