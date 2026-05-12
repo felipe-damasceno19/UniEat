@@ -12,7 +12,7 @@ import com.example.unieat.model.Dish;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DishDAO {
+public class    DishDAO {
 
     private DatabaseHelper dbHelper;
 
