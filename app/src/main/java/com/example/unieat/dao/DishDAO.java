@@ -12,9 +12,9 @@ import com.example.unieat.model.Dish;
 import java.util.ArrayList;
 import java.util.List;
 
-public class    DishDAO {
+public class DishDAO {
 
-    private DatabaseHelper dbHelper;
+    private final DatabaseHelper dbHelper;
 
     public DishDAO(Context context){
         dbHelper = new DatabaseHelper(context);
@@ -56,8 +56,54 @@ public class    DishDAO {
         db.close();
         return list;
     }
+    
+    public List<Dish> getAvailableDishes() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        List<Dish> list = new ArrayList<>();
+        Cursor cursor = db.query("dish", null, "available = ?", new String[]{"1"}, null, null, null);
+        
+        if(cursor.moveToFirst()) {
+            do{
+                Dish d = new Dish(
+                        cursor.getString(cursor.getColumnIndexOrThrow("id")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("name")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("description")),
+                        cursor.getDouble(cursor.getColumnIndexOrThrow("price")),
+                        FoodType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("food_type")))
+                );
+                d.setAvailable(true);
+                list.add(d);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return list;
+    }
 
-    public Dish findById(String id){
+    public List<Dish> getDishesByType(FoodType type) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        List<Dish> list = new ArrayList<>();
+        Cursor cursor = db.query("dish", null, "available = 1 AND food_type = ?", new String[]{type.name()}, null, null, null);
+
+        if(cursor.moveToFirst()) {
+            do {
+                Dish d = new Dish(
+                        cursor.getString(cursor.getColumnIndexOrThrow("id")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("name")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("description")),
+                        cursor.getDouble(cursor.getColumnIndexOrThrow("price")),
+                        FoodType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("food_type")))
+                );
+                d.setAvailable(true);
+                list.add(d);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return list;
+    }
+
+    public Dish findById(String id) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Dish dish = null;
         Cursor cursor = db.query("dish", null, "id = ?", new String[]{id}, null, null, null);
@@ -91,4 +137,27 @@ public class    DishDAO {
         db.delete("dish", "id = ?", new String[]{id});
         db.close();
     }
+
+    public List<Dish> searchByName(String name) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        List<Dish> list = new ArrayList<>();
+        Cursor cursor = db.query("dish", null, "name LIKE ?", new String[]{"%" + name + "%"}, null, null, null);
+
+    if(cursor.moveToFirst()) {
+        do {
+            Dish d = new Dish(
+                    cursor.getString(cursor.getColumnIndexOrThrow("id")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("name")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("description")),
+                    cursor.getDouble(cursor.getColumnIndexOrThrow("price")),
+                    FoodType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("food_type")))
+            );
+            d.setAvailable(cursor.getInt(cursor.getColumnIndexOrThrow("available")) == 1);
+            list.add(d);
+        } while (cursor.moveToNext());
+    }
+    cursor.close();
+    db.close();
+    return list;
+}
 }
