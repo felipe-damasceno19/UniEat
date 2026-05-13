@@ -17,7 +17,8 @@ public class AvaliationPresenter {
 
     public boolean submitRating(String dishId, int rating, String comment) {
         if(rating < 1 || rating > 5) return false;
-        
+        comment = (comment == null) ? "" : comment.trim();
+
         Avaliation avaliation = new Avaliation(
                 UUID.randomUUID().toString(),
                 dishId,
