@@ -1,8 +1,6 @@
 package com.example.unieat.view;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,13 +16,8 @@ import com.google.android.material.textfield.TextInputEditText;
 public class LoginActivity extends AppCompatActivity {
 
     private LoginPresenter presenter;
-    private Button btnStudent, btnKitchen, btnLogin;
+    private Button btnLogin;
     private TextInputEditText etEmail, etPassword;
-    private boolean isStudentMode = true;
-
-    private final int colorRed = Color.parseColor("#7B1C1C");
-    private final int colorWhite = Color.WHITE;
-    private final int colorInactive = Color.parseColor("#F0E8E8");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,35 +36,14 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         bindViews();
-        setupToggle();
         setupLogin();
         setupRegister();
     }
 
     private void bindViews() {
-        btnStudent = findViewById(R.id.btnSouAluno);
-        btnKitchen = findViewById(R.id.btnSouCozinha);
         btnLogin = findViewById(R.id.btnEntrar);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etSenha);
-    }
-
-    private void setupToggle() {
-        btnStudent.setOnClickListener(v -> {
-            isStudentMode = true;
-            btnStudent.setBackgroundTintList(ColorStateList.valueOf(colorRed));
-            btnStudent.setTextColor(colorWhite);
-            btnKitchen.setBackgroundTintList(ColorStateList.valueOf(colorInactive));
-            btnKitchen.setTextColor(colorRed);
-        });
-
-        btnKitchen.setOnClickListener(v -> {
-            isStudentMode = false;
-            btnKitchen.setBackgroundTintList(ColorStateList.valueOf(colorRed));
-            btnKitchen.setTextColor(colorWhite);
-            btnStudent.setBackgroundTintList(ColorStateList.valueOf(colorInactive));
-            btnStudent.setTextColor(colorRed);
-        });
     }
 
     private void setupLogin() {
@@ -84,15 +56,12 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            UserType loggedType = presenter.login(email, password, isStudentMode);
+            UserType loggedType = presenter.login(email, password);
 
             if (loggedType != null) {
                 navigateToHome(loggedType);
             } else {
-                String errorMsg = isStudentMode ? 
-                    "Credenciais inválidas ou você não é um Aluno" : 
-                    "Credenciais inválidas ou você não é da Cozinha";
-                Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "E-mail ou senha incorretos", Toast.LENGTH_SHORT).show();
             }
         });
     }

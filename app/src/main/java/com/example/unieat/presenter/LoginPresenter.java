@@ -17,14 +17,11 @@ public class LoginPresenter {
         sessionManager = new SessionManager(context);
     }
 
-    public UserType login(String email, String password, boolean isStudent) {
+    public UserType login(String email, String password) {
         User user = userDAO.findByEmail(email);
 
         if(user == null) return null;
         if(!user.getPassword().equals(password)) return null;
-
-        if(isStudent && user.getType() != UserType.ALUNO) return null;
-        if(!isStudent && user.getType() != UserType.COZINHEIRO) return null;
 
         sessionManager.saveSession(
                 user.getId(),
