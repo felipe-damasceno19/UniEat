@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         bindViews();
         setupToggle();
         setupLogin();
+        setupRegister();
     }
 
     private void bindViews() {
@@ -92,6 +94,14 @@ public class LoginActivity extends AppCompatActivity {
                     "Credenciais inválidas ou você não é da Cozinha";
                 Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
             }
+        });
+    }
+
+    private void setupRegister() {
+        TextView tvCadastrar = findViewById(R.id.tvCadastrar);
+        tvCadastrar.setOnClickListener(v -> {
+            Intent intent = new Intent(this, RegisterActivity.class);
+            startActivity(intent);
         });
     }
 
