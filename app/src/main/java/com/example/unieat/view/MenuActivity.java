@@ -15,6 +15,6 @@ public class MenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
-        NavigationHelper.setupBottomNavigation(this, bottomNavigationView, R.id.nav_menu);
+        NavigationHelper.setupBottomNavigation(this, bottomNavigationView, R.id.nav_orders);
     }
 }

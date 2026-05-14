@@ -362,6 +362,8 @@
         android:background="#FFFFFF"
         app:itemIconTint="@drawable/nav_item_color"
         app:itemTextColor="@drawable/nav_item_color"
+        app:itemActiveIndicatorStyle="@style/Widget.Material3.BottomNavigationView.ActiveIndicator"
+        app:itemRippleColor="@null"
         app:menu="@menu/bottom_nav_menu"
         app:elevation="16dp"
         app:labelVisibilityMode="labeled"
