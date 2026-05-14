@@ -72,6 +72,42 @@ public class OrderDAO {
         return order;
     }
 
+    public int countByStatus(OrderStatus status) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM orders WHERE order_status = ?", new String[]{status.name()});
+        int count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return count;
+    }
+    
+    public List<Order> findRecentOrders(int limit) {
+        List<Order> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query("orders", null, null, null, null, null, "time DESC", String.valueOf(limit));
+
+        if (cursor.moveToFirst()) {
+            do {
+                String orderId = cursor.getString(cursor.getColumnIndexOrThrow("id"));
+                Order order = new Order(
+                        orderId,
+                        findItemsByOrderId(orderId, db),
+                        OrderStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("order_status"))),
+                        new Date(cursor.getLong(cursor.getColumnIndexOrThrow("time"))),
+                        cursor.getString(cursor.getColumnIndexOrThrow("annotation"))
+                );
+                list.add(order);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return list;
+    }
+
     public List<Order> findAll() {
         List<Order> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();

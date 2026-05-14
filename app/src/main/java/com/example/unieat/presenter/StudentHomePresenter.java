@@ -9,12 +9,12 @@ import com.example.unieat.model.Dish;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomePresenter {
+public class StudentHomePresenter {
 
     private DishDAO dishDAO;
     private SessionManager sessionManager;
 
-    public HomePresenter(Context context) {
+    public StudentHomePresenter(Context context) {
         dishDAO = new DishDAO(context);
         sessionManager = new SessionManager(context);
     }
