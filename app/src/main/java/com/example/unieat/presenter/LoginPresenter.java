@@ -17,14 +17,14 @@ public class LoginPresenter {
         sessionManager = new SessionManager(context);
     }
 
-    public boolean login(String username, String password, boolean isStudent) {
-        User user = userDAO.findByUsername(username);
+    public UserType login(String email, String password, boolean isStudent) {
+        User user = userDAO.findByEmail(email);
 
-        if(user == null) return false;
-        if(!user.getPassword().equals(password)) return false;
+        if(user == null) return null;
+        if(!user.getPassword().equals(password)) return null;
 
-        if(isStudent && user.getType() != UserType.ALUNO) return false;
-        if(!isStudent && user.getType() != UserType.COZINHEIRO) return false;
+        if(isStudent && user.getType() != UserType.ALUNO) return null;
+        if(!isStudent && user.getType() != UserType.COZINHEIRO) return null;
 
         sessionManager.saveSession(
                 user.getId(),
@@ -34,7 +34,7 @@ public class LoginPresenter {
                 user.getType()
         );
 
-        return true;
+        return user.getType();
     }
 
     public boolean isLoggedIn() {

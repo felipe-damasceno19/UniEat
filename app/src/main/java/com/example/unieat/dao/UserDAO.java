@@ -79,10 +79,10 @@ public class UserDAO {
         return user;
     }
 
-    public User findByUsername(String username){
+    public User findByEmail(String email){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         User user = null;
-        Cursor cursor = db.query("user", null , "id = ?", new String[]{username}, null, null, null);
+        Cursor cursor = db.query("user", null , "email = ?", new String[]{email}, null, null, null);
 
         if(cursor.moveToFirst()){
             user = new User(

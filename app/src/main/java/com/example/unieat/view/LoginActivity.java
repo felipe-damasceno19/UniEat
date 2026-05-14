@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.unieat.R;
+import com.example.unieat.enums.UserType;
 import com.example.unieat.presenter.LoginPresenter;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -31,9 +32,12 @@ public class LoginActivity extends AppCompatActivity {
 
         presenter = new LoginPresenter(this);
 
-        // se já está logado, pula o login
         if (presenter.isLoggedIn()) {
-            navigateToHome();
+            if (presenter.isStudent()) {
+                navigateToHome(UserType.ALUNO);
+            } else {
+                navigateToHome(UserType.COZINHEIRO);
+            }
             return;
         }
 
@@ -78,10 +82,10 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            boolean success = presenter.login(email, password, isStudentMode);
+            UserType loggedType = presenter.login(email, password, isStudentMode);
 
-            if (success) {
-                navigateToHome();
+            if (loggedType != null) {
+                navigateToHome(loggedType);
             } else {
                 String errorMsg = isStudentMode ? 
                     "Credenciais inválidas ou você não é um Aluno" : 
@@ -91,9 +95,9 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void navigateToHome() {
+    private void navigateToHome(UserType type) {
         Intent intent;
-        if (presenter.isStudent()) {
+        if (type == UserType.ALUNO) {
             intent = new Intent(this, StudentHomeActivity.class);
         } else {
             intent = new Intent(this, KitchenHomeActivity.class);
