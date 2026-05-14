@@ -1,5 +1,6 @@
 package com.example.unieat.view;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,17 +14,18 @@ import com.example.unieat.R;
 import com.example.unieat.dao.UserDAO;
 import com.example.unieat.enums.UserType;
 import com.example.unieat.model.User;
+import com.example.unieat.presenter.RegisterPresenter;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.UUID;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements RegisterPresenter.View{
 
     private TextInputEditText etName, etUsername, etEmail, etPassword;
     private Button btnRoleStudent, btnRoleKitchen, btnRegister;
     private TextView tvBackToLogin;
     private UserType selectedType = UserType.ALUNO;
-    private UserDAO userDAO;
+    private RegisterPresenter presenter;
 
     private final int colorRed = Color.parseColor("#7B1C1C");
     private final int colorWhite = Color.WHITE;
@@ -34,7 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        userDAO = new UserDAO(this);
+        presenter = new RegisterPresenter(this, this);
         bindViews();
         setupToggle();
         setupRegister();
@@ -78,24 +80,19 @@ public class RegisterActivity extends AppCompatActivity {
             String email = etEmail.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
 
-            if (name.isEmpty() || username.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            User newUser = new User(
-                    UUID.randomUUID().toString(),
-                    name,
-                    username,
-                    password,
-                    email,
-                    0.0,
-                    selectedType
-            );
-
-            userDAO.insert(newUser);
-            Toast.makeText(this, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show();
-            finish();
+            presenter.register(name, username, email, password, selectedType);
         });
     }
+
+    @Override
+    public void onRegisterSuccess() {
+        Toast.makeText(this, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    @Override
+    public void onRegisterError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
 }

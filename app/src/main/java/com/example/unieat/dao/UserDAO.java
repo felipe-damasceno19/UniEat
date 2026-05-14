@@ -99,7 +99,29 @@ public class UserDAO {
         db.close();
         return user;
     }
-    
+
+    public User findByUsername(String username){
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        User user = null;
+        Cursor cursor = db.query("user", null , "username = ?", new String[]{username}, null, null, null);
+
+        if(cursor.moveToFirst()){
+            user = new User(
+                    cursor.getString(cursor.getColumnIndexOrThrow("id")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("name")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("username")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("password")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("email")),
+                    cursor.getDouble(cursor.getColumnIndexOrThrow("balance")),
+                    UserType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("user_type")))
+            );
+        }
+        cursor.close();
+        db.close();
+        return user;
+    }
+
+
     public void update(User user){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
