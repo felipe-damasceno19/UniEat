@@ -83,7 +83,10 @@ public class LoginActivity extends AppCompatActivity {
             if (success) {
                 navigateToHome();
             } else {
-                Toast.makeText(this, "Crendenciais inválidas ou tipo de conta errado", Toast.LENGTH_SHORT).show();
+                String errorMsg = isStudentMode ? 
+                    "Credenciais inválidas ou você não é um Aluno" : 
+                    "Credenciais inválidas ou você não é da Cozinha";
+                Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -93,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
         if (presenter.isStudent()) {
             intent = new Intent(this, StudentHomeActivity.class);
         } else {
-            intent = new Intent(); //(this, KitchenHomeActivity.class)
+            intent = new Intent(this, KitchenHomeActivity.class);
         }
         startActivity(intent);
         finish();

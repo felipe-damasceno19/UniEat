@@ -30,6 +30,9 @@
             android:name=".view.MenuActivity"
             android:exported="false" />
         <activity
+            android:name=".view.KitchenHomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.StudentHomeActivity"
             android:exported="true">
             <intent-filter>

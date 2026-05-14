@@ -23,7 +23,6 @@ public class LoginPresenter {
         if(user == null) return false;
         if(!user.getPassword().equals(password)) return false;
 
-        boolean userIsStudent = sessionManager.isStudent();
         if(isStudent && user.getType() != UserType.ALUNO) return false;
         if(!isStudent && user.getType() != UserType.COZINHEIRO) return false;
 
