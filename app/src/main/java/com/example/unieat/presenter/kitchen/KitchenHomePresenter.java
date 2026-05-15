@@ -1,4 +1,4 @@
-package com.example.unieat.presenter;
+package com.example.unieat.presenter.kitchen;
 
 import android.content.Context;
 

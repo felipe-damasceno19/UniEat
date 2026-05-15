@@ -124,6 +124,19 @@ public class DishDAO {
         return dish;
     }
 
+    public void update(Dish dish) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", dish.getName());
+        values.put("description", dish.getDescription());
+        values.put("price", dish.getPrice());
+        values.put("food_type", dish.getType().name());
+        values.put("available", dish.isAvailable());
+
+        db.update("dish", values, "id = ?", new String[]{dish.getId()});
+        db.close();
+    }
+
     public void updateAvailability(String id, boolean available){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();

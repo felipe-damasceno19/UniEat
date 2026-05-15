@@ -1,5 +1,5 @@
 // presenter/MenuPresenter.java
-package com.example.unieat.presenter;
+package com.example.unieat.presenter.student;
 
 import com.example.unieat.dao.DishDAO;
 import com.example.unieat.enums.FoodType;
