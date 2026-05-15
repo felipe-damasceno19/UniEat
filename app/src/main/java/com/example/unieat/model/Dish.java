@@ -14,6 +14,8 @@ public class Dish {
 
     private FoodType type;
 
+    private String imageName;
+
     private boolean available;
 
     public Dish(){
@@ -26,6 +28,7 @@ public class Dish {
         this.price = price;
         this.type = type;
         this.available = true;
+        this.imageName = "";
     }
 
     public String getId() {
@@ -46,6 +49,10 @@ public class Dish {
 
     public Double getPrice() {
         return price;
+    }
+
+    public String getImageName() {
+        return imageName;
     }
 
     public boolean isAvailable() {
@@ -74,6 +81,10 @@ public class Dish {
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 
     @Override

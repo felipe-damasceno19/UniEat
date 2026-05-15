@@ -1,4 +1,4 @@
-package com.example.unieat.view;
+package com.example.unieat.adapter;
 
 import android.content.Context;
 import android.content.res.ColorStateList;

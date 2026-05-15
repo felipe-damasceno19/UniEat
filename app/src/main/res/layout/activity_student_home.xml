@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FDFDFD">
@@ -57,7 +56,7 @@
             android:backgroundTint="#FFB84C"
             android:paddingHorizontal="12dp"
             android:paddingVertical="8dp"
-            android:text="Saldo: R$ 42,50"
+            android:text="R$ 0,00"
             android:textColor="#7B1C1C"
             android:textSize="14sp"
             android:textStyle="bold"
@@ -70,7 +69,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
-        app:layout_constraintTop_toBottomOf="@id/topBar">
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -90,7 +91,7 @@
                     android:id="@+id/tvWelcomeName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Olá, Matheus 👋"
+                    android:text="Olá! 👋"
                     android:textColor="#000000"
                     android:textSize="28sp"
                     android:textStyle="bold" />
@@ -106,6 +107,7 @@
 
             <!-- Search Bar -->
             <EditText
+                android:id="@+id/etSearch"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:layout_marginHorizontal="24dp"
@@ -118,7 +120,7 @@
                 android:paddingHorizontal="16dp"
                 android:textSize="14sp" />
 
-            <!-- Promo Banners Horizontal -->
+            <!-- Promo Banners -->
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -132,7 +134,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <!-- Banner 1 -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="280dp"
                         android:layout_height="140dp"
@@ -141,56 +142,43 @@
                         app:cardCornerRadius="16dp"
                         app:cardElevation="0dp">
 
-                        <FrameLayout
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="16dp">
 
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:alpha="0.4"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/shape_logo_placeholder" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/shape_badge_destaque"
+                                android:backgroundTint="#FFB84C"
+                                android:paddingHorizontal="8dp"
+                                android:paddingVertical="2dp"
+                                android:text="OFERTA LIMITADA"
+                                android:textColor="#7B1C1C"
+                                android:textSize="10sp"
+                                android:textStyle="bold" />
 
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:padding="16dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Combo Universitário"
+                                android:textColor="#FFFFFF"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/shape_badge_destaque"
-                                    android:backgroundTint="#FFB84C"
-                                    android:paddingHorizontal="8dp"
-                                    android:paddingVertical="2dp"
-                                    android:text="OFERTA LIMITADA"
-                                    android:textColor="#7B1C1C"
-                                    android:textSize="10sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp"
-                                    android:text="Combo Universitário"
-                                    android:textColor="#FFFFFF"
-                                    android:textSize="20sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:text="Ganhe 20% OFF no seu primeiro\npedido do dia."
-                                    android:textColor="#FFFFFF"
-                                    android:textSize="12sp" />
-                            </LinearLayout>
-                        </FrameLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Ganhe 20% OFF no seu primeiro pedido do dia."
+                                android:textColor="#FFFFFF"
+                                android:textSize="12sp" />
+                        </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Banner 2 -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="280dp"
                         android:layout_height="140dp"
@@ -229,7 +217,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="Opções saudáveis e sucos\nfrescos todos os dias."
+                                android:text="Opções saudáveis e sucos frescos todos os dias."
                                 android:textColor="#FFFFFF"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -262,171 +250,16 @@
                     android:textStyle="bold" />
             </RelativeLayout>
 
-            <!-- Mais Pedidos List -->
-            <HorizontalScrollView
+            <!-- Featured Dishes RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvFeaturedDishes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:clipToPadding="false"
                 android:paddingHorizontal="24dp"
-                android:scrollbars="none">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <!-- Product Item 1 -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="160dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        app:cardBackgroundColor="#FFFFFF"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp"
-                        app:strokeColor="#EEEEEE"
-                        app:strokeWidth="1dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="100dp"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/shape_logo_placeholder" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:padding="12dp">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:ellipsize="end"
-                                    android:maxLines="1"
-                                    android:text="Strogonoff"
-                                    android:textColor="#000000"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="2dp"
-                                    android:text="📍 RU Central"
-                                    android:textColor="#888888"
-                                    android:textSize="10sp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:text="R$ 12,00"
-                                    android:textColor="#7B1C1C"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:text="124 vendidos hoje"
-                                    android:textColor="#AAAAAA"
-                                    android:textSize="9sp" />
-
-                                <com.google.android.material.button.MaterialButton
-                                    android:layout_width="match_parent"
-                                    android:layout_height="36dp"
-                                    android:layout_marginTop="12dp"
-                                    android:backgroundTint="#7B1C1C"
-                                    android:padding="0dp"
-                                    android:text="Pedir"
-                                    android:textAllCaps="false"
-                                    android:textSize="12sp"
-                                    app:cornerRadius="8dp" />
-                            </LinearLayout>
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- Product Item 2 -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="160dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        app:cardBackgroundColor="#FFFFFF"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp"
-                        app:strokeColor="#EEEEEE"
-                        app:strokeWidth="1dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="100dp"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/shape_logo_placeholder" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:padding="12dp">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:ellipsize="end"
-                                    android:maxLines="1"
-                                    android:text="X-Bacon Uni"
-                                    android:textColor="#000000"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="2dp"
-                                    android:text="📍 Lanchonete B"
-                                    android:textColor="#888888"
-                                    android:textSize="10sp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:text="R$ 15,50"
-                                    android:textColor="#7B1C1C"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:text="89 vendidos hoje"
-                                    android:textColor="#AAAAAA"
-                                    android:textSize="9sp" />
-
-                                <com.google.android.material.button.MaterialButton
-                                    android:layout_width="match_parent"
-                                    android:layout_height="36dp"
-                                    android:layout_marginTop="12dp"
-                                    android:backgroundTint="#7B1C1C"
-                                    android:padding="0dp"
-                                    android:text="Pedir"
-                                    android:textAllCaps="false"
-                                    android:textSize="12sp"
-                                    app:cornerRadius="8dp" />
-                            </LinearLayout>
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                </LinearLayout>
-            </HorizontalScrollView>
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             <!-- Pedir Novamente Header -->
             <TextView
@@ -439,81 +272,16 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <!-- Pedir Novamente List -->
-            <HorizontalScrollView
+            <!-- Pedir Novamente RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvRecentOrders"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:clipToPadding="false"
                 android:paddingHorizontal="24dp"
-                android:scrollbars="none">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <!-- Repeat Item 1 -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="240dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        app:cardBackgroundColor="#FFFFFF"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="1dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:padding="12dp">
-
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="60dp"
-                                android:layout_height="60dp"
-                                app:cardCornerRadius="12dp"
-                                app:cardElevation="0dp">
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:scaleType="centerCrop"
-                                    android:src="@drawable/shape_logo_placeholder" />
-                            </com.google.android.material.card.MaterialCardView>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="12dp"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Strogonoff Frango"
-                                    android:textColor="#000000"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Ontem • R$ 12,00"
-                                    android:textColor="#888888"
-                                    android:textSize="11sp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:text="🔄 Pedir novamente"
-                                    android:textColor="#7B1C1C"
-                                    android:textSize="12sp"
-                                    android:textStyle="bold" />
-                            </LinearLayout>
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                </LinearLayout>
-            </HorizontalScrollView>
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
@@ -540,11 +308,11 @@
         android:background="#FFFFFF"
         app:itemIconTint="@drawable/nav_item_color"
         app:itemTextColor="@drawable/nav_item_color"
-        app:itemActiveIndicatorStyle="@style/Widget.Material3.BottomNavigationView.ActiveIndicator"
-        app:itemRippleColor="@null"
         app:elevation="16dp"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

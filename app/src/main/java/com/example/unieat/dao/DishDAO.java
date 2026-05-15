@@ -28,6 +28,7 @@ public class DishDAO {
         values.put("description", dish.getDescription());
         values.put("price", dish.getPrice());
         values.put("food_type", dish.getType().name());
+        values.put("image_name", dish.getImageName());
         values.put("available", dish.isAvailable() ? 1 : 0);
         db.insert("dish", null, values);
         db.close();
@@ -48,6 +49,7 @@ public class DishDAO {
                         FoodType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("food_type")))
                 );
                 d.setAvailable(cursor.getInt(cursor.getColumnIndexOrThrow("available")) == 1);
+                d.setImageName(cursor.getString(cursor.getColumnIndexOrThrow("image_name")));
                 list.add(d);
             } while (cursor.moveToNext());
         }
@@ -71,6 +73,7 @@ public class DishDAO {
                         cursor.getDouble(cursor.getColumnIndexOrThrow("price")),
                         FoodType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("food_type")))
                 );
+                d.setImageName(cursor.getString(cursor.getColumnIndexOrThrow("image_name")));
                 d.setAvailable(true);
                 list.add(d);
             } while (cursor.moveToNext());
@@ -94,6 +97,7 @@ public class DishDAO {
                         cursor.getDouble(cursor.getColumnIndexOrThrow("price")),
                         FoodType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("food_type")))
                 );
+                d.setImageName(cursor.getString(cursor.getColumnIndexOrThrow("image_name")));
                 d.setAvailable(true);
                 list.add(d);
             } while (cursor.moveToNext());
@@ -116,6 +120,7 @@ public class DishDAO {
                     cursor.getDouble(cursor.getColumnIndexOrThrow("price")),
                     FoodType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("food_type")))
             );
+            dish.setImageName(cursor.getString(cursor.getColumnIndexOrThrow("image_name")));
             dish.setAvailable(cursor.getInt(cursor.getColumnIndexOrThrow("available")) == 1);
         }
 
@@ -132,6 +137,7 @@ public class DishDAO {
         values.put("price", dish.getPrice());
         values.put("food_type", dish.getType().name());
         values.put("available", dish.isAvailable());
+        values.put("image_name", dish.getImageName());
 
         db.update("dish", values, "id = ?", new String[]{dish.getId()});
         db.close();
@@ -165,6 +171,7 @@ public class DishDAO {
                     cursor.getDouble(cursor.getColumnIndexOrThrow("price")),
                     FoodType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("food_type")))
             );
+            d.setImageName(cursor.getString(cursor.getColumnIndexOrThrow("image_name")));
             d.setAvailable(cursor.getInt(cursor.getColumnIndexOrThrow("available")) == 1);
             list.add(d);
         } while (cursor.moveToNext());

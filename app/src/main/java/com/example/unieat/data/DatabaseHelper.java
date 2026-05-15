@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "unieat.db";
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
 
     public DatabaseHelper(Context context){
         super(context, DB_NAME, null, VERSION);
@@ -21,6 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "description TEXT,"+
                 "price REAL NOT NULL,"+
                 "food_type TEXT NOT NULL,"+
+                "image_name TEXT,"+
                 "available INTEGER)");
 
         db.execSQL("CREATE TABLE orders("+
