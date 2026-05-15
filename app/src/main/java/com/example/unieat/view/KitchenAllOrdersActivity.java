@@ -12,14 +12,13 @@ import com.example.unieat.R;
 import com.example.unieat.dao.OrderDAO;
 import com.example.unieat.enums.OrderStatus;
 import com.example.unieat.model.Order;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 import java.util.Locale;
 
-public class KitchenHomeActivity extends AppCompatActivity {
+public class KitchenAllOrdersActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerOrders;
+    private RecyclerView recyclerAllOrders;
     private KitchenOrderAdapter adapter;
     private OrderDAO orderDAO;
     private OrderStatus currentFilter = null;
@@ -29,24 +28,20 @@ public class KitchenHomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_kitchen_home);
+        setContentView(R.layout.activity_kitchen_all_orders);
 
         orderDAO = new OrderDAO(this);
         bindViews();
         setupFilters();
-        setupNavigation();
 
-        findViewById(R.id.tvViewAll).setOnClickListener(v -> {
-            updateFilter(null);
-            Toast.makeText(this, "Mostrando todos os pedidos", Toast.LENGTH_SHORT).show();
-        });
+        findViewById(R.id.imgBack).setOnClickListener(v -> finish());
 
-        loadDashboard();
+        loadOrders();
     }
 
     private void bindViews() {
-        recyclerOrders = findViewById(R.id.recyclerOrders);
-        recyclerOrders.setLayoutManager(new LinearLayoutManager(this));
+        recyclerAllOrders = findViewById(R.id.recyclerAllOrders);
+        recyclerAllOrders.setLayoutManager(new LinearLayoutManager(this));
         
         tvNewCount = findViewById(R.id.tvNewCount);
         tvInPrepCount = findViewById(R.id.tvInPrepCount);
@@ -57,38 +52,26 @@ public class KitchenHomeActivity extends AppCompatActivity {
         findViewById(R.id.cardFilterNew).setOnClickListener(v -> updateFilter(OrderStatus.PENDENTE));
         findViewById(R.id.cardFilterInPrep).setOnClickListener(v -> updateFilter(OrderStatus.PREPARANDO));
         findViewById(R.id.cardFilterReady).setOnClickListener(v -> updateFilter(OrderStatus.PRONTO));
-    }
-
-    private void setupNavigation() {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
-        NavigationHelper.setupKitchenNavigation(this, bottomNavigationView, R.id.nav_kitchen_home);
+        
+        findViewById(R.id.topBar).setOnClickListener(v -> updateFilter(null));
     }
 
     private void updateFilter(OrderStatus status) {
-        if (currentFilter == status) {
-            currentFilter = null;
-        } else {
-            currentFilter = status;
-        }
-        loadDashboard();
+        currentFilter = (currentFilter == status) ? null : status;
+        loadOrders();
     }
 
-    private void loadDashboard() {
+    private void loadOrders() {
         // Update counts
         tvNewCount.setText(String.format(Locale.getDefault(), "%02d", orderDAO.countByStatus(OrderStatus.PENDENTE)));
         tvInPrepCount.setText(String.format(Locale.getDefault(), "%02d", orderDAO.countByStatus(OrderStatus.PREPARANDO)));
         tvReadyCount.setText(String.format(Locale.getDefault(), "%02d", orderDAO.countByStatus(OrderStatus.PRONTO)));
 
-        List<Order> orders;
-        if (currentFilter == null) {
-            orders = orderDAO.findAll();
-        } else {
-            orders = orderDAO.findByStatus(currentFilter);
-        }
+        List<Order> orders = (currentFilter == null) ? orderDAO.findAll() : orderDAO.findByStatus(currentFilter);
 
         if (adapter == null) {
             adapter = new KitchenOrderAdapter(this, orders, this::advanceStatus);
-            recyclerOrders.setAdapter(adapter);
+            recyclerAllOrders.setAdapter(adapter);
         } else {
             adapter.updateData(orders);
         }
@@ -101,7 +84,6 @@ public class KitchenHomeActivity extends AppCompatActivity {
         else if (order.getStatus() == OrderStatus.PRONTO) next = OrderStatus.ENTREGUE;
 
         orderDAO.updateStatus(order.getId(), next);
-        loadDashboard();
-        Toast.makeText(this, "Status do pedido atualizado", Toast.LENGTH_SHORT).show();
+        loadOrders();
     }
 }

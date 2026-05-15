@@ -47,7 +47,7 @@ public class NavigationHelper {
             if (itemId == selectedItemId) return true;
 
             Intent intent = null;
-            if (itemId == R.id.nav_kitchen_orders) {
+            if (itemId == R.id.nav_kitchen_home) {
                 intent = new Intent(activity, KitchenHomeActivity.class);
             } else if (itemId == R.id.nav_kitchen_menu) {
                 intent = new Intent(activity, KitchenMenuActivity.class);

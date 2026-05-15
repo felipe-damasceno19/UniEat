@@ -3,7 +3,6 @@ package com.example.unieat.view;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +16,6 @@ import com.example.unieat.model.Dish;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -36,7 +34,7 @@ public class KitchenMenuActivity extends AppCompatActivity {
         dishContainer = findViewById(R.id.dishContainer);
 
         findViewById(R.id.btnAddDish).setOnClickListener(v -> {
-            Toast.makeText(this, "Add new menu item", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Adicionar novo item ao menu", Toast.LENGTH_SHORT).show();
         });
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
@@ -47,12 +45,11 @@ public class KitchenMenuActivity extends AppCompatActivity {
 
     private void loadDishes() {
         List<Dish> dishes = dishDAO.findAll();
-        
         if (dishes.isEmpty()) {
             addPlaceholders();
             dishes = dishDAO.findAll();
         }
-
+        
         dishContainer.removeAllViews();
         for (Dish dish : dishes) {
             addDishCard(dish);
@@ -64,9 +61,6 @@ public class KitchenMenuActivity extends AppCompatActivity {
         dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Double Smash Burger", "Dois blends suculentos com queijo cheddar.", 28.50, FoodType.SANDUICHE_NATURAL));
         dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Fresh Garden Salad", "Mix de folhas verdes e molho da casa.", 22.00, FoodType.REFEICAO));
         dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Gourmet Cappuccino", "Café premium com espuma cremosa.", 12.50, FoodType.BEBIDA_QUENTE));
-        dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Pasta Carbonara", "Massa italiana com bacon e ovos.", 35.00, FoodType.REFEICAO));
-        dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Suco de Laranja 500ml", "Suco natural e refrescante.", 8.00, FoodType.BEBIDA_GELADA));
-        dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Torta de Chocolate", "Sobremesa rica em cacau.", 15.00, FoodType.DOCE_CAKE));
     }
 
     private void addDishCard(Dish dish) {
@@ -90,8 +84,7 @@ public class KitchenMenuActivity extends AppCompatActivity {
         });
 
         cardDish.setOnClickListener(v -> {
-            Toast.makeText(this, "Editing: " + dish.getName(), Toast.LENGTH_SHORT).show();
-            // Here you would navigate to an EditDishActivity
+            Toast.makeText(this, "Editando: " + dish.getName(), Toast.LENGTH_SHORT).show();
         });
 
         dishContainer.addView(cardView);
@@ -100,10 +93,10 @@ public class KitchenMenuActivity extends AppCompatActivity {
     private void updateStockStatus(TextView tvStatus, boolean isAvailable) {
         if (isAvailable) {
             tvStatus.setText("IN STOCK");
-            tvStatus.setTextColor(getResources().getColor(android.R.color.darker_gray));
+            tvStatus.setTextColor(0xFFAAAAAA);
         } else {
             tvStatus.setText("OUT OF STOCK");
-            tvStatus.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+            tvStatus.setTextColor(0xFFFF4444);
         }
     }
 }

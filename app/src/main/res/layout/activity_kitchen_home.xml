@@ -1,547 +1,244 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FDFDFD">
+    android:background="#F2F2F7">
 
-    <!-- Top Bar -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- TOP BAR -->
+    <LinearLayout
         android:id="@+id/topBar"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:paddingHorizontal="16dp"
-        app:layout_constraintTop_toTopOf="parent">
+        android:paddingVertical="14dp"
+        android:background="#FFFFFF"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:elevation="4dp">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
+            android:id="@+id/imgLogo"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
             android:src="@drawable/logo_unieat"
-            android:contentDescription="UniEat"
-            android:adjustViewBounds="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:background="@drawable/circle_bg_dark"
+            android:scaleType="centerInside"
+            android:padding="4dp" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/tvAppName"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/shape_badge_destaque"
-            android:backgroundTint="#FFB84C"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="4dp"
-            android:text="Online"
-            android:textColor="#7B1C1C"
-            android:textSize="12sp"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:text="UniEat Cooks"
+            android:textColor="#7B1A1A"
+            android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:fontFamily="sans-serif-medium" />
 
-    <ScrollView
+        <ImageView
+            android:id="@+id/imgNotification"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@android:drawable/ic_dialog_info"
+            app:tint="#333333" />
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
-        app:layout_constraintTop_toBottomOf="@id/topBar">
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <!-- Stats Cards Row -->
+            <!-- STATUS SUMMARY CARDS -->
             <LinearLayout
+                android:id="@+id/statusCardsRow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
+                android:weightSum="3">
 
-                <!-- Pedidos Novos -->
-                <com.google.android.material.card.MaterialCardView
+                <!-- NEW Card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardFilterNew"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp">
+                    android:layout_marginEnd="6dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#F5A623">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="12dp">
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@android:drawable/ic_menu_agenda"
-                                app:tint="#7B1C1C" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:background="@drawable/shape_badge_destaque"
-                                android:backgroundTint="#FFF5E1"
-                                android:paddingHorizontal="6dp"
-                                android:text="URGENTE"
-                                android:textColor="#B0893F"
-                                android:textSize="8sp"
-                                android:textStyle="bold" />
-                        </RelativeLayout>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Pedidos novos"
-                            android:textColor="#666666"
-                            android:textSize="12sp" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="3"
-                            android:textColor="#000000"
-                            android:textSize="28sp"
-                            android:textStyle="bold" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Média 5 min aguardando"
-                            android:textColor="#888888"
-                            android:textSize="10sp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                        android:padding="14dp"
+                        android:gravity="center">
 
-                <!-- Em Preparo -->
-                <com.google.android.material.card.MaterialCardView
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="NEW"
+                            android:textColor="#7B4A00"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvNewCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="05"
+                            android:textColor="#1A1A1A"
+                            android:textSize="36sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- IN PREP Card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardFilterInPrep"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp">
+                    android:layout_marginHorizontal="3dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#D6E4F7">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="12dp">
-                         <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@android:drawable/ic_menu_sort_by_size"
-                                app:tint="#7B1C1C" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:background="@drawable/shape_badge_destaque"
-                                android:backgroundTint="#F0E8E8"
-                                android:paddingHorizontal="6dp"
-                                android:text="AO VIVO"
-                                android:textColor="#666666"
-                                android:textSize="8sp"
-                                android:textStyle="bold" />
-                        </RelativeLayout>
+                        android:padding="14dp"
+                        android:gravity="center">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Em preparo"
-                            android:textColor="#666666"
-                            android:textSize="12sp" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="2"
-                            android:textColor="#000000"
-                            android:textSize="28sp"
+                            android:text="IN PREP"
+                            android:textColor="#1A4A7A"
+                            android:textSize="11sp"
                             android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvInPrepCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="08"
+                            android:textColor="#1A4A7A"
+                            android:textSize="36sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- READY Card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardFilterReady"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#D6F5E8">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="14dp"
+                        android:gravity="center">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="1 quase pronto"
-                            android:textColor="#888888"
-                            android:textSize="10sp" />
+                            android:text="READY"
+                            android:textColor="#1A6A45"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvReadyCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="12"
+                            android:textColor="#1A6A45"
+                            android:textSize="36sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                </androidx.cardview.widget.CardView>
             </LinearLayout>
 
-            <!-- Prontas -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- ACTIVE ORDERS HEADER -->
+            <LinearLayout
+                android:id="@+id/activeOrdersHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp">
-                     <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@android:drawable/checkbox_on_background"
-                            app:tint="#7B1C1C" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:background="@drawable/shape_badge_destaque"
-                            android:backgroundTint="#F0E8E8"
-                            android:paddingHorizontal="6dp"
-                            android:text="BALCÃO"
-                            android:textColor="#666666"
-                            android:textSize="8sp"
-                            android:textStyle="bold" />
-                    </RelativeLayout>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Prontas"
-                        android:textColor="#666666"
-                        android:textSize="12sp" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="1"
-                        android:textColor="#000000"
-                        android:textSize="28sp"
-                        android:textStyle="bold" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Aguardando retirada"
-                        android:textColor="#888888"
-                        android:textSize="10sp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="10dp"
+                android:gravity="center_vertical">
 
-            <!-- Seção Pedidos Recentes -->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="16dp">
                 <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Active Orders"
+                    android:textColor="#1A1A1A"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvViewAll"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pedidos Recentes"
-                    android:textColor="#000000"
-                    android:textSize="20sp"
+                    android:text="View All"
+                    android:textColor="#8B0000"
+                    android:textSize="14sp"
                     android:textStyle="bold"
-                    android:drawablePadding="8dp"
-                    app:drawableStartCompat="@android:drawable/ic_menu_sort_by_size"
-                    app:drawableTint="#7B1C1C" />
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/shape_quantity_selector_bg"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="4dp"
-                        android:text="Filtros"
-                        android:textColor="#666666"
-                        android:textSize="12sp" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:background="@drawable/shape_quantity_selector_bg"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="4dp"
-                        android:text="Histórico"
-                        android:textColor="#666666"
-                        android:textSize="12sp" />
-                </LinearLayout>
-            </RelativeLayout>
+                    android:paddingVertical="4dp"
+                    android:paddingHorizontal="2dp"
+                    android:clickable="true"
+                    android:focusable="true" />
+            </LinearLayout>
 
-            <!-- Pedido Item 1 -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- ORDERS LIST (non-scrollable preview) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerOrders"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="1dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="12dp">
-                    <TextView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/shape_toggle_bg"
-                        android:backgroundTint="#FFF5E1"
-                        android:gravity="center"
-                        android:text="#248"
-                        android:textColor="#B0893F"
-                        android:textStyle="bold" />
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Marmita Fit Frango + Suco"
-                            android:textColor="#000000"
-                            android:textStyle="bold" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Cliente: João Silva • Há 2 min"
-                            android:textColor="#888888"
-                            android:textSize="11sp" />
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-                             <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/shape_badge_destaque"
-                                android:backgroundTint="#FFF5E1"
-                                android:paddingHorizontal="8dp"
-                                android:text="● Novo"
-                                android:textColor="#B0893F"
-                                android:textSize="10sp"
-                                android:textStyle="bold" />
-                             <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
-                             <com.google.android.material.button.MaterialButton
-                                android:layout_width="wrap_content"
-                                android:layout_height="36dp"
-                                android:backgroundTint="#7B1C1C"
-                                android:text="INICIAR"
-                                android:textSize="11sp"
-                                android:textStyle="bold"
-                                app:cornerRadius="8dp" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-             <!-- Pedido Item 2 -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="1dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="12dp">
-                    <TextView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/shape_toggle_bg"
-                        android:backgroundTint="#FEE7E7"
-                        android:gravity="center"
-                        android:text="#247"
-                        android:textColor="#7B1C1C"
-                        android:textStyle="bold" />
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Hamburguer Duplo + Batata M"
-                            android:textColor="#000000"
-                            android:textStyle="bold" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Cliente: Maria Clara • Há 8 min"
-                            android:textColor="#888888"
-                            android:textSize="11sp" />
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-                             <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/shape_badge_destaque"
-                                android:backgroundTint="#FEE7E7"
-                                android:paddingHorizontal="8dp"
-                                android:text="● Em Preparo"
-                                android:textColor="#7B1C1C"
-                                android:textSize="10sp"
-                                android:textStyle="bold" />
-                             <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
-                             <com.google.android.material.button.MaterialButton
-                                android:layout_width="wrap_content"
-                                android:layout_height="36dp"
-                                android:backgroundTint="#FFB84C"
-                                android:text="CONCLUIR"
-                                android:textColor="#7B1C1C"
-                                android:textSize="11sp"
-                                android:textStyle="bold"
-                                app:cornerRadius="8dp" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Imagem Estação -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="140dp"
-                android:layout_marginTop="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp">
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/shape_logo_placeholder"
-                        android:alpha="0.8" />
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="#40000000" />
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Estação de Preparo A"
-                            android:textColor="#FFFFFF"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Capacidade atual: 85%"
-                            android:textColor="#FFFFFF"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-                </FrameLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Meta Eficiência -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="32dp"
-                app:cardBackgroundColor="#7B1C1C"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Meta de Eficiência"
-                        android:textColor="#FFFFFF"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
-                    <ProgressBar
-                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="8dp"
-                        android:layout_marginTop="12dp"
-                        android:progress="92"
-                        android:progressTint="#FFB84C" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="92% dos pedidos entregues dentro do prazo hoje. Excelente trabalho!"
-                        android:textColor="#FFFFFF"
-                        android:textSize="14sp" />
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:orientation="horizontal">
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:background="@drawable/shape_badge_destaque"
-                            android:backgroundTint="#40000000"
-                            android:padding="12dp"
-                            android:layout_marginEnd="8dp">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="12 min"
-                                android:textColor="#FFFFFF"
-                                android:textStyle="bold" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="TEMPO MÉDIO"
-                                android:textColor="#CCCCCC"
-                                android:textSize="8sp" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:background="@drawable/shape_badge_destaque"
-                            android:backgroundTint="#40000000"
-                            android:padding="12dp">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="142"
-                                android:textColor="#FFFFFF"
-                                android:textStyle="bold" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="TOTAL HOJE"
-                                android:textColor="#CCCCCC"
-                                android:textSize="8sp" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                android:paddingHorizontal="16dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="12dp"
+                android:clipToPadding="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_kitchen_order" />
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
