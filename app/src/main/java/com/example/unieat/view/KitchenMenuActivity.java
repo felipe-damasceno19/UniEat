@@ -12,12 +12,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.unieat.R;
 import com.example.unieat.dao.DishDAO;
+import com.example.unieat.enums.FoodType;
 import com.example.unieat.model.Dish;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 public class KitchenMenuActivity extends AppCompatActivity {
 
@@ -33,7 +36,7 @@ public class KitchenMenuActivity extends AppCompatActivity {
         dishContainer = findViewById(R.id.dishContainer);
 
         findViewById(R.id.btnAddDish).setOnClickListener(v -> {
-            Toast.makeText(this, "Cadastrar novo prato (em breve)", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Add new menu item", Toast.LENGTH_SHORT).show();
         });
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
@@ -44,46 +47,63 @@ public class KitchenMenuActivity extends AppCompatActivity {
 
     private void loadDishes() {
         List<Dish> dishes = dishDAO.findAll();
-        dishContainer.removeAllViews();
+        
+        if (dishes.isEmpty()) {
+            addPlaceholders();
+            dishes = dishDAO.findAll();
+        }
 
+        dishContainer.removeAllViews();
         for (Dish dish : dishes) {
             addDishCard(dish);
         }
     }
 
-    private void addDishCard(Dish dish) {
-        View card = LayoutInflater.from(this).inflate(R.layout.item_kitchen_dish, dishContainer, false);
+    private void addPlaceholders() {
+        dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Classic Margherita", "Pizza tradicional com manjericão fresco.", 32.90, FoodType.REFEICAO));
+        dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Double Smash Burger", "Dois blends suculentos com queijo cheddar.", 28.50, FoodType.SANDUICHE_NATURAL));
+        dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Fresh Garden Salad", "Mix de folhas verdes e molho da casa.", 22.00, FoodType.REFEICAO));
+        dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Gourmet Cappuccino", "Café premium com espuma cremosa.", 12.50, FoodType.BEBIDA_QUENTE));
+        dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Pasta Carbonara", "Massa italiana com bacon e ovos.", 35.00, FoodType.REFEICAO));
+        dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Suco de Laranja 500ml", "Suco natural e refrescante.", 8.00, FoodType.BEBIDA_GELADA));
+        dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Torta de Chocolate", "Sobremesa rica em cacau.", 15.00, FoodType.DOCE_CAKE));
+    }
 
-        TextView tvName = card.findViewById(R.id.tvDishName);
-        TextView tvPrice = card.findViewById(R.id.tvDishPrice);
-        TextView tvDescription = card.findViewById(R.id.tvDishDescription);
-        TextView tvCategory = card.findViewById(R.id.tvCategory);
-        SwitchMaterial switchAvailable = card.findViewById(R.id.switchAvailable);
-        ImageView btnDelete = card.findViewById(R.id.btnDelete);
-        ImageView btnEdit = card.findViewById(R.id.btnEdit);
+    private void addDishCard(Dish dish) {
+        View cardView = LayoutInflater.from(this).inflate(R.layout.item_kitchen_dish, dishContainer, false);
+
+        TextView tvName = cardView.findViewById(R.id.tvDishName);
+        TextView tvPrice = cardView.findViewById(R.id.tvDishPrice);
+        TextView tvStockStatus = cardView.findViewById(R.id.tvStockStatus);
+        SwitchMaterial switchAvailable = cardView.findViewById(R.id.switchAvailable);
+        View cardDish = cardView.findViewById(R.id.cardDish);
 
         tvName.setText(dish.getName());
         tvPrice.setText(String.format(Locale.getDefault(), "R$ %.2f", dish.getPrice()));
-        tvDescription.setText(dish.getDescription());
-        tvCategory.setText(dish.getType().name());
+        
+        updateStockStatus(tvStockStatus, dish.isAvailable());
         switchAvailable.setChecked(dish.isAvailable());
-        switchAvailable.setText(dish.isAvailable() ? "Disponível" : "Indisponível");
 
         switchAvailable.setOnCheckedChangeListener((buttonView, isChecked) -> {
             dishDAO.updateAvailability(dish.getId(), isChecked);
-            switchAvailable.setText(isChecked ? "Disponível" : "Indisponível");
+            updateStockStatus(tvStockStatus, isChecked);
         });
 
-        btnDelete.setOnClickListener(v -> {
-            dishDAO.delete(dish.getId());
-            loadDishes();
-            Toast.makeText(this, "Prato removido", Toast.LENGTH_SHORT).show();
+        cardDish.setOnClickListener(v -> {
+            Toast.makeText(this, "Editing: " + dish.getName(), Toast.LENGTH_SHORT).show();
+            // Here you would navigate to an EditDishActivity
         });
 
-        btnEdit.setOnClickListener(v -> {
-            Toast.makeText(this, "Editar prato: " + dish.getName(), Toast.LENGTH_SHORT).show();
-        });
+        dishContainer.addView(cardView);
+    }
 
-        dishContainer.addView(card);
+    private void updateStockStatus(TextView tvStatus, boolean isAvailable) {
+        if (isAvailable) {
+            tvStatus.setText("IN STOCK");
+            tvStatus.setTextColor(getResources().getColor(android.R.color.darker_gray));
+        } else {
+            tvStatus.setText("OUT OF STOCK");
+            tvStatus.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+        }
     }
 }
