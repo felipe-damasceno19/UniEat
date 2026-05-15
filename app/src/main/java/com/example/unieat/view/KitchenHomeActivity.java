@@ -11,5 +11,8 @@ public class KitchenHomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kitchen_home);
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        NavigationHelper.setupKitchenNavigation(this, bottomNavigationView, R.id.nav_kitchen_orders);
     }
 }

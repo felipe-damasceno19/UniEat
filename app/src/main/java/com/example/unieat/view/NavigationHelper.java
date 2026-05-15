@@ -37,4 +37,34 @@ public class NavigationHelper {
             return false;
         });
     }
+
+    public static void setupKitchenNavigation(Activity activity, BottomNavigationView bottomNavigationView, int selectedItemId) {
+        bottomNavigationView.setSelectedItemId(selectedItemId);
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == selectedItemId) return true;
+
+            Intent intent = null;
+            if (itemId == R.id.nav_kitchen_orders) {
+                intent = new Intent(activity, KitchenHomeActivity.class);
+            } else if (itemId == R.id.nav_kitchen_menu) {
+                intent = new Intent(activity, KitchenMenuActivity.class);
+            } else if (itemId == R.id.nav_kitchen_history) {
+                // intent = new Intent(activity, KitchenHistoryActivity.class);
+            } else if (itemId == R.id.nav_kitchen_profile) {
+                // intent = new Intent(activity, ProfileActivity.class);
+            }
+
+            if (intent != null) {
+                activity.startActivity(intent);
+                if (!(activity instanceof KitchenHomeActivity)) {
+                    activity.finish();
+                }
+                return true;
+            }
+            return false;
+        });
+    }
 }
