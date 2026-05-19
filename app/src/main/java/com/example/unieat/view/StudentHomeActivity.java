@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unieat.R;
 import com.example.unieat.adapter.DishCardAdapter;
+import com.example.unieat.dao.DishDAO;
+import com.example.unieat.enums.FoodType;
 import com.example.unieat.model.Dish;
 import com.example.unieat.presenter.OrderPresenter;
 import com.example.unieat.presenter.StudentHomePresenter;
@@ -17,6 +19,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
+import java.util.UUID;
 
 public class StudentHomeActivity extends AppCompatActivity {
 
@@ -27,6 +30,16 @@ public class StudentHomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_home);
+
+//        DishDAO dishDAO = new DishDAO(this);
+//        if (dishDAO.findAll().isEmpty()) {
+//            dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Grelhado Imperial",
+//                    "Frango com arroz integral", 18.90, FoodType.REFEICAO));
+//            dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Lasanha de Berinjela",
+//                    "Com queijo coalho", 16.50, FoodType.REFEICAO));
+//            dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Suco Natural",
+//                    "Laranja ou acerola", 7.50, FoodType.BEBIDA_GELADA));
+//        }
 
         presenter = new StudentHomePresenter(this);
         orderPresenter = new OrderPresenter(this);

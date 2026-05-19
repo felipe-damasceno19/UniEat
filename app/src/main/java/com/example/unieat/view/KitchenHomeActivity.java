@@ -10,19 +10,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unieat.R;
 import com.example.unieat.adapter.KitchenOrderAdapter;
-import com.example.unieat.dao.OrderDAO;
 import com.example.unieat.enums.OrderStatus;
 import com.example.unieat.model.Order;
+import com.example.unieat.presenter.kitchen.KitchenHomePresenter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 import java.util.Locale;
 
-public class KitchenHomeActivity extends AppCompatActivity {
+public class KitchenHomeActivity extends AppCompatActivity
+        implements KitchenHomePresenter.View {
 
     private RecyclerView recyclerOrders;
     private KitchenOrderAdapter adapter;
-    private OrderDAO orderDAO;
+    private KitchenHomePresenter presenter;
     private OrderStatus currentFilter = null;
 
     private TextView tvNewCount, tvInPrepCount, tvReadyCount;
@@ -32,77 +33,82 @@ public class KitchenHomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kitchen_home);
 
-        orderDAO = new OrderDAO(this);
+        presenter = new KitchenHomePresenter(this, this);
+
         bindViews();
         setupFilters();
         setupNavigation();
 
         findViewById(R.id.tvViewAll).setOnClickListener(v -> {
-            updateFilter(null);
-            Toast.makeText(this, "Mostrando todos os pedidos", Toast.LENGTH_SHORT).show();
+            currentFilter = null;
+            presenter.loadDashboard();
         });
 
-        loadDashboard();
+        presenter.loadDashboard();
     }
 
     private void bindViews() {
         recyclerOrders = findViewById(R.id.recyclerOrders);
         recyclerOrders.setLayoutManager(new LinearLayoutManager(this));
-        
         tvNewCount = findViewById(R.id.tvNewCount);
         tvInPrepCount = findViewById(R.id.tvInPrepCount);
         tvReadyCount = findViewById(R.id.tvReadyCount);
     }
 
     private void setupFilters() {
-        findViewById(R.id.cardFilterNew).setOnClickListener(v -> updateFilter(OrderStatus.PENDENTE));
-        findViewById(R.id.cardFilterInPrep).setOnClickListener(v -> updateFilter(OrderStatus.PREPARANDO));
-        findViewById(R.id.cardFilterReady).setOnClickListener(v -> updateFilter(OrderStatus.PRONTO));
+        findViewById(R.id.cardFilterNew).setOnClickListener(v -> {
+            currentFilter = currentFilter == OrderStatus.PENDENTE
+                    ? null : OrderStatus.PENDENTE;
+            presenter.loadOrdersByStatus(currentFilter);
+        });
+
+        findViewById(R.id.cardFilterInPrep).setOnClickListener(v -> {
+            currentFilter = currentFilter == OrderStatus.PREPARANDO
+                    ? null : OrderStatus.PREPARANDO;
+            presenter.loadOrdersByStatus(currentFilter);
+        });
+
+        findViewById(R.id.cardFilterReady).setOnClickListener(v -> {
+            currentFilter = currentFilter == OrderStatus.PRONTO
+                    ? null : OrderStatus.PRONTO;
+            presenter.loadOrdersByStatus(currentFilter);
+        });
     }
 
     private void setupNavigation() {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
-        NavigationHelper.setupKitchenNavigation(this, bottomNavigationView, R.id.nav_kitchen_home);
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
+        NavigationHelper.setupKitchenNavigation(this, bottomNav, R.id.nav_kitchen_home);
     }
 
-    private void updateFilter(OrderStatus status) {
-        if (currentFilter == status) {
-            currentFilter = null;
-        } else {
-            currentFilter = status;
-        }
-        loadDashboard();
+    @Override
+    public void showPendingCount(int count) {
+        tvNewCount.setText(String.format(Locale.getDefault(), "%02d", count));
     }
 
-    private void loadDashboard() {
-        // Update counts
-        tvNewCount.setText(String.format(Locale.getDefault(), "%02d", orderDAO.countByStatus(OrderStatus.PENDENTE)));
-        tvInPrepCount.setText(String.format(Locale.getDefault(), "%02d", orderDAO.countByStatus(OrderStatus.PREPARANDO)));
-        tvReadyCount.setText(String.format(Locale.getDefault(), "%02d", orderDAO.countByStatus(OrderStatus.PRONTO)));
+    @Override
+    public void showPreparingCount(int count) {
+        tvInPrepCount.setText(String.format(Locale.getDefault(), "%02d", count));
+    }
 
-        List<Order> orders;
-        if (currentFilter == null) {
-            orders = orderDAO.findAll();
-        } else {
-            orders = orderDAO.findByStatus(currentFilter);
-        }
+    @Override
+    public void showReadyCount(int count) {
+        tvReadyCount.setText(String.format(Locale.getDefault(), "%02d", count));
+    }
 
+    @Override
+    public void showRecentOrders(List<Order> orders) {
         if (adapter == null) {
-            adapter = new KitchenOrderAdapter(this, orders, this::advanceStatus);
+            adapter = new KitchenOrderAdapter(this, orders, order ->
+                    presenter.advanceOrderStatus(order.getId())
+            );
             recyclerOrders.setAdapter(adapter);
         } else {
             adapter.updateData(orders);
         }
     }
 
-    private void advanceStatus(Order order) {
-        OrderStatus next = order.getStatus();
-        if (order.getStatus() == OrderStatus.PENDENTE) next = OrderStatus.PREPARANDO;
-        else if (order.getStatus() == OrderStatus.PREPARANDO) next = OrderStatus.PRONTO;
-        else if (order.getStatus() == OrderStatus.PRONTO) next = OrderStatus.ENTREGUE;
-
-        orderDAO.updateStatus(order.getId(), next);
-        loadDashboard();
-        Toast.makeText(this, "Status do pedido atualizado", Toast.LENGTH_SHORT).show();
+    @Override
+    public void showError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
