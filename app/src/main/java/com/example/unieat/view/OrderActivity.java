@@ -57,7 +57,9 @@ public class OrderActivity extends AppCompatActivity {
                     .getText().toString().trim();
             presenter.placeOrder(annotation);
 
-            startActivity(new Intent(this, PaymentActivity.class));
+            Intent intent = new Intent(this, PaymentActivity.class);
+            intent.putExtra("order_amount", presenter.calculateTotal());
+            startActivity(intent);
         });
     }
 

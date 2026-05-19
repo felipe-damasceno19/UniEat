@@ -215,10 +215,11 @@
                             android:textColor="#666666" />
 
                         <TextView
+                            android:id="@+id/tvOrderSubtotal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
-                            android:text="$20.00"
+                            android:text="R$ 0,00"
                             android:textColor="#666666" />
                     </RelativeLayout>
 
@@ -234,10 +235,11 @@
                             android:textColor="#666666" />
 
                         <TextView
+                            android:id="@+id/tvServiceFee"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
-                            android:text="$5.50"
+                            android:text="R$ 0,00"
                             android:textColor="#666666" />
                     </RelativeLayout>
 
@@ -261,10 +263,11 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvTotalAmount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
-                            android:text="$25.50"
+                            android:text="R$ 0,00"
                             android:textColor="#7B1C1C"
                             android:textSize="20sp"
                             android:textStyle="bold" />

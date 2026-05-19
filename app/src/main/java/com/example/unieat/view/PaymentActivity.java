@@ -6,9 +6,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.unieat.R;
+import com.example.unieat.presenter.PaymentPresenter;
 import com.google.android.material.card.MaterialCardView;
 
 public class PaymentActivity extends AppCompatActivity {
@@ -16,7 +18,12 @@ public class PaymentActivity extends AppCompatActivity {
     private MaterialCardView cardPix, cardCash;
     private ImageView imgPix, imgCash;
     private Button btnConfirmOrder;
+    private TextView tvOrderSubtotal, tvServiceFee, tvTotalAmount;
+
     private boolean isPixSelected = true;
+
+    private PaymentPresenter presenter;
+    private double orderAmount;
 
     private int colorSelected, colorDefault;
     private int iconBgSelected, iconBgDefault;
@@ -27,9 +34,14 @@ public class PaymentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
 
+        presenter = new PaymentPresenter(this);
+
+        orderAmount = getIntent().getDoubleExtra("order_amount", 0.0);
+
         initViews();
         setupColors();
         setupListeners();
+        loadSummary();
     }
 
     private void initViews() {
@@ -41,40 +53,62 @@ public class PaymentActivity extends AppCompatActivity {
         imgPix = findViewById(R.id.imgPix);
         imgCash = findViewById(R.id.imgCash);
         btnConfirmOrder = findViewById(R.id.btnConfirmOrder);
+        tvOrderSubtotal = findViewById(R.id.tvOrderSubtotal);
+        tvServiceFee = findViewById(R.id.tvServiceFee);
+        tvTotalAmount = findViewById(R.id.tvTotalAmount);
+    }
+
+    private void loadSummary() {
+        double fee = presenter.calculateServiceFee(orderAmount);
+        double total = presenter.calculateTotal(orderAmount);
+
+        tvOrderSubtotal.setText(String.format("R$ %.2f", orderAmount));
+        tvServiceFee.setText(String.format("R$ %.2f", fee));
+        tvTotalAmount.setText(String.format("R$ %.2f", total));
     }
 
     private void setupColors() {
         colorSelected = Color.parseColor("#7B1C1C");
         colorDefault = Color.parseColor("#EEEEEE");
-        iconBgSelected = Color.parseColor("#FFB84C"); // Amarelo
-        iconBgDefault = Color.parseColor("#F0E8E8"); // Cinza
-        iconTintSelected = Color.parseColor("#7B1C1C"); // Vermelho escuro
-        iconTintDefault = Color.parseColor("#666666"); // Cinza escuro
+        iconBgSelected = Color.parseColor("#FFB84C");
+        iconBgDefault = Color.parseColor("#F0E8E8");
+        iconTintSelected = Color.parseColor("#7B1C1C");
+        iconTintDefault = Color.parseColor("#666666");
     }
 
     private void setupListeners() {
         cardPix.setOnClickListener(v -> selectPix());
         cardCash.setOnClickListener(v -> selectCash());
+
         btnConfirmOrder.setOnClickListener(v -> {
+            double total = presenter.calculateTotal(orderAmount);
+
+            if (!presenter.hasSufficientBalance(total)) {
+                Toast.makeText(this, "Saldo insuficiente", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (isPixSelected) {
                 Intent intent = new Intent(this, PaymentPixActivity.class);
+                intent.putExtra("order_amount", total);
                 startActivity(intent);
             } else {
-                Intent intent = new Intent(this, OrderSuccessActivity.class);
-                startActivity(intent);
+                presenter.deductBalance(total);
+                startActivity(new Intent(this, OrderSuccessActivity.class));
+                finish();
             }
         });
     }
 
     private void selectPix() {
         isPixSelected = true;
-        // Selecionar Pix
+        // PIX
         cardPix.setStrokeColor(colorSelected);
         cardPix.setStrokeWidth(6);
         imgPix.setBackgroundTintList(ColorStateList.valueOf(iconBgSelected));
         imgPix.setImageTintList(ColorStateList.valueOf(iconTintSelected));
 
-        // Desmarcar Dinheiro
+        // Dinheiro
         cardCash.setStrokeColor(colorDefault);
         cardCash.setStrokeWidth(2);
         imgCash.setBackgroundTintList(ColorStateList.valueOf(iconBgDefault));
