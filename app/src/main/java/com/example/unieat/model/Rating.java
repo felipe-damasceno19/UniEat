@@ -1,6 +1,6 @@
 package com.example.unieat.model;
 
-public class Avaliation {
+public class Rating {
 
     private String id;
     private String dishId;
@@ -9,10 +9,10 @@ public class Avaliation {
 
     private String comment;
 
-    public Avaliation() {
+    public Rating() {
     }
 
-    public Avaliation(String id, String dishId, Integer rating, String comment) {
+    public Rating(String id, String dishId, Integer rating, String comment) {
         this.id = id;
         this.dishId = dishId;
         this.rating = rating;

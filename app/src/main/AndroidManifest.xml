@@ -15,7 +15,7 @@
             android:name=".view.OrderSuccessActivity"
             android:exported="false" />
         <activity
-            android:name=".view.AvaliationActivity"
+            android:name=".view.RatingActivity"
             android:exported="false" />
         <activity
             android:name=".view.PaymentPixActivity"

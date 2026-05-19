@@ -91,9 +91,13 @@ public class PaymentActivity extends AppCompatActivity {
             if (isPixSelected) {
                 Intent intent = new Intent(this, PaymentPixActivity.class);
                 intent.putExtra("order_amount", total);
+                intent.putExtra("dish_id", getIntent().getStringExtra("dish_id"));
                 startActivity(intent);
             } else {
                 presenter.deductBalance(total);
+                Intent intent = new Intent(this, OrderSuccessActivity.class);
+                intent.putExtra("dish_id", getIntent().getStringExtra("dish_id")); // repassa
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(new Intent(this, OrderSuccessActivity.class));
                 finish();
             }

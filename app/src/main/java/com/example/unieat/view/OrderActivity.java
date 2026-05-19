@@ -59,6 +59,10 @@ public class OrderActivity extends AppCompatActivity {
 
             Intent intent = new Intent(this, PaymentActivity.class);
             intent.putExtra("order_amount", presenter.calculateTotal());
+
+            if(!presenter.getCart().isEmpty()) {
+                intent.putExtra("dish_id", presenter.getCart().get(0).getDish().getId());
+            }
             startActivity(intent);
         });
     }

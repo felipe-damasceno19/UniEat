@@ -6,20 +6,20 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.unieat.data.DatabaseHelper;
-import com.example.unieat.model.Avaliation;
+import com.example.unieat.model.Rating;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AvaliationDAO {
+public class RatingDAO {
 
     private DatabaseHelper dbHelper;
 
-    public AvaliationDAO(Context context){
+    public RatingDAO(Context context){
         dbHelper = new DatabaseHelper(context);
     }
 
-    public void insert(Avaliation avaliation){
+    public void insert(Rating avaliation){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("id", avaliation.getId());
@@ -30,14 +30,14 @@ public class AvaliationDAO {
         db.close();
     }
 
-    public List<Avaliation> findAll(){
+    public List<Rating> findAll(){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        List<Avaliation> list = new ArrayList<>();
+        List<Rating> list = new ArrayList<>();
         Cursor cursor = db.rawQuery("SELECT * FROM avaliation", null);
 
         if(cursor.moveToFirst()){
             do{
-                Avaliation avaliation = new Avaliation(
+                Rating avaliation = new Rating(
                         cursor.getString(cursor.getColumnIndexOrThrow("id")),
                         cursor.getString(cursor.getColumnIndexOrThrow("dish_id")),
                         cursor.getInt(cursor.getColumnIndexOrThrow("rating")),
@@ -51,14 +51,14 @@ public class AvaliationDAO {
         return list;
     }
 
-    public List<Avaliation> findByDishId(String dishId){
+    public List<Rating> findByDishId(String dishId){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        List<Avaliation> list = new ArrayList<>();
+        List<Rating> list = new ArrayList<>();
         Cursor cursor = db.query("avaliation", null, "dish_id = ?", new String[]{dishId}, null, null, null);
 
         if(cursor.moveToFirst()){
             do {
-                Avaliation avaliation = new Avaliation(
+                Rating avaliation = new Rating(
                         cursor.getString(cursor.getColumnIndexOrThrow("id")),
                         cursor.getString(cursor.getColumnIndexOrThrow("dish_id")),
                         cursor.getInt(cursor.getColumnIndexOrThrow("rating")),
