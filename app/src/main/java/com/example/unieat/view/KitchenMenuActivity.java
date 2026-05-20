@@ -115,7 +115,7 @@ public class KitchenMenuActivity extends AppCompatActivity
         findViewById(R.id.chipBeverages).setOnClickListener(v ->
                 presenter.filterByType(FoodType.SOBREMESA_GELADA)
         );
-        
+
     }
 
     private void setupNavigation() {
