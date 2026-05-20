@@ -72,10 +72,50 @@ public class KitchenMenuActivity extends AppCompatActivity
                 presenter.loadAvailableDishes()
         );
 
-        // futuramente adiciona IDs nos outros chips do XML e conecta:
-        // chipMainDishes → presenter.filterByType(FoodType.REFEICAO)
-        // chipSnacks     → presenter.filterByType(FoodType.SANDUICHE_NATURAL)
-        // chipBeverages  → presenter.filterByType(FoodType.BEBIDA_QUENTE)
+        findViewById(R.id.chipMainDishes).setOnClickListener(v ->
+                presenter.filterByType(FoodType.SALGADO_ASSADO)
+        );
+
+        findViewById(R.id.chipSnacks).setOnClickListener(v ->
+                presenter.filterByType(FoodType.SALGADO_FRITO)
+        );
+
+        findViewById(R.id.chipBeverages).setOnClickListener(v ->
+                presenter.filterByType(FoodType.SANDUICHE_NATURAL)
+        );
+
+        findViewById(R.id.chipBeverages).setOnClickListener(v ->
+                presenter.filterByType(FoodType.REFEICAO)
+        );
+
+        findViewById(R.id.chipBeverages).setOnClickListener(v ->
+                presenter.filterByType(FoodType.CUSCUZ)
+        );
+
+        findViewById(R.id.chipBeverages).setOnClickListener(v ->
+                presenter.filterByType(FoodType.TAPIOCA)
+        );
+
+        findViewById(R.id.chipBeverages).setOnClickListener(v ->
+                presenter.filterByType(FoodType.DOCE_CAKE)
+        );
+
+        findViewById(R.id.chipBeverages).setOnClickListener(v ->
+                presenter.filterByType(FoodType.SNACK)
+        );
+
+        findViewById(R.id.chipBeverages).setOnClickListener(v ->
+                presenter.filterByType(FoodType.BEBIDA_QUENTE)
+        );
+
+        findViewById(R.id.chipBeverages).setOnClickListener(v ->
+                presenter.filterByType(FoodType.BEBIDA_GELADA)
+        );
+
+        findViewById(R.id.chipBeverages).setOnClickListener(v ->
+                presenter.filterByType(FoodType.SOBREMESA_GELADA)
+        );
+        
     }
 
     private void setupNavigation() {
