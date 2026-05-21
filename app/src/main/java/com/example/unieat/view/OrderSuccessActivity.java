@@ -3,18 +3,46 @@ package com.example.unieat.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.unieat.R;
+import com.example.unieat.data.SessionManager;
 
 public class OrderSuccessActivity extends AppCompatActivity {
+
+    private String orderId;
+    private String dishId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_success);
 
-        String dishId = getIntent().getStringExtra("dish_id");
+        orderId = getIntent().getStringExtra("order_id");
+        dishId = getIntent().getStringExtra("dish_id");
 
+        setupViews();
+        setupListeners();
+    }
+
+    private void setupViews() {
+        // número do pedido
+        TextView tvOrderNumber = findViewById(R.id.tvOrderNumber);
+        if (orderId != null) {
+            tvOrderNumber.setText("#" + orderId.substring(0, 4).toUpperCase());
+        }
+
+        // saldo atualizado
+        TextView tvBalance = findViewById(R.id.tvBalance);
+        if (tvBalance != null) {
+            SessionManager session = new SessionManager(this);
+            tvBalance.setText(String.format("R$ %.2f", session.getBalance()));
+        }
+    }
+
+    private void setupListeners() {
         Button btnBackToHome = findViewById(R.id.btnBackToHome);
         btnBackToHome.setOnClickListener(v -> {
             Intent intent = new Intent(this, StudentHomeActivity.class);
