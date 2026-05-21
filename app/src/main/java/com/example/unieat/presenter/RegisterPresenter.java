@@ -41,6 +41,7 @@ public class RegisterPresenter {
 
         if(password.length() < 6) {
             view.onRegisterError("A senha deve ter pelo menos 6 caracteres");
+            return;
         }
 
         User user = new User(
