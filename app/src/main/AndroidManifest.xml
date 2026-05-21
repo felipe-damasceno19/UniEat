@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UniEat">
         <activity
+            android:name=".view.ResetPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.EditDishActivity"
             android:exported="false" />
         <activity
