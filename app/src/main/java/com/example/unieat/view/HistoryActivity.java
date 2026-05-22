@@ -13,7 +13,6 @@ import com.example.unieat.model.Order;
 import com.example.unieat.model.OrderItem;
 import com.example.unieat.presenter.HistoryPresenter;
 import com.example.unieat.presenter.OrderPresenter;
-import com.example.unieat.view.OrderActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;

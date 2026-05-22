@@ -96,9 +96,9 @@ public class PaymentActivity extends AppCompatActivity {
             } else {
                 presenter.deductBalance(total);
                 Intent intent = new Intent(this, OrderSuccessActivity.class);
-                intent.putExtra("dish_id", getIntent().getStringExtra("dish_id")); // repassa
+                intent.putExtra("dish_id", getIntent().getStringExtra("dish_id"));
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(new Intent(this, OrderSuccessActivity.class));
+                startActivity(intent);
                 finish();
             }
         });
