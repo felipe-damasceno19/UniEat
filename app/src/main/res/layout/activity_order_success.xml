@@ -80,6 +80,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvOrderNumber"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -92,6 +93,7 @@
 
             <!-- Status Badge -->
             <TextView
+                android:id="@+id/tvOrderStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"

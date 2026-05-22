@@ -1,6 +1,7 @@
 package com.example.unieat.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -87,6 +88,10 @@ public class RegisterActivity extends AppCompatActivity implements RegisterPrese
     @Override
     public void onRegisterSuccess() {
         Toast.makeText(this, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
         finish();
     }
 
