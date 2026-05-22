@@ -5,12 +5,11 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.unieat.R;
 import com.example.unieat.data.SessionManager;
 
-public class OrderSuccessActivity extends AppCompatActivity {
+public class OrderSuccessActivity extends BaseActivity {
 
     private String orderId;
     private String dishId;

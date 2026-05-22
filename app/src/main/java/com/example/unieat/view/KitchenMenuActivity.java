@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.unieat.R;
 import com.example.unieat.dao.DishDAO;
@@ -24,7 +23,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import java.util.List;
 import java.util.Locale;
 
-public class KitchenMenuActivity extends AppCompatActivity
+public class KitchenMenuActivity extends BaseActivity
         implements KitchenMenuPresenter.KitchenView {
 
     private LinearLayout dishContainer;
