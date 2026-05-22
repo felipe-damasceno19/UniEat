@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,7 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.List;
 import java.util.Locale;
 
-public class KitchenHomeActivity extends AppCompatActivity
+public class KitchenHomeActivity extends BaseActivity
         implements KitchenHomePresenter.View {
 
     private RecyclerView recyclerOrders;

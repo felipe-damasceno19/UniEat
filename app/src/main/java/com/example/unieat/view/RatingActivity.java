@@ -6,7 +6,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.unieat.R;
 import com.example.unieat.presenter.student.RatingPresenter;
@@ -14,7 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
-public class RatingActivity extends AppCompatActivity {
+public class RatingActivity extends BaseActivity {
 
     private RatingPresenter presenter;
     private RatingBar ratingBar;

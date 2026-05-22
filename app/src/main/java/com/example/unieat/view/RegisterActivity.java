@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.unieat.R;
 import com.example.unieat.dao.UserDAO;
@@ -20,7 +19,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.UUID;
 
-public class RegisterActivity extends AppCompatActivity implements RegisterPresenter.View{
+public class RegisterActivity extends BaseActivity implements RegisterPresenter.View{
 
     private TextInputEditText etName, etUsername, etEmail, etPassword;
     private Button btnRoleStudent, btnRoleKitchen, btnRegister;

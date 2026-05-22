@@ -8,7 +8,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
 import com.example.unieat.R;
@@ -20,7 +19,7 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.Locale;
 
-public class EditDishActivity extends AppCompatActivity
+public class EditDishActivity extends BaseActivity
         implements KitchenMenuPresenter.KitchenView {
 
     private EditText editDishName, editDishDescription, editDishPrice;
