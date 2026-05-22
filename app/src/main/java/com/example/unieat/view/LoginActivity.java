@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 
 import com.example.unieat.R;
+import com.example.unieat.data.DataSeeder;
 import com.example.unieat.enums.UserType;
 import com.example.unieat.presenter.LoginPresenter;
 import com.google.android.material.textfield.TextInputEditText;
@@ -20,6 +21,7 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        DataSeeder.seed(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 

@@ -52,9 +52,9 @@ public class HistoryActivity extends BaseActivity {
 
             @Override
             public void onDetails(Order order) {
-                //Intent intent = new Intent(HistoryActivity.this, OrderStatusActivity.class);
-                //intent.putExtra("order_id", order.getId());
-                //startActivity(intent);
+                Intent intent = new Intent(HistoryActivity.this, OrderStatusActivity.class);
+                intent.putExtra("order_id", order.getId());
+                startActivity(intent);
             }
         }));
     }

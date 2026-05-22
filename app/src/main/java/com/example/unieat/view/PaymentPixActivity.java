@@ -59,6 +59,7 @@ public class PaymentPixActivity extends BaseActivity {
 
             presenter.deductBalance(orderAmount);
             Intent intent = new Intent(this, OrderSuccessActivity.class);
+            intent.putExtra("order_id", getIntent().getStringExtra("order_id"));
             intent.putExtra("dish_id", getIntent().getStringExtra("dish_id"));
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

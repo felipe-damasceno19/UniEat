@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unieat.R;
 import com.example.unieat.adapter.OrderItemAdapter;
+import com.example.unieat.model.Order;
 import com.example.unieat.model.OrderItem;
 import com.example.unieat.presenter.OrderPresenter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -54,10 +55,12 @@ public class OrderActivity extends BaseActivity {
             }
             String annotation = ((EditText) findViewById(R.id.etAnnotation))
                     .getText().toString().trim();
-            presenter.placeOrder(annotation);
+
+            Order order = presenter.placeOrder(annotation);
 
             Intent intent = new Intent(this, PaymentActivity.class);
             intent.putExtra("order_amount", presenter.calculateTotal());
+            intent.putExtra("order_id", order.getId());
 
             if(!presenter.getCart().isEmpty()) {
                 intent.putExtra("dish_id", presenter.getCart().get(0).getDish().getId());
