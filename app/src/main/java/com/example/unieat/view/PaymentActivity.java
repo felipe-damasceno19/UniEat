@@ -8,12 +8,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
 import com.example.unieat.R;
 import com.example.unieat.presenter.PaymentPresenter;
 import com.google.android.material.card.MaterialCardView;
 
-public class PaymentActivity extends AppCompatActivity {
+public class PaymentActivity extends BaseActivity {
 
     private MaterialCardView cardPix, cardCash;
     private ImageView imgPix, imgCash;
@@ -96,9 +95,9 @@ public class PaymentActivity extends AppCompatActivity {
             } else {
                 presenter.deductBalance(total);
                 Intent intent = new Intent(this, OrderSuccessActivity.class);
-                intent.putExtra("dish_id", getIntent().getStringExtra("dish_id")); // repassa
+                intent.putExtra("dish_id", getIntent().getStringExtra("dish_id"));
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(new Intent(this, OrderSuccessActivity.class));
+                startActivity(intent);
                 finish();
             }
         });

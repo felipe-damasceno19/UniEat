@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unieat.R;
@@ -13,12 +12,11 @@ import com.example.unieat.model.Order;
 import com.example.unieat.model.OrderItem;
 import com.example.unieat.presenter.HistoryPresenter;
 import com.example.unieat.presenter.OrderPresenter;
-import com.example.unieat.view.OrderActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 
-public class HistoryActivity extends AppCompatActivity {
+public class HistoryActivity extends BaseActivity {
 
     private HistoryPresenter presenter;
 

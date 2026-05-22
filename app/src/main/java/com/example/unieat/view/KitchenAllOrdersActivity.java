@@ -3,7 +3,6 @@ package com.example.unieat.view;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,7 +15,7 @@ import com.example.unieat.model.Order;
 import java.util.List;
 import java.util.Locale;
 
-public class KitchenAllOrdersActivity extends AppCompatActivity {
+public class KitchenAllOrdersActivity extends BaseActivity {
 
     private RecyclerView recyclerAllOrders;
     private KitchenOrderAdapter adapter;
