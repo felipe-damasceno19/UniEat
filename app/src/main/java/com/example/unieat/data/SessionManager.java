@@ -14,6 +14,7 @@ public class SessionManager {
     private static final String KEY_BALANCE = "balance";
     private static final String KEY_USER_TYPE= "user_type";
     private static final String KEY_IS_LOGGED= "is_logged";
+    private static final String KEY_REGISTRATION_DATE = "registration_date";
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
 
@@ -30,12 +31,26 @@ public class SessionManager {
         editor.putString(KEY_USERNAME, username);
         editor.putFloat(KEY_BALANCE,(float) balance);
         editor.putString(KEY_USER_TYPE, userType.name());
+        if (!prefs.contains(KEY_REGISTRATION_DATE)) {
+            editor.putString(KEY_REGISTRATION_DATE, buildCurrentMonthYear());
+        }
         editor.apply();
     }
 
     public void clearSession() {
+        String savedDate = prefs.getString(KEY_REGISTRATION_DATE, null);
         editor.clear();
+        if (savedDate != null) {
+            editor.putString(KEY_REGISTRATION_DATE, savedDate);
+        }
         editor.apply();
+    }
+
+    private String buildCurrentMonthYear() {
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        String[] months = {"Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+                "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"};
+        return months[cal.get(java.util.Calendar.MONTH)] + " " + cal.get(java.util.Calendar.YEAR);
     }
 
     public boolean isLoggedIn()   { return prefs.getBoolean(KEY_IS_LOGGED, false); }
@@ -48,6 +63,8 @@ public class SessionManager {
     public String getUsername()   { return prefs.getString(KEY_USERNAME, ""); }
     public double getBalance()    { return prefs.getFloat(KEY_BALANCE, 0f); }
     public UserType getUserType() { return UserType.valueOf(prefs.getString(KEY_USER_TYPE, UserType.ALUNO.name())); }
+
+    public String getRegistrationDate() { return prefs.getString(KEY_REGISTRATION_DATE, ""); }
 
     public void updateBalance(double newBalance) {
         editor.putFloat(KEY_BALANCE, (float) newBalance);
