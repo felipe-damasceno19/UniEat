@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.unieat.R;
 import com.example.unieat.dao.DishDAO;
@@ -24,7 +23,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import java.util.List;
 import java.util.Locale;
 
-public class KitchenMenuActivity extends AppCompatActivity
+public class KitchenMenuActivity extends BaseActivity
         implements KitchenMenuPresenter.KitchenView {
 
     private LinearLayout dishContainer;
@@ -79,7 +78,7 @@ public class KitchenMenuActivity extends AppCompatActivity
         );
 
         findViewById(R.id.chipMainDishes).setOnClickListener(v ->
-                presenter.filterByType(FoodType.SALGADO_ASSADO)
+                presenter.filterByType(FoodType.REFEICAO)
         );
 
         findViewById(R.id.chipSnacks).setOnClickListener(v ->
@@ -87,39 +86,7 @@ public class KitchenMenuActivity extends AppCompatActivity
         );
 
         findViewById(R.id.chipBeverages).setOnClickListener(v ->
-                presenter.filterByType(FoodType.SANDUICHE_NATURAL)
-        );
-
-        findViewById(R.id.chipBeverages).setOnClickListener(v ->
-                presenter.filterByType(FoodType.REFEICAO)
-        );
-
-        findViewById(R.id.chipBeverages).setOnClickListener(v ->
-                presenter.filterByType(FoodType.CUSCUZ)
-        );
-
-        findViewById(R.id.chipBeverages).setOnClickListener(v ->
-                presenter.filterByType(FoodType.TAPIOCA)
-        );
-
-        findViewById(R.id.chipBeverages).setOnClickListener(v ->
-                presenter.filterByType(FoodType.DOCE_CAKE)
-        );
-
-        findViewById(R.id.chipBeverages).setOnClickListener(v ->
-                presenter.filterByType(FoodType.SNACK)
-        );
-
-        findViewById(R.id.chipBeverages).setOnClickListener(v ->
-                presenter.filterByType(FoodType.BEBIDA_QUENTE)
-        );
-
-        findViewById(R.id.chipBeverages).setOnClickListener(v ->
                 presenter.filterByType(FoodType.BEBIDA_GELADA)
-        );
-
-        findViewById(R.id.chipBeverages).setOnClickListener(v ->
-                presenter.filterByType(FoodType.SOBREMESA_GELADA)
         );
 
     }

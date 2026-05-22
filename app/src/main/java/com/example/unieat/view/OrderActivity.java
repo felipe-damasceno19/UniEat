@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unieat.R;
@@ -17,7 +16,7 @@ import com.example.unieat.model.OrderItem;
 import com.example.unieat.presenter.OrderPresenter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class OrderActivity extends AppCompatActivity {
+public class OrderActivity extends BaseActivity {
 
     private OrderPresenter presenter;
     private OrderItemAdapter adapter;

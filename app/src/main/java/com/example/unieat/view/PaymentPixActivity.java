@@ -10,12 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.unieat.R;
 import com.example.unieat.presenter.PaymentPresenter;
 
-public class PaymentPixActivity extends AppCompatActivity {
+public class PaymentPixActivity extends BaseActivity {
 
     private String pixKey = "12.345.678/0001-99"; // sua chave pix
     private PaymentPresenter presenter;
