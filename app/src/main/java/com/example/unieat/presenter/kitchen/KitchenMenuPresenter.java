@@ -4,6 +4,7 @@ import com.example.unieat.dao.DishDAO;
 import com.example.unieat.model.Dish;
 import com.example.unieat.presenter.student.MenuPresenter;
 
+import java.util.List;
 import java.util.UUID;
 
 public class KitchenMenuPresenter extends MenuPresenter {
@@ -39,6 +40,19 @@ public class KitchenMenuPresenter extends MenuPresenter {
         }
     }
 
+    public void getAllDishes() {
+        try {
+            List<Dish> dishes = dishDAO.findAll();
+            if(dishes == null || dishes.isEmpty()) {
+                kitchenView.showEmptyState("Nenhum prato cadastrado.");
+            } else {
+                kitchenView.showDishes(dishes);
+            }
+        } catch (Exception e) {
+            kitchenView.showError("Erro ao carregar pratos.");
+        }
+    }
+
     public void deleteDish(String dishId){
         try {
             dishDAO.delete(dishId);
@@ -52,7 +66,7 @@ public class KitchenMenuPresenter extends MenuPresenter {
     public void toggleAvailability(Dish dish) {
         try {
             dishDAO.updateAvailability(dish.getId(), !dish.isAvailable());
-            loadAvailableDishes();
+            getAllDishes();
         } catch (Exception e) {
             kitchenView.showError("Erro ao atualizar disponibilidade");
         }
