@@ -42,8 +42,7 @@ public class OrderSuccessActivity extends BaseActivity {
     }
 
     private void setupListeners() {
-        Button btnBackToHome = findViewById(R.id.btnBackToHome);
-        btnBackToHome.setOnClickListener(v -> {
+        findViewById(R.id.btnBackToHomeIcon).setOnClickListener(v -> {
             Intent intent = new Intent(this, StudentHomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -57,5 +56,14 @@ public class OrderSuccessActivity extends BaseActivity {
             startActivity(intent);
             finish();
         });
+        
+        Button btnTrackOrder = findViewById(R.id.btnTrackOrder); 
+        if (btnTrackOrder != null) {
+            btnTrackOrder.setOnClickListener(v -> {
+                Intent intent = new Intent(this, OrderStatusActivity.class);
+                intent.putExtra("order_id", orderId);
+                startActivity(intent);
+            });
+        }
     }
 }

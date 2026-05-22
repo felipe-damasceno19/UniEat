@@ -7,6 +7,22 @@
     android:background="#FDFDFD"
     android:fitsSystemWindows="true">
 
+    <ImageView
+        android:id="@+id/btnBackToHomeIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="16dp"
+        android:padding="8dp"
+        android:src="@android:drawable/ic_menu_revert"
+        android:background="@drawable/shape_icon_circle"
+        android:backgroundTint="#F0E8E8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#000000"
+        android:elevation="2dp"
+        android:clickable="true"
+        android:focusable="true" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -225,20 +241,20 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Voltar para Home Button -->
+            <!-- Ver Status do Pedido Button -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnBackToHome"
+                android:id="@+id/btnTrackOrder"
                 android:layout_width="240dp"
                 android:layout_height="56dp"
                 android:layout_marginTop="32dp"
                 android:backgroundTint="#7B1C1C"
-                android:text="Voltar para o Início"
+                android:text="Ver Status do Pedido"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:cornerRadius="12dp"
-                app:icon="@android:drawable/ic_menu_revert"
+                app:icon="@android:drawable/ic_menu_info_details"
                 app:iconGravity="textStart"
                 app:iconPadding="8dp" />
 
@@ -259,71 +275,6 @@
                 app:icon="@android:drawable/btn_star_big_off"
                 app:iconGravity="textStart"
                 app:iconPadding="8dp" />
-
-            <!-- Info Images -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:layout_marginTop="32dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp">
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/shape_logo_placeholder"
-                        android:alpha="0.8" />
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="#40000000" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|start"
-                        android:layout_margin="16dp"
-                        android:text="Preparando seu sabor..."
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-                </FrameLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="32dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp">
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/shape_logo_placeholder"
-                        android:alpha="0.8" />
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="#40000000" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|start"
-                        android:layout_margin="16dp"
-                        android:text="Local de entrega: Bloco A 🏠"
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-                </FrameLayout>
-            </com.google.android.material.card.MaterialCardView>
-
         </LinearLayout>
     </ScrollView>
 

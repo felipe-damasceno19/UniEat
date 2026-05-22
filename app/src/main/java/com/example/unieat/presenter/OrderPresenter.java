@@ -63,7 +63,7 @@ public class OrderPresenter {
         return cart.isEmpty();
     }
 
-    public void placeOrder(String annotation){
+    public Order placeOrder(String annotation){
         Order order = new Order(
                 UUID.randomUUID().toString(),
                 cart,
@@ -73,5 +73,6 @@ public class OrderPresenter {
         );
         orderDAO.insert(order);
         cart.clear();
+        return order;
     }
 }
