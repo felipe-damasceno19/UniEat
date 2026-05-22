@@ -25,12 +25,21 @@
 
         <ImageView
             android:id="@+id/imgLogo"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:layout_weight="1"
             android:src="@drawable/logo_unieat"
             android:adjustViewBounds="true"
             android:contentDescription="UniEat" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:text="Cozinheiros"
+            android:textColor="#7B1C1C"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/imgNotification"
