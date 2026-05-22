@@ -90,12 +90,14 @@ public class PaymentActivity extends BaseActivity {
             if (isPixSelected) {
                 Intent intent = new Intent(this, PaymentPixActivity.class);
                 intent.putExtra("order_amount", total);
+                intent.putExtra("order_id", getIntent().getStringExtra("order_id"));
                 intent.putExtra("dish_id", getIntent().getStringExtra("dish_id"));
                 startActivity(intent);
             } else {
                 presenter.deductBalance(total);
                 Intent intent = new Intent(this, OrderSuccessActivity.class);
                 intent.putExtra("dish_id", getIntent().getStringExtra("dish_id"));
+                intent.putExtra("order_id", getIntent().getStringExtra("order_id"));
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
