@@ -53,9 +53,9 @@ public class HistoryActivity extends AppCompatActivity {
 
             @Override
             public void onDetails(Order order) {
-                Toast.makeText(HistoryActivity.this,
-                        "Pedido: #" + order.getId().substring(0, 4).toUpperCase(),
-                        Toast.LENGTH_SHORT).show();
+                //Intent intent = new Intent(HistoryActivity.this, OrderStatusActivity.class);
+                //intent.putExtra("order_id", order.getId());
+                //startActivity(intent);
             }
         }));
     }
