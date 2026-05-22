@@ -26,7 +26,7 @@ public class NavigationHelper {
             } else if (itemId == R.id.nav_history) {
                 intent = new Intent(activity, HistoryActivity.class);
             } else if (itemId == R.id.nav_profile) {
-                // intent = new Intent(activity, ProfileActivity.class);
+                intent = new Intent(activity, ProfileActivity.class);
             }
 
             if (intent != null) {
