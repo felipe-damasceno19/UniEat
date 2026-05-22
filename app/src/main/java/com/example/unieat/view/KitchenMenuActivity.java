@@ -47,7 +47,13 @@ public class KitchenMenuActivity extends BaseActivity
             startActivity(intent);
         });
 
-        presenter.loadAvailableDishes();
+        presenter.getAllDishes();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.getAllDishes();
     }
 
     private void setupSearch() {

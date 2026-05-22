@@ -19,6 +19,8 @@ public class NavigationHelper {
             Intent intent = null;
             if (itemId == R.id.nav_home) {
                 intent = new Intent(activity, StudentHomeActivity.class);
+            } else if (itemId == R.id.nav_menu) {
+                intent = new Intent(activity, MenuActivity.class);
             } else if (itemId == R.id.nav_orders) {
                 intent = new Intent(activity, OrderActivity.class);
             } else if (itemId == R.id.nav_history) {

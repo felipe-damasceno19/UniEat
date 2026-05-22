@@ -20,6 +20,7 @@
             android:orientation="vertical"
             android:padding="20dp">
 
+            <!-- Top Bar: Logo e Saldo -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -51,6 +52,7 @@
                         app:tint="#7B1C1C" />
 
                     <TextView
+                        android:id="@+id/tvBalance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
@@ -61,7 +63,9 @@
                 </LinearLayout>
             </RelativeLayout>
 
+            <!-- Barra de Pesquisa -->
             <EditText
+                android:id="@+id/etSearch"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginBottom="24dp"
@@ -73,49 +77,45 @@
                 android:inputType="text"
                 android:textSize="14sp" />
 
-            <HorizontalScrollView
-                android:layout_width="match_parent"
+            <!-- Filtros/Categorias Rápidas -->
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
-                android:scrollbars="none">
+                android:orientation="horizontal">
 
-                <LinearLayout
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/shape_badge_destaque"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="10dp"
+                    android:text="Pratos"
+                    android:textColor="#7B1C1C"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="12dp"
-                        android:background="@drawable/shape_badge_destaque"
-                        android:paddingHorizontal="20dp"
-                        android:paddingVertical="10dp"
-                        android:text="Pratos"
-                        android:textColor="#7B1C1C"
-                        android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/shape_quantity_selector_bg"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="10dp"
+                    android:text="Lanches"
+                    android:textColor="#7B1C1C" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="12dp"
-                        android:background="@drawable/shape_quantity_selector_bg"
-                        android:paddingHorizontal="20dp"
-                        android:paddingVertical="10dp"
-                        android:text="Lanches"
-                        android:textColor="#7B1C1C" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_quantity_selector_bg"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="10dp"
+                    android:text="Bebidas"
+                    android:textColor="#7B1C1C" />
+            </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/shape_quantity_selector_bg"
-                        android:paddingHorizontal="20dp"
-                        android:paddingVertical="10dp"
-                        android:text="Bebidas"
-                        android:textColor="#7B1C1C" />
-                </LinearLayout>
-            </HorizontalScrollView>
-
+            <!-- Seção: Pratos Principais -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -140,151 +140,17 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <HorizontalScrollView
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvMainDishes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
-                android:scrollbars="none">
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_dish_card" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="260dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="12dp">
-
-                            <ImageView
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
-                                android:background="#F0E8E8"
-                                android:scaleType="centerCrop" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="12dp"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Executivo do Dia"
-                                    android:textColor="#000000"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:ellipsize="end"
-                                    android:maxLines="2"
-                                    android:text="Arroz, feijão, bife acebolado e batata."
-                                    android:textSize="12sp" />
-
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_centerVertical="true"
-                                        android:text="R$ 15,90"
-                                        android:textColor="#7B1C1C"
-                                        android:textStyle="bold" />
-
-                                    <ImageButton
-                                        android:layout_width="32dp"
-                                        android:layout_height="32dp"
-                                        android:layout_alignParentEnd="true"
-                                        android:background="@drawable/shape_plus_button"
-                                        android:src="@android:drawable/ic_input_add"
-                                        app:tint="#FFFFFF" />
-                                </RelativeLayout>
-                            </LinearLayout>
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="260dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="12dp">
-
-                            <ImageView
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
-                                android:background="#F0E8E8"
-                                android:scaleType="centerCrop" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="12dp"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Feijoada Completa"
-                                    android:textColor="#000000"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:ellipsize="end"
-                                    android:maxLines="2"
-                                    android:text="Feijoada, arroz, couve, farofa e laranja."
-                                    android:textSize="12sp" />
-
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_centerVertical="true"
-                                        android:text="R$ 19,90"
-                                        android:textColor="#7B1C1C"
-                                        android:textStyle="bold" />
-
-                                    <ImageButton
-                                        android:layout_width="32dp"
-                                        android:layout_height="32dp"
-                                        android:layout_alignParentEnd="true"
-                                        android:background="@drawable/shape_plus_button"
-                                        android:src="@android:drawable/ic_input_add"
-                                        app:tint="#FFFFFF" />
-                                </RelativeLayout>
-                            </LinearLayout>
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
-                </LinearLayout>
-            </HorizontalScrollView>
-
+            <!-- Seção: Lanches -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -309,147 +175,17 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <HorizontalScrollView
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvSnacks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
-                android:scrollbars="none">
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_dish_card" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="260dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="12dp">
-
-                            <ImageView
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
-                                android:background="#F0E8E8"
-                                android:scaleType="centerCrop" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="12dp"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="UniBurguer Classic"
-                                    android:textColor="#000000"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:text="Blend 150g, cheddar e brioche."
-                                    android:textSize="12sp" />
-
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_centerVertical="true"
-                                        android:text="R$ 22,50"
-                                        android:textColor="#7B1C1C"
-                                        android:textStyle="bold" />
-
-                                    <ImageButton
-                                        android:layout_width="32dp"
-                                        android:layout_height="32dp"
-                                        android:layout_alignParentEnd="true"
-                                        android:background="@drawable/shape_plus_button"
-                                        android:src="@android:drawable/ic_input_add"
-                                        app:tint="#FFFFFF" />
-                                </RelativeLayout>
-                            </LinearLayout>
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="260dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="12dp">
-
-                            <ImageView
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
-                                android:background="#F0E8E8"
-                                android:scaleType="centerCrop" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="12dp"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Chicken Crispy"
-                                    android:textColor="#000000"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:text="Frango empanado e maionese."
-                                    android:textSize="12sp" />
-
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_centerVertical="true"
-                                        android:text="R$ 18,90"
-                                        android:textColor="#7B1C1C"
-                                        android:textStyle="bold" />
-
-                                    <ImageButton
-                                        android:layout_width="32dp"
-                                        android:layout_height="32dp"
-                                        android:layout_alignParentEnd="true"
-                                        android:background="@drawable/shape_plus_button"
-                                        android:src="@android:drawable/ic_input_add"
-                                        app:tint="#FFFFFF" />
-                                </RelativeLayout>
-                            </LinearLayout>
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
-                </LinearLayout>
-            </HorizontalScrollView>
-
+            <!-- Seção: Bebidas -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -474,154 +210,55 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <HorizontalScrollView
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvDrinks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
-                android:scrollbars="none">
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_dish_card" />
 
-                <LinearLayout
+            <!-- Seção: Sobremesas -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Sobremesas"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:text="Ver todos"
+                    android:textColor="#7B1C1C"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="260dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="12dp">
-
-                            <ImageView
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
-                                android:background="#F0E8E8"
-                                android:padding="20dp"
-                                android:src="@android:drawable/ic_menu_agenda"
-                                app:tint="#7B1C1C" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="12dp"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Suco Natural 500ml"
-                                    android:textColor="#000000"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:text="Laranja ou Maracujá fresco."
-                                    android:textSize="12sp" />
-
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_centerVertical="true"
-                                        android:text="R$ 8,50"
-                                        android:textColor="#7B1C1C"
-                                        android:textStyle="bold" />
-
-                                    <ImageButton
-                                        android:layout_width="32dp"
-                                        android:layout_height="32dp"
-                                        android:layout_alignParentEnd="true"
-                                        android:background="@drawable/shape_plus_button"
-                                        android:src="@android:drawable/ic_input_add"
-                                        app:tint="#FFFFFF" />
-                                </RelativeLayout>
-                            </LinearLayout>
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="260dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="12dp">
-
-                            <ImageView
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
-                                android:background="#F0E8E8"
-                                android:padding="20dp"
-                                android:src="@android:drawable/ic_menu_agenda"
-                                app:tint="#7B1C1C" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="12dp"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Refrigerante Lata"
-                                    android:textColor="#000000"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:text="Coca-Cola, Guaraná ou Sprite."
-                                    android:textSize="12sp" />
-
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_centerVertical="true"
-                                        android:text="R$ 6,00"
-                                        android:textColor="#7B1C1C"
-                                        android:textStyle="bold" />
-
-                                    <ImageButton
-                                        android:layout_width="32dp"
-                                        android:layout_height="32dp"
-                                        android:layout_alignParentEnd="true"
-                                        android:background="@drawable/shape_plus_button"
-                                        android:src="@android:drawable/ic_input_add"
-                                        app:tint="#FFFFFF" />
-                                </RelativeLayout>
-                            </LinearLayout>
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
-                </LinearLayout>
-            </HorizontalScrollView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvDesserts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_dish_card" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
+    <!-- Bottom Navigation Fixa -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
