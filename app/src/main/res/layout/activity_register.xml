@@ -82,6 +82,7 @@
                             android:layout_height="wrap_content"
                             android:hint="Ex: João Silva"
                             android:inputType="textPersonName"
+                            android:textColor="#111111"
                             android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -110,6 +111,7 @@
                             android:layout_height="wrap_content"
                             android:hint="joaosilva"
                             android:inputType="text"
+                            android:textColor="#111111"
                             android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -138,6 +140,7 @@
                             android:layout_height="wrap_content"
                             android:hint="seuemail@uninta.edu.br"
                             android:inputType="textEmailAddress"
+                            android:textColor="#111111"
                             android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -167,6 +170,7 @@
                             android:layout_height="wrap_content"
                             android:hint="........"
                             android:inputType="textPassword"
+                            android:textColor="#111111"
                             android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 

@@ -60,6 +60,7 @@
                 android:layout_height="wrap_content"
                 android:hint="E-mail"
                 android:inputType="textEmailAddress"
+                android:textColor="#111111"
                 android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -84,6 +85,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Senha"
                 android:inputType="textPassword"
+                android:textColor="#111111"
                 android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
