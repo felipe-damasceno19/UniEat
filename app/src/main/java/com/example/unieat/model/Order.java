@@ -11,6 +11,8 @@ public class Order {
 
     private String id;
 
+    private String userId;
+
     private List<OrderItem> items;
 
     private OrderStatus status;
@@ -22,8 +24,9 @@ public class Order {
     public Order() {
     }
 
-    public Order(String id, List<OrderItem> items, OrderStatus status, Date time, String annotation) {
+    public Order(String id, String userId, List<OrderItem> items, OrderStatus status, Date time, String annotation) {
         this.id = id;
+        this.userId = userId;
         this.items = items;
         this.status = status;
         this.time = time;
@@ -36,6 +39,14 @@ public class Order {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     @Exclude
@@ -77,6 +88,7 @@ public class Order {
     public String toString() {
         return "Order{" +
                 "id=" + id +
+                ", userId='" + userId + '\'' +
                 ", items=" + items +
                 ", status=" + status +
                 ", annotation='" + annotation + '\'' +

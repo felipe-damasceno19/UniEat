@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.dao.OrderDAO;
+import com.example.unieat.data.SessionManager;
 import com.example.unieat.enums.OrderStatus;
 import com.example.unieat.model.Order;
 import com.example.unieat.util.DateUtils;
@@ -20,15 +21,17 @@ public class HistoryPresenter {
     }
 
     private final OrderDAO orderDAO;
+    private final SessionManager sessionManager;
     private final HistoryView view;
 
     public HistoryPresenter(Context context, HistoryView view) {
         this.orderDAO = new OrderDAO();
+        this.sessionManager = new SessionManager(context);
         this.view = view;
     }
 
     public void getHistory() {
-        orderDAO.findAll(new FirebaseCallback<List<Order>>() {
+        orderDAO.findByUserId(sessionManager.getId(), new FirebaseCallback<List<Order>>() {
             @Override public void onSuccess(List<Order> orders) {
                 view.onHistoryLoaded(orders);
             }

@@ -59,6 +59,7 @@ public class OrderPresenter {
     public void placeOrder(String annotation, OrderView view) {
         Order order = new Order(
                 UUID.randomUUID().toString(),
+                sessionManager.getId(),
                 new ArrayList<>(cart),
                 OrderStatus.PENDENTE,
                 new Date(),

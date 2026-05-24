@@ -43,7 +43,7 @@ public class ProfilePresenter {
     }
 
     public void getTotalOrders(ProfileView view) {
-        orderDAO.findAll(new FirebaseCallback<List<Order>>() {
+        orderDAO.findByUserId(sessionManager.getId(), new FirebaseCallback<List<Order>>() {
             @Override public void onSuccess(List<Order> orders) {
                 view.onTotalOrdersLoaded(orders.size());
             }

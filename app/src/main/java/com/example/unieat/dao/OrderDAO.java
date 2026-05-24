@@ -28,6 +28,7 @@ public class OrderDAO {
         batch.put("orders/" + orderId + "/annotation",   order.getAnnotation());
         batch.put("orders/" + orderId + "/orderStatus",  order.getStatus().name());
         batch.put("orders/" + orderId + "/time",         order.getTime().getTime());
+        batch.put("orders/" + orderId + "/userId",       order.getUserId());
 
         for (OrderItem item : order.getItems()) {
             String itemId = FirebaseHelper.orders()
@@ -90,6 +91,19 @@ public class OrderDAO {
                 });
     }
 
+    public void findByUserId(String userId, FirebaseCallback<List<Order>> cb) {
+        FirebaseHelper.orders()
+                .orderByChild("userId").equalTo(userId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override public void onDataChange(DataSnapshot snap) {
+                        List<DataSnapshot> snaps = new ArrayList<>();
+                        for (DataSnapshot child : snap.getChildren()) snaps.add(child);
+                        buildOrderList(snaps, cb);
+                    }
+                    @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+                });
+    }
+
     public void countByStatus(OrderStatus status, FirebaseCallback<Integer> cb) {
         findByStatus(status, new FirebaseCallback<List<Order>>() {
             @Override public void onSuccess(List<Order> orders) { cb.onSuccess(orders.size()); }
@@ -135,10 +149,11 @@ public class OrderDAO {
 
     // helpers
     private void buildOrderFromSnap(DataSnapshot snap, FirebaseCallback<Order> cb) {
-        String orderId = snap.getKey();
+        String orderId    = snap.getKey();
         String annotation = snap.child("annotation").getValue(String.class);
         String statusStr  = snap.child("orderStatus").getValue(String.class);
         Long time         = snap.child("time").getValue(Long.class);
+        String userId     = snap.child("userId").getValue(String.class);
 
         OrderStatus status = statusStr != null ? OrderStatus.valueOf(statusStr) : OrderStatus.PENDENTE;
         Date date = time != null ? new Date(time) : new Date();
@@ -148,7 +163,8 @@ public class OrderDAO {
             itemSnaps.add(itemSnap);
 
         if (itemSnaps.isEmpty()) {
-            cb.onSuccess(new Order(orderId, new ArrayList<>(), status, date, annotation));
+            Order order = new Order(orderId, userId, new ArrayList<>(), status, date, annotation);
+            cb.onSuccess(order);
             return;
         }
 
@@ -165,7 +181,7 @@ public class OrderDAO {
                     items.add(new OrderItem(itemId, quantity, dish));
                     remaining[0]--;
                     if (remaining[0] == 0)
-                        cb.onSuccess(new Order(orderId, items, status, date, annotation));
+                        cb.onSuccess(new Order(orderId, userId, items, status, date, annotation));
                 }
                 @Override public void onFailure(String error) { cb.onFailure(error); }
             });
