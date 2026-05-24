@@ -53,6 +53,7 @@ public class OrderActivity extends BaseActivity {
                 Toast.makeText(this, "Seu carrinho está vazio", Toast.LENGTH_SHORT).show();
                 return;
             }
+
             String annotation = ((EditText) findViewById(R.id.etAnnotation))
                     .getText().toString().trim();
 
@@ -60,10 +61,10 @@ public class OrderActivity extends BaseActivity {
 
             Intent intent = new Intent(this, PaymentActivity.class);
             intent.putExtra("order_amount", presenter.calculateTotal());
-            intent.putExtra("order_id", order.getId());
+            intent.putExtra("order_id", order.getId()); // ← passa o order_id
 
-            if(!presenter.getCart().isEmpty()) {
-                intent.putExtra("dish_id", presenter.getCart().get(0).getDish().getId());
+            if (!order.getItems().isEmpty()) {
+                intent.putExtra("dish_id", order.getItems().get(0).getDish().getId());
             }
             startActivity(intent);
         });
