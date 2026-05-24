@@ -56,14 +56,22 @@ public class PaymentPixActivity extends BaseActivity {
 
         Button btnConfirmOrder = findViewById(R.id.btnConfirmOrder);
         btnConfirmOrder.setOnClickListener(v -> {
-
-            presenter.deductBalance(orderAmount);
-            Intent intent = new Intent(this, OrderSuccessActivity.class);
-            intent.putExtra("order_id", getIntent().getStringExtra("order_id"));
-            intent.putExtra("dish_id", getIntent().getStringExtra("dish_id"));
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
+            String orderId = getIntent().getStringExtra("order_id");
+            presenter.processPayment(orderId, com.example.unieat.enums.PaymentMethod.PIX, orderAmount,
+                new PaymentPresenter.PaymentView() {
+                    @Override public void onPaymentSuccess(com.example.unieat.model.Payment payment) {
+                        presenter.deductBalance(orderAmount);
+                        Intent intent = new Intent(PaymentPixActivity.this, OrderSuccessActivity.class);
+                        intent.putExtra("order_id", orderId);
+                        intent.putExtra("dish_id", getIntent().getStringExtra("dish_id"));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    }
+                    @Override public void onPaymentError(String message) {
+                        Toast.makeText(PaymentPixActivity.this, message, Toast.LENGTH_SHORT).show();
+                    }
+                });
         });
 
         TextView tvChangePayment = findViewById(R.id.tvChangePayment);

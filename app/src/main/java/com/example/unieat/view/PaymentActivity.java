@@ -94,13 +94,22 @@ public class PaymentActivity extends BaseActivity {
                 intent.putExtra("dish_id", getIntent().getStringExtra("dish_id"));
                 startActivity(intent);
             } else {
-                presenter.deductBalance(total);
-                Intent intent = new Intent(this, OrderSuccessActivity.class);
-                intent.putExtra("dish_id", getIntent().getStringExtra("dish_id"));
-                intent.putExtra("order_id", getIntent().getStringExtra("order_id"));
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                finish();
+                String orderId = getIntent().getStringExtra("order_id");
+                presenter.processPayment(orderId, com.example.unieat.enums.PaymentMethod.CASH, total,
+                    new PaymentPresenter.PaymentView() {
+                        @Override public void onPaymentSuccess(com.example.unieat.model.Payment payment) {
+                            presenter.deductBalance(total);
+                            Intent intent = new Intent(PaymentActivity.this, OrderSuccessActivity.class);
+                            intent.putExtra("dish_id", getIntent().getStringExtra("dish_id"));
+                            intent.putExtra("order_id", orderId);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+                        }
+                        @Override public void onPaymentError(String message) {
+                            Toast.makeText(PaymentActivity.this, message, Toast.LENGTH_SHORT).show();
+                        }
+                    });
             }
         });
     }
