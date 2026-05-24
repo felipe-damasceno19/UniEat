@@ -3,14 +3,13 @@ package com.example.unieat.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unieat.R;
 import com.example.unieat.adapter.DishCardAdapter;
-import com.example.unieat.dao.DishDAO;
-import com.example.unieat.enums.FoodType;
 import com.example.unieat.model.Dish;
 import com.example.unieat.presenter.OrderPresenter;
 import com.example.unieat.presenter.StudentHomePresenter;
@@ -18,29 +17,20 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
-import java.util.UUID;
 
-public class StudentHomeActivity extends BaseActivity {
+public class StudentHomeActivity extends BaseActivity
+        implements StudentHomePresenter.StudentHomeView {
 
     private StudentHomePresenter presenter;
     private OrderPresenter orderPresenter;
+    private RecyclerView rvFeatured;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_home);
 
-//        DishDAO dishDAO = new DishDAO(this);
-//        if (dishDAO.findAll().isEmpty()) {
-//            dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Grelhado Imperial",
-//                    "Frango com arroz integral", 18.90, FoodType.REFEICAO));
-//            dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Lasanha de Berinjela",
-//                    "Com queijo coalho", 16.50, FoodType.REFEICAO));
-//            dishDAO.insert(new Dish(UUID.randomUUID().toString(), "Suco Natural",
-//                    "Laranja ou acerola", 7.50, FoodType.BEBIDA_GELADA));
-//        }
-
-        presenter = new StudentHomePresenter(this);
+        presenter      = new StudentHomePresenter(this, this);
         orderPresenter = new OrderPresenter(this);
 
         setupNavigation();
@@ -64,20 +54,28 @@ public class StudentHomeActivity extends BaseActivity {
 
         tvWelcome.setText(presenter.getWelcomeMessage());
         tvBalance.setText(String.format("R$ %.2f", presenter.getBalance()));
+
+        rvFeatured = findViewById(R.id.rvFeaturedDishes);
+        rvFeatured.setLayoutManager(
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        );
     }
 
     private void loadData() {
-        List<Dish> dishes = presenter.getFeaturedDishes();
+        presenter.getFeaturedDishes();
+    }
 
-        RecyclerView rvFeatured = findViewById(R.id.rvFeaturedDishes);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(
-                this, LinearLayoutManager.HORIZONTAL, false
-        );
-        rvFeatured.setLayoutManager(layoutManager);
+
+    @Override
+    public void onFeaturedDishesLoaded(List<Dish> dishes) {
         rvFeatured.setAdapter(new DishCardAdapter(this, dishes, dish -> {
-            // adiciona ao carrinho e vai para OrderActivity
             orderPresenter.addItem(dish);
             startActivity(new Intent(this, OrderActivity.class));
         }));
+    }
+
+    @Override
+    public void onError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

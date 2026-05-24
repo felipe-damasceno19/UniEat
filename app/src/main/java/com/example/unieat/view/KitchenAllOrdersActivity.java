@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unieat.R;
 import com.example.unieat.adapter.KitchenOrderAdapter;
+import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.dao.OrderDAO;
 import com.example.unieat.enums.OrderStatus;
 import com.example.unieat.model.Order;
@@ -29,19 +30,16 @@ public class KitchenAllOrdersActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kitchen_all_orders);
 
-        orderDAO = new OrderDAO(this);
+        orderDAO = new OrderDAO();
         bindViews();
         setupFilters();
-
         findViewById(R.id.imgBack).setOnClickListener(v -> finish());
-
         loadOrders();
     }
 
     private void bindViews() {
         recyclerAllOrders = findViewById(R.id.recyclerAllOrders);
         recyclerAllOrders.setLayoutManager(new LinearLayoutManager(this));
-        
         tvNewCount = findViewById(R.id.tvNewCount);
         tvInPrepCount = findViewById(R.id.tvInPrepCount);
         tvReadyCount = findViewById(R.id.tvReadyCount);
@@ -51,7 +49,6 @@ public class KitchenAllOrdersActivity extends BaseActivity {
         findViewById(R.id.cardFilterNew).setOnClickListener(v -> updateFilter(OrderStatus.PENDENTE));
         findViewById(R.id.cardFilterInPrep).setOnClickListener(v -> updateFilter(OrderStatus.PREPARANDO));
         findViewById(R.id.cardFilterReady).setOnClickListener(v -> updateFilter(OrderStatus.PRONTO));
-        
         findViewById(R.id.topBar).setOnClickListener(v -> updateFilter(null));
     }
 
@@ -61,28 +58,59 @@ public class KitchenAllOrdersActivity extends BaseActivity {
     }
 
     private void loadOrders() {
-        // Update counts
-        tvNewCount.setText(String.format(Locale.getDefault(), "%02d", orderDAO.countByStatus(OrderStatus.PENDENTE)));
-        tvInPrepCount.setText(String.format(Locale.getDefault(), "%02d", orderDAO.countByStatus(OrderStatus.PREPARANDO)));
-        tvReadyCount.setText(String.format(Locale.getDefault(), "%02d", orderDAO.countByStatus(OrderStatus.PRONTO)));
+        // contadores em paralelo
+        orderDAO.countByStatus(OrderStatus.PENDENTE, new FirebaseCallback<Integer>() {
+            @Override public void onSuccess(Integer count) {
+                tvNewCount.setText(String.format(Locale.getDefault(), "%02d", count));
+            }
+            @Override public void onFailure(String error) {}
+        });
 
-        List<Order> orders = (currentFilter == null) ? orderDAO.findAll() : orderDAO.findByStatus(currentFilter);
+        orderDAO.countByStatus(OrderStatus.PREPARANDO, new FirebaseCallback<Integer>() {
+            @Override public void onSuccess(Integer count) {
+                tvInPrepCount.setText(String.format(Locale.getDefault(), "%02d", count));
+            }
+            @Override public void onFailure(String error) {}
+        });
 
-        if (adapter == null) {
-            adapter = new KitchenOrderAdapter(this, orders, this::advanceStatus);
-            recyclerAllOrders.setAdapter(adapter);
+        orderDAO.countByStatus(OrderStatus.PRONTO, new FirebaseCallback<Integer>() {
+            @Override public void onSuccess(Integer count) {
+                tvReadyCount.setText(String.format(Locale.getDefault(), "%02d", count));
+            }
+            @Override public void onFailure(String error) {}
+        });
+
+        // lista filtrada ou completa
+        FirebaseCallback<List<Order>> listCallback = new FirebaseCallback<List<Order>>() {
+            @Override public void onSuccess(List<Order> orders) {
+                if (adapter == null) {
+                    adapter = new KitchenOrderAdapter(KitchenAllOrdersActivity.this, orders, KitchenAllOrdersActivity.this::advanceStatus);
+                    recyclerAllOrders.setAdapter(adapter);
+                } else {
+                    adapter.updateData(orders);
+                }
+            }
+            @Override public void onFailure(String error) {}
+        };
+
+        if (currentFilter == null) {
+            orderDAO.findAll(listCallback);
         } else {
-            adapter.updateData(orders);
+            orderDAO.findByStatus(currentFilter, listCallback);
         }
     }
 
     private void advanceStatus(Order order) {
-        OrderStatus next = order.getStatus();
-        if (order.getStatus() == OrderStatus.PENDENTE) next = OrderStatus.PREPARANDO;
-        else if (order.getStatus() == OrderStatus.PREPARANDO) next = OrderStatus.PRONTO;
-        else if (order.getStatus() == OrderStatus.PRONTO) next = OrderStatus.ENTREGUE;
-
-        orderDAO.updateStatus(order.getId(), next);
-        loadOrders();
+        OrderStatus next;
+        switch (order.getStatus()) {
+            case PENDENTE:   next = OrderStatus.PREPARANDO; break;
+            case PREPARANDO: next = OrderStatus.PRONTO;     break;
+            case PRONTO:     next = OrderStatus.ENTREGUE;   break;
+            default: return;
+        }
+        orderDAO.updateStatus(order.getId(), next, new FirebaseCallback<Void>() {
+            @Override public void onSuccess(Void v) { loadOrders(); }
+            @Override public void onFailure(String error) {}
+        });
     }
 }

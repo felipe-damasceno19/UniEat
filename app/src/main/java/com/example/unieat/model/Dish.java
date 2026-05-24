@@ -31,6 +31,16 @@ public class Dish {
         this.imageName = "";
     }
 
+    public Dish(String id,String name, String description, Double price, FoodType type, boolean available){
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.type = type;
+        this.available = available;
+        this.imageName = "";
+    }
+
     public String getId() {
         return id;
     }

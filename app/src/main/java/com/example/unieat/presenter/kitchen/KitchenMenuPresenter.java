@@ -1,6 +1,7 @@
 package com.example.unieat.presenter.kitchen;
 
 import com.example.unieat.dao.DishDAO;
+import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.model.Dish;
 import com.example.unieat.presenter.student.MenuPresenter;
 
@@ -17,6 +18,7 @@ public class KitchenMenuPresenter extends MenuPresenter {
 
     private final KitchenView kitchenView;
     private final DishDAO dishDAO;
+
     public KitchenMenuPresenter(KitchenView view, DishDAO dishDAO) {
         super(view, dishDAO);
         this.kitchenView = view;
@@ -24,68 +26,70 @@ public class KitchenMenuPresenter extends MenuPresenter {
     }
 
     public void saveDish(Dish dish) {
-        if(!isValid(dish)) return;
+        if (!isValid(dish)) return;
 
-        try {
-            if (dish.getId() == null || dish.getId().isEmpty()) {
-                dish.setId(UUID.randomUUID().toString());
-                dishDAO.insert(dish);
-            } else {
-                dishDAO.update(dish);
-            }
-            kitchenView.showSaveSuccess();
-            loadAvailableDishes();
-        } catch (Exception e){
-            kitchenView.showError("Erro ao salvar prato");
+        if (dish.getId() == null || dish.getId().isEmpty()) {
+            dish.setId(UUID.randomUUID().toString());
+            dishDAO.insert(dish, new FirebaseCallback<String>() {
+                @Override public void onSuccess(String id) {
+                    kitchenView.showSaveSuccess();
+                    loadAvailableDishes();
+                }
+                @Override public void onFailure(String error) { kitchenView.showError("Erro ao salvar prato."); }
+            });
+        } else {
+            dishDAO.update(dish, new FirebaseCallback<Void>() {
+                @Override public void onSuccess(Void v) {
+                    kitchenView.showSaveSuccess();
+                    loadAvailableDishes();
+                }
+                @Override public void onFailure(String error) { kitchenView.showError("Erro ao atualizar prato."); }
+            });
         }
     }
 
     public void getAllDishes() {
-        try {
-            List<Dish> dishes = dishDAO.findAll();
-            if(dishes == null || dishes.isEmpty()) {
-                kitchenView.showEmptyState("Nenhum prato cadastrado.");
-            } else {
-                kitchenView.showDishes(dishes);
+        dishDAO.findAll(new FirebaseCallback<List<Dish>>() {
+            @Override public void onSuccess(List<Dish> dishes) {
+                if (dishes == null || dishes.isEmpty())
+                    kitchenView.showEmptyState("Nenhum prato cadastrado.");
+                else
+                    kitchenView.showDishes(dishes);
             }
-        } catch (Exception e) {
-            kitchenView.showError("Erro ao carregar pratos.");
-        }
+            @Override public void onFailure(String error) { kitchenView.showError("Erro ao carregar pratos."); }
+        });
     }
 
-    public void deleteDish(String dishId){
-        try {
-            dishDAO.delete(dishId);
-            kitchenView.showDeleteSuccess();
-            loadAvailableDishes();
-        } catch(Exception e) {
-            kitchenView.showError("Erro ao deletar prato");
-        }
+    public void deleteDish(String dishId) {
+        dishDAO.delete(dishId, new FirebaseCallback<Void>() {
+            @Override public void onSuccess(Void v) {
+                kitchenView.showDeleteSuccess();
+                loadAvailableDishes();
+            }
+            @Override public void onFailure(String error) { kitchenView.showError("Erro ao deletar prato."); }
+        });
     }
 
     public void toggleAvailability(Dish dish) {
-        try {
-            dishDAO.updateAvailability(dish.getId(), !dish.isAvailable());
-            getAllDishes();
-        } catch (Exception e) {
-            kitchenView.showError("Erro ao atualizar disponibilidade");
-        }
+        dishDAO.updateAvailability(dish.getId(), !dish.isAvailable(), new FirebaseCallback<Void>() {
+            @Override public void onSuccess(Void v) { getAllDishes(); }
+            @Override public void onFailure(String error) { kitchenView.showError("Erro ao atualizar disponibilidade."); }
+        });
     }
 
     private boolean isValid(Dish dish) {
-        if(dish.getName() == null || dish.getName().trim().isEmpty()) {
+        if (dish.getName() == null || dish.getName().trim().isEmpty()) {
             kitchenView.showValidationError("Nome do prato é obrigatório");
             return false;
         }
-        if(dish.getPrice() <= 0) {
+        if (dish.getPrice() <= 0) {
             kitchenView.showValidationError("Preço deve ser maior que zero");
             return false;
         }
-        if(dish.getType() == null) {
+        if (dish.getType() == null) {
             kitchenView.showValidationError("Categoria é obrigatória");
             return false;
         }
         return true;
     }
-
 }

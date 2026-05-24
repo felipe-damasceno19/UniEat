@@ -3,41 +3,45 @@ package com.example.unieat.presenter;
 import android.content.Context;
 
 import com.example.unieat.dao.DishDAO;
+import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.data.SessionManager;
 import com.example.unieat.model.Dish;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class StudentHomePresenter {
 
-    private DishDAO dishDAO;
-    private SessionManager sessionManager;
+    public interface StudentHomeView {
+        void onFeaturedDishesLoaded(List<Dish> dishes);
+        void onError(String message);
+    }
 
-    public StudentHomePresenter(Context context) {
-        dishDAO = new DishDAO(context);
-        sessionManager = new SessionManager(context);
+    private final DishDAO dishDAO;
+    private final SessionManager sessionManager;
+    private final StudentHomeView view;
+
+    public StudentHomePresenter(Context context, StudentHomeView view) {
+        this.dishDAO = new DishDAO();
+        this.sessionManager = new SessionManager(context);
+        this.view = view;
     }
 
     public String getWelcomeMessage() {
-        return "Olá, " +sessionManager.getName() +" !";
+        return "Olá, " + sessionManager.getName() + "!";
     }
 
     public double getBalance() {
         return sessionManager.getBalance();
     }
 
-    public List<Dish> getFeaturedDishes() {
-        List<Dish> list = dishDAO.findAll();
-        List<Dish> availableDishes = new ArrayList<>();
-
-        for (Dish dish : list) {
-            if(dish.isAvailable()){
-                availableDishes.add(dish);
+    public void getFeaturedDishes() {
+        dishDAO.getAvailableDishes(new FirebaseCallback<List<Dish>>() {
+            @Override public void onSuccess(List<Dish> dishes) {
+                view.onFeaturedDishesLoaded(dishes);
             }
-        }
-
-        return availableDishes;
+            @Override public void onFailure(String error) {
+                view.onError("Erro ao carregar pratos: " + error);
+            }
+        });
     }
-
 }

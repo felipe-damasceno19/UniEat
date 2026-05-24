@@ -34,7 +34,7 @@ public class KitchenMenuActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kitchen_menu);
 
-        presenter = new KitchenMenuPresenter(this, new DishDAO(this));
+        presenter = new KitchenMenuPresenter(this, new DishDAO());
         dishContainer = findViewById(R.id.dishContainer);
 
         setupSearch();

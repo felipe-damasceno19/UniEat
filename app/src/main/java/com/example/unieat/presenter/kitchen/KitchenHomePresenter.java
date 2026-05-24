@@ -1,7 +1,6 @@
 package com.example.unieat.presenter.kitchen;
 
-import android.content.Context;
-
+import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.dao.OrderDAO;
 import com.example.unieat.enums.OrderStatus;
 import com.example.unieat.model.Order;
@@ -19,61 +18,88 @@ public class KitchenHomePresenter {
     }
 
     private final View view;
-    private OrderDAO orderDAO;
+    private final OrderDAO orderDAO;
 
-    public KitchenHomePresenter(Context context, View view){
+    public KitchenHomePresenter(View view) {
         this.view = view;
-        this.orderDAO = new OrderDAO(context);
+        this.orderDAO = new OrderDAO();
     }
 
     public void loadDashboard() {
-        try {
-            int pending = orderDAO.countByStatus(OrderStatus.PENDENTE);
-            int preparing = orderDAO.countByStatus(OrderStatus.PREPARANDO);
-            int ready = orderDAO.countByStatus(OrderStatus.PRONTO);
-            List<Order> recent = orderDAO.findRecentOrders(10);
+        // Busca os 3 contadores em paralelo com um coordenador simples
+        final int[] counts = {-1, -1, -1}; // pending, preparing, ready
 
-            view.showPendingCount(pending);
-            view.showPreparingCount(preparing);
-            view.showReadyCount(ready);
-            view.showRecentOrders(recent);
-        } catch (Exception e) {
-            view.showError("Erro ao carregar dashboard: " + e.getMessage());
-        }
+        orderDAO.countByStatus(OrderStatus.PENDENTE, new FirebaseCallback<Integer>() {
+            @Override public void onSuccess(Integer count) {
+                counts[0] = count;
+                view.showPendingCount(count);
+                tryLoadRecent(counts);
+            }
+            @Override public void onFailure(String error) { view.showError(error); }
+        });
+
+        orderDAO.countByStatus(OrderStatus.PREPARANDO, new FirebaseCallback<Integer>() {
+            @Override public void onSuccess(Integer count) {
+                counts[1] = count;
+                view.showPreparingCount(count);
+                tryLoadRecent(counts);
+            }
+            @Override public void onFailure(String error) { view.showError(error); }
+        });
+
+        orderDAO.countByStatus(OrderStatus.PRONTO, new FirebaseCallback<Integer>() {
+            @Override public void onSuccess(Integer count) {
+                counts[2] = count;
+                view.showReadyCount(count);
+                tryLoadRecent(counts);
+            }
+            @Override public void onFailure(String error) { view.showError(error); }
+        });
+    }
+
+    // Só busca os pedidos recentes quando os 3 contadores já chegaram
+    private void tryLoadRecent(int[] counts) {
+        if (counts[0] < 0 || counts[1] < 0 || counts[2] < 0) return;
+
+        orderDAO.findRecentOrders(10, new FirebaseCallback<List<Order>>() {
+            @Override public void onSuccess(List<Order> orders) {
+                view.showRecentOrders(orders);
+            }
+            @Override public void onFailure(String error) { view.showError(error); }
+        });
     }
 
     public void advanceOrderStatus(String orderId) {
-        Order order = orderDAO.findById(orderId);
-        if (order == null) {
-            view.showError("Pedido não encontrado");
-            return;
-        }
+        orderDAO.findById(orderId, new FirebaseCallback<Order>() {
+            @Override public void onSuccess(Order order) {
+                if (order == null) {
+                    view.showError("Pedido não encontrado");
+                    return;
+                }
 
-        OrderStatus nextStatus;
-        switch (order.getStatus()) {
-            case PENDENTE:
-                nextStatus = OrderStatus.PREPARANDO;
-                break;
-            case PREPARANDO:
-                nextStatus = OrderStatus.PRONTO;
-                break;
-            case PRONTO:
-                nextStatus = OrderStatus.ENTREGUE;
-                break;
-            default:
-                return;
-        }
+                OrderStatus nextStatus;
+                switch (order.getStatus()) {
+                    case PENDENTE:   nextStatus = OrderStatus.PREPARANDO; break;
+                    case PREPARANDO: nextStatus = OrderStatus.PRONTO;     break;
+                    case PRONTO:     nextStatus = OrderStatus.ENTREGUE;   break;
+                    default: return;
+                }
 
-        orderDAO.updateStatus(orderId, nextStatus);
-        loadDashboard();
+                orderDAO.updateStatus(orderId, nextStatus, new FirebaseCallback<Void>() {
+                    @Override public void onSuccess(Void v) { loadDashboard(); }
+                    @Override public void onFailure(String error) { view.showError(error); }
+                });
+            }
+            @Override public void onFailure(String error) { view.showError(error); }
+        });
     }
 
     public void loadOrdersByStatus(OrderStatus status) {
-        try {
-            List<Order> orders = orderDAO.findByStatus(status);
-            view.showRecentOrders(orders);
-        } catch (Exception e) {
-            view.showError("Erro ao carregar pedidos: " + e.getMessage());
-        }
+        orderDAO.findByStatus(status, new FirebaseCallback<List<Order>>() {
+            @Override public void onSuccess(List<Order> orders) {
+                view.showRecentOrders(orders);
+            }
+            @Override public void onFailure(String error) { view.showError(error); }
+        });
     }
 }

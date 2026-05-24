@@ -1,80 +1,60 @@
 package com.example.unieat.dao;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-
-import com.example.unieat.data.DatabaseHelper;
+import com.example.unieat.data.FirebaseHelper;
 import com.example.unieat.model.Rating;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RatingDAO {
 
-    private DatabaseHelper dbHelper;
-
-    public RatingDAO(Context context){
-        dbHelper = new DatabaseHelper(context);
+    public void insert(Rating rating, FirebaseCallback<String> cb) {
+        DatabaseReference ref = FirebaseHelper.ratings().push();
+        rating.setId(ref.getKey());
+        ref.setValue(rating)
+                .addOnSuccessListener(a -> cb.onSuccess(rating.getId()))
+                .addOnFailureListener(e -> cb.onFailure(e.getMessage()));
     }
 
-    public void insert(Rating avaliation){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("id", avaliation.getId());
-        values.put("dish_id", avaliation.getDishId());
-        values.put("rating", avaliation.getRating());
-        values.put("comment", avaliation.getComment());
-        db.insert("avaliation", null, values);
-        db.close();
+    public void findAll(FirebaseCallback<List<Rating>> cb) {
+        FirebaseHelper.ratings().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override public void onDataChange(DataSnapshot snap) {
+                List<Rating> list = new ArrayList<>();
+                for (DataSnapshot child : snap.getChildren())
+                    list.add(snapToRating(child));
+                cb.onSuccess(list);
+            }
+            @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+        });
     }
 
-    public List<Rating> findAll(){
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        List<Rating> list = new ArrayList<>();
-        Cursor cursor = db.rawQuery("SELECT * FROM avaliation", null);
-
-        if(cursor.moveToFirst()){
-            do{
-                Rating avaliation = new Rating(
-                        cursor.getString(cursor.getColumnIndexOrThrow("id")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("dish_id")),
-                        cursor.getInt(cursor.getColumnIndexOrThrow("rating")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("comment"))
-                );
-                list.add(avaliation);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        db.close();
-        return list;
+    public void findByDishId(String dishId, FirebaseCallback<List<Rating>> cb) {
+        FirebaseHelper.ratings()
+                .orderByChild("dishId").equalTo(dishId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override public void onDataChange(DataSnapshot snap) {
+                        List<Rating> list = new ArrayList<>();
+                        for (DataSnapshot child : snap.getChildren())
+                            list.add(snapToRating(child));
+                        cb.onSuccess(list);
+                    }
+                    @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+                });
     }
 
-    public List<Rating> findByDishId(String dishId){
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        List<Rating> list = new ArrayList<>();
-        Cursor cursor = db.query("avaliation", null, "dish_id = ?", new String[]{dishId}, null, null, null);
-
-        if(cursor.moveToFirst()){
-            do {
-                Rating avaliation = new Rating(
-                        cursor.getString(cursor.getColumnIndexOrThrow("id")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("dish_id")),
-                        cursor.getInt(cursor.getColumnIndexOrThrow("rating")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("comment"))
-                );
-                list.add(avaliation);
-            } while(cursor.moveToNext());
-        }
-        cursor.close();
-        db.close();
-        return list;
+    public void delete(String id, FirebaseCallback<Void> cb) {
+        FirebaseHelper.ratings().child(id).removeValue()
+                .addOnSuccessListener(a -> cb.onSuccess(null))
+                .addOnFailureListener(e -> cb.onFailure(e.getMessage()));
     }
 
-    public void delete(String id){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.delete("avaliation", "id = ?", new String[]{id});
-        db.close();
+    private Rating snapToRating(DataSnapshot snap) {
+        Rating rating = snap.getValue(Rating.class);
+        if (rating != null) rating.setId(snap.getKey());
+        return rating;
     }
 }

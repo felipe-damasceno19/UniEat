@@ -5,148 +5,117 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import androidx.annotation.NonNull;
+
 import com.example.unieat.data.DatabaseHelper;
+import com.example.unieat.data.FirebaseHelper;
 import com.example.unieat.enums.UserType;
 import com.example.unieat.model.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO {
 
-    private DatabaseHelper dbHelper;
-
-    public UserDAO(Context context){
-        dbHelper = new DatabaseHelper(context);
+    public void insert(User user, FirebaseCallback<String> cb) {
+        DatabaseReference ref = FirebaseHelper.users().push();
+        user.setId(ref.getKey());
+        ref.setValue(user)
+                .addOnSuccessListener(a -> cb.onSuccess(user.getEmail()))
+                .addOnFailureListener(e -> cb.onFailure(e.getMessage()));
     }
 
-    public void insert(User user){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("id", user.getId());
-        values.put("name", user.getName());
-        values.put("username", user.getUsername());
-        values.put("password", user.getPassword());
-        values.put("email", user.getEmail());
-        values.put("balance", user.getBalance());
-        values.put("user_type", user.getType().name());
-        db.insert("user", null, values);
-        db.close();
+    public void findAll(FirebaseCallback<List<User>> cb) {
+        FirebaseHelper.users().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snap) {
+                List<User> list = new ArrayList<>();
+                for(DataSnapshot child: snap.getChildren())
+                    list.add(snapToUser(child));
+                cb.onSuccess(list);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                cb.onFailure(error.getMessage());
+            }
+        });
     }
-    
-    public List<User> findAll(){
-        List<User> list = new ArrayList<>();
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM user", null);
-        
-        if(cursor.moveToFirst()){
-            do{
-                User user = new User(
-                        cursor.getString(cursor.getColumnIndexOrThrow("id")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("name")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("username")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("password")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("email")),
-                        cursor.getDouble(cursor.getColumnIndexOrThrow("balance")),
-                        UserType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("user_type")))
-                );
-                list.add(user);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        db.close();
-        return list;
+
+    public void findById (String id, FirebaseCallback<User> cb) {
+        FirebaseHelper.users().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                cb.onSuccess(snapshot.exists() ? snapToUser(snapshot) : null);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                cb.onFailure(error.getMessage());
+            }
+        });
     }
-    
-    public User findById(String id){
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        User user = null;
-        Cursor cursor = db.query("user", null , "id = ?", new String[]{id}, null, null, null);
-        
-        if(cursor.moveToFirst()){
-            user = new User(
-                    cursor.getString(cursor.getColumnIndexOrThrow("id")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("name")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("username")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("password")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("email")),
-                    cursor.getDouble(cursor.getColumnIndexOrThrow("balance")),
-                    UserType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("user_type")))
-            );
-        }
-        cursor.close();
-        db.close();
+
+    public void findByEmail(String email, FirebaseCallback<User> cb) {
+        FirebaseHelper.users()
+                .orderByChild("email").equalTo(email)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for(DataSnapshot child: snapshot.getChildren()) {
+                            cb.onSuccess(snapToUser(child));
+                            return;
+                        }
+                        cb.onSuccess(null);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        cb.onFailure(error.getMessage());
+                    }
+                });
+    }
+
+    public void findByUsername(String username, FirebaseCallback<User> cb) {
+        FirebaseHelper.users()
+                .orderByChild("username").equalTo(username)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override public void onDataChange(DataSnapshot snap) {
+                        for (DataSnapshot child : snap.getChildren()) {
+                            cb.onSuccess(snapToUser(child));
+                            return;
+                        }
+                        cb.onSuccess(null);
+                    }
+                    @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+                });
+    }
+
+    public void update(User user, FirebaseCallback<Void> cb) {
+        FirebaseHelper.users().child(user.getId()).setValue(user)
+                .addOnSuccessListener(a -> cb.onSuccess(null))
+                .addOnFailureListener(e -> cb.onFailure(e.getMessage()));
+    }
+
+    public void updateBalance(String id, double balance, FirebaseCallback<Void> cb) {
+        FirebaseHelper.users().child(id).child("balance").setValue(balance)
+                .addOnSuccessListener(a -> cb.onSuccess(null))
+                .addOnFailureListener(e -> cb.onFailure(e.getMessage()));
+    }
+
+    public void delete(String id, FirebaseCallback<Void> cb) {
+        FirebaseHelper.users().child(id).removeValue()
+                .addOnSuccessListener(a -> cb.onSuccess(null))
+                .addOnFailureListener(e -> cb.onFailure(e.getMessage()));
+    }
+
+    private User snapToUser(DataSnapshot snap) {
+        User user = snap.getValue(User.class);
+        if (user != null) user.setId(snap.getKey());
         return user;
-    }
-
-    public User findByEmail(String email){
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        User user = null;
-        Cursor cursor = db.query("user", null , "email = ?", new String[]{email}, null, null, null);
-
-        if(cursor.moveToFirst()){
-            user = new User(
-                    cursor.getString(cursor.getColumnIndexOrThrow("id")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("name")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("username")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("password")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("email")),
-                    cursor.getDouble(cursor.getColumnIndexOrThrow("balance")),
-                    UserType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("user_type")))
-            );
-        }
-        cursor.close();
-        db.close();
-        return user;
-    }
-
-    public User findByUsername(String username){
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        User user = null;
-        Cursor cursor = db.query("user", null , "username = ?", new String[]{username}, null, null, null);
-
-        if(cursor.moveToFirst()){
-            user = new User(
-                    cursor.getString(cursor.getColumnIndexOrThrow("id")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("name")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("username")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("password")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("email")),
-                    cursor.getDouble(cursor.getColumnIndexOrThrow("balance")),
-                    UserType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("user_type")))
-            );
-        }
-        cursor.close();
-        db.close();
-        return user;
-    }
-
-
-    public void update(User user){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("name", user.getName());
-        values.put("username", user.getUsername());
-        values.put("password", user.getPassword());
-        values.put("email", user.getEmail());
-        values.put("balance", user.getBalance());
-        values.put("user_type", user.getType().name());
-        
-        db.update("user", values, "id = ?", new String[]{user.getId()});
-        db.close();
-    }
-
-    public void updateBalance(String id, double balance) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("balance", balance);
-        db.update("user", values, "id = ?", new String[]{id});
-        db.close();
-    }
-    
-    public void delete(String id){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.delete("user", "id = ?", new String[]{id});
-        db.close();
     }
 }

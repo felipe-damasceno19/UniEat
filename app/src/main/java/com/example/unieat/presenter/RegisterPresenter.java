@@ -1,7 +1,6 @@
 package com.example.unieat.presenter;
 
-import android.content.Context;
-
+import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.dao.UserDAO;
 import com.example.unieat.enums.UserType;
 import com.example.unieat.model.User;
@@ -15,46 +14,54 @@ public class RegisterPresenter {
         void onRegisterError(String message);
     }
 
-    private UserDAO userDAO;
+    private final UserDAO userDAO;
     private final View view;
 
-    public RegisterPresenter(Context context, View view) {
-        this.userDAO = new UserDAO(context);
+    public RegisterPresenter(View view) {
+        this.userDAO = new UserDAO();
         this.view = view;
     }
 
     public void register(String name, String username, String email, String password, UserType userType) {
-        if(name.isEmpty() || username.isEmpty() || email.isEmpty()|| password.isEmpty()) {
+        if (name.isEmpty() || username.isEmpty() || email.isEmpty() || password.isEmpty()) {
             view.onRegisterError("Preencha todos os campos");
             return;
         }
 
-        if(userDAO.findByUsername(username) != null) {
-            view.onRegisterError("Esse username já está sendo utilizado");
-            return;
-        }
-
-        if(userDAO.findByEmail(email) != null) {
-            view.onRegisterError("Esse email já está sendo utilizado");
-            return;
-        }
-
-        if(password.length() < 6) {
+        if (password.length() < 6) {
             view.onRegisterError("A senha deve ter pelo menos 6 caracteres");
             return;
         }
 
-        User user = new User(
-                UUID.randomUUID().toString(),
-                name,
-                username,
-                password,
-                email,
-                0.0,
-                userType
-        );
-
-        userDAO.insert(user);
-        view.onRegisterSuccess();
+        // 1. verifica username
+        userDAO.findByUsername(username, new FirebaseCallback<User>() {
+            @Override public void onSuccess(User existing) {
+                if (existing != null) {
+                    view.onRegisterError("Esse username já está sendo utilizado");
+                    return;
+                }
+                // 2. verifica email
+                userDAO.findByEmail(email, new FirebaseCallback<User>() {
+                    @Override public void onSuccess(User existing) {
+                        if (existing != null) {
+                            view.onRegisterError("Esse email já está sendo utilizado");
+                            return;
+                        }
+                        // 3. tudo ok — insere
+                        User user = new User(
+                                UUID.randomUUID().toString(),
+                                name, username, password,
+                                email, 0.0, userType
+                        );
+                        userDAO.insert(user, new FirebaseCallback<String>() {
+                            @Override public void onSuccess(String id) { view.onRegisterSuccess(); }
+                            @Override public void onFailure(String error) { view.onRegisterError("Erro ao cadastrar: " + error); }
+                        });
+                    }
+                    @Override public void onFailure(String error) { view.onRegisterError("Erro ao verificar email: " + error); }
+                });
+            }
+            @Override public void onFailure(String error) { view.onRegisterError("Erro ao verificar username: " + error); }
+        });
     }
 }

@@ -1,6 +1,7 @@
 package com.example.unieat.model;
 
 import com.example.unieat.enums.OrderStatus;
+import com.google.firebase.database.Exclude;
 
 import java.util.Date;
 import java.util.List;
@@ -37,6 +38,7 @@ public class Order {
         this.id = id;
     }
 
+    @Exclude
     public List<OrderItem> getItems() {
         return items;
     }
@@ -45,6 +47,7 @@ public class Order {
         this.items = items;
     }
 
+    @Exclude
     public OrderStatus getStatus() {
         return status;
     }
@@ -61,6 +64,7 @@ public class Order {
         this.annotation = annotation;
     }
 
+    @Exclude
     public Date getTime() {
         return time;
     }
@@ -78,5 +82,13 @@ public class Order {
                 ", annotation='" + annotation + '\'' +
                 ", time=" + time +
                 '}';
+    }
+
+    public long getTimeMillis() {
+        return time != null ? time.getTime() : 0;
+    }
+
+    public void setTimeMillis(long millis) {
+        this.time = new Date(millis);
     }
 }
