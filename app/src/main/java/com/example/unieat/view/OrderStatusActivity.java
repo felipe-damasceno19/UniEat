@@ -5,7 +5,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unieat.R;
@@ -16,7 +15,7 @@ import com.example.unieat.presenter.OrderStatusPresenter;
 import com.example.unieat.util.DateUtils;
 import com.example.unieat.util.OrderUtils;
 
-public class OrderStatusActivity extends AppCompatActivity
+public class OrderStatusActivity extends BaseActivity
         implements OrderStatusPresenter.OrderStatusView {
 
     private OrderStatusPresenter presenter;

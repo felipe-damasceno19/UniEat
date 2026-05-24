@@ -242,10 +242,12 @@ public class OrderDAO {
             buildOrderFromSnap(snap, new FirebaseCallback<Order>() {
                 @Override public void onSuccess(Order order) {
                     orders.add(order);
-                    remaining[0]--;
-                    if (remaining[0] == 0) cb.onSuccess(orders);
+                    if (--remaining[0] == 0) cb.onSuccess(orders);
                 }
-                @Override public void onFailure(String error) { cb.onFailure(error); }
+                @Override public void onFailure(String error) {
+                    // skip individual failures so the rest of the list still loads
+                    if (--remaining[0] == 0) cb.onSuccess(orders);
+                }
             });
         }
     }
