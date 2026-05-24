@@ -13,7 +13,7 @@ import com.example.unieat.enums.UserType;
 import com.example.unieat.presenter.LoginPresenter;
 import com.google.android.material.textfield.TextInputEditText;
 
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity implements LoginPresenter.LoginView {
 
     private LoginPresenter presenter;
     private Button btnLogin;
@@ -25,14 +25,10 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        presenter = new LoginPresenter(this);
+        presenter = new LoginPresenter(this, this);
 
         if (presenter.isLoggedIn()) {
-            if (presenter.isStudent()) {
-                navigateToHome(UserType.ALUNO);
-            } else {
-                navigateToHome(UserType.COZINHEIRO);
-            }
+            navigateToHome(presenter.isStudent() ? UserType.ALUNO : UserType.COZINHEIRO);
             return;
         }
 
@@ -49,7 +45,7 @@ public class LoginActivity extends BaseActivity {
 
     private void setupLogin() {
         btnLogin.setOnClickListener(v -> {
-            String email = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
+            String email    = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
             String password = etPassword.getText() != null ? etPassword.getText().toString().trim() : "";
 
             if (email.isEmpty() || password.isEmpty()) {
@@ -57,31 +53,33 @@ public class LoginActivity extends BaseActivity {
                 return;
             }
 
-            UserType loggedType = presenter.login(email, password);
-
-            if (loggedType != null) {
-                navigateToHome(loggedType);
-            } else {
-                Toast.makeText(this, "E-mail ou senha incorretos", Toast.LENGTH_SHORT).show();
-            }
+            btnLogin.setEnabled(false);
+            presenter.login(email, password);
         });
+    }
+
+    @Override
+    public void onLoginSuccess(UserType userType) {
+        navigateToHome(userType);
+    }
+
+    @Override
+    public void onLoginError(String message) {
+        btnLogin.setEnabled(true);
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     private void setupRegister() {
         TextView tvCadastrar = findViewById(R.id.tvCadastrar);
         tvCadastrar.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RegisterActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(this, RegisterActivity.class));
         });
     }
 
     private void navigateToHome(UserType type) {
-        Intent intent;
-        if (type == UserType.ALUNO) {
-            intent = new Intent(this, StudentHomeActivity.class);
-        } else {
-            intent = new Intent(this, KitchenHomeActivity.class);
-        }
+        Intent intent = type == UserType.ALUNO
+                ? new Intent(this, StudentHomeActivity.class)
+                : new Intent(this, KitchenHomeActivity.class);
         startActivity(intent);
         finish();
     }
