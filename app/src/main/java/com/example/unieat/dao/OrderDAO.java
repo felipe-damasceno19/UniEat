@@ -147,6 +147,36 @@ public class OrderDAO {
         return listener;
     }
 
+    public interface OnOrderStatusCount {
+        void onCountUpdated(int pending, int preparing, int ready);
+        void onError(String error);
+    }
+
+    public ValueEventListener listenToStatusCounts(OnOrderStatusCount cb) {
+        ValueEventListener listener = new ValueEventListener() {
+            @Override public void onDataChange(DataSnapshot snap) {
+                int pending = 0, preparing = 0, ready = 0;
+                for (DataSnapshot orderSnap : snap.getChildren()) {
+                    String s = orderSnap.child("orderStatus").getValue(String.class);
+                    if (s == null) continue;
+                    switch (s) {
+                        case "PENDENTE":   pending++;   break;
+                        case "PREPARANDO": preparing++; break;
+                        case "PRONTO":     ready++;     break;
+                    }
+                }
+                cb.onCountUpdated(pending, preparing, ready);
+            }
+            @Override public void onCancelled(DatabaseError e) { cb.onError(e.getMessage()); }
+        };
+        FirebaseHelper.orders().addValueEventListener(listener);
+        return listener;
+    }
+
+    public void removeOrdersListener(ValueEventListener listener) {
+        FirebaseHelper.orders().removeEventListener(listener);
+    }
+
     // helpers
     private void buildOrderFromSnap(DataSnapshot snap, FirebaseCallback<Order> cb) {
         String orderId    = snap.getKey();

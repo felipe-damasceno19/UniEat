@@ -46,6 +46,18 @@ public class KitchenHomeActivity extends BaseActivity
         presenter.loadDashboard();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        presenter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.stopListening();
+    }
+
     private void bindViews() {
         recyclerOrders = findViewById(R.id.recyclerOrders);
         recyclerOrders.setLayoutManager(new LinearLayoutManager(this));

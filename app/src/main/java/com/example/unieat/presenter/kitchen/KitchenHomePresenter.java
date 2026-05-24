@@ -4,6 +4,7 @@ import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.dao.OrderDAO;
 import com.example.unieat.enums.OrderStatus;
 import com.example.unieat.model.Order;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -19,10 +20,29 @@ public class KitchenHomePresenter {
 
     private final View view;
     private final OrderDAO orderDAO;
+    private ValueEventListener countsListener;
 
     public KitchenHomePresenter(View view) {
         this.view = view;
         this.orderDAO = new OrderDAO();
+    }
+
+    public void startListening() {
+        countsListener = orderDAO.listenToStatusCounts(new OrderDAO.OnOrderStatusCount() {
+            @Override public void onCountUpdated(int pending, int preparing, int ready) {
+                view.showPendingCount(pending);
+                view.showPreparingCount(preparing);
+                view.showReadyCount(ready);
+            }
+            @Override public void onError(String error) { view.showError(error); }
+        });
+    }
+
+    public void stopListening() {
+        if (countsListener != null) {
+            orderDAO.removeOrdersListener(countsListener);
+            countsListener = null;
+        }
     }
 
     public void loadDashboard() {
