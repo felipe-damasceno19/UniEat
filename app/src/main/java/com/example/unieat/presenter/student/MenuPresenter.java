@@ -1,7 +1,7 @@
-// presenter/MenuPresenter.java
 package com.example.unieat.presenter.student;
 
 import com.example.unieat.dao.DishDAO;
+import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.enums.FoodType;
 import com.example.unieat.model.Dish;
 
@@ -24,36 +24,31 @@ public class MenuPresenter {
     }
 
     public void loadAvailableDishes() {
-        try {
-            List<Dish> dishes = dishDAO.getAvailableDishes();
-            if (dishes == null || dishes.isEmpty()) {
-                view.showEmptyState("Nenhum prato disponível no momento.");
-            } else {
-                view.showDishes(dishes);
+        dishDAO.getAvailableDishes(new FirebaseCallback<List<Dish>>() {
+            @Override public void onSuccess(List<Dish> dishes) {
+                if (dishes == null || dishes.isEmpty())
+                    view.showEmptyState("Nenhum prato disponível no momento.");
+                else
+                    view.showDishes(dishes);
             }
-        } catch (Exception e) {
-            view.showError("Erro ao carregar cardápio.");
-        }
+            @Override public void onFailure(String error) { view.showError("Erro ao carregar cardápio."); }
+        });
     }
 
     public void filterByType(FoodType foodType) {
-        try {
-            List<Dish> dishes;
-            if (foodType == null) {
-                // null = "Todos" — mostra tudo disponível
-                dishes = dishDAO.getAvailableDishes();
-            } else {
-                dishes = dishDAO.getDishesByType(foodType);
-            }
-
-            if (dishes == null || dishes.isEmpty()) {
-                view.showEmptyState("Nenhum prato encontrado nessa categoria.");
-            } else {
-                view.showDishes(dishes);
-            }
-        } catch (Exception e) {
-            view.showError("Erro ao filtrar cardápio.");
+        if (foodType == null) {
+            loadAvailableDishes();
+            return;
         }
+        dishDAO.getDishesByType(foodType, new FirebaseCallback<List<Dish>>() {
+            @Override public void onSuccess(List<Dish> dishes) {
+                if (dishes == null || dishes.isEmpty())
+                    view.showEmptyState("Nenhum prato encontrado nessa categoria.");
+                else
+                    view.showDishes(dishes);
+            }
+            @Override public void onFailure(String error) { view.showError("Erro ao filtrar cardápio."); }
+        });
     }
 
     public void searchByName(String query) {
@@ -61,15 +56,14 @@ public class MenuPresenter {
             loadAvailableDishes();
             return;
         }
-        try {
-            List<Dish> dishes = dishDAO.searchByName(query.trim());
-            if (dishes == null || dishes.isEmpty()) {
-                view.showEmptyState("Nenhum prato encontrado para \"" + query + "\".");
-            } else {
-                view.showDishes(dishes);
+        dishDAO.searchByName(query.trim(), new FirebaseCallback<List<Dish>>() {
+            @Override public void onSuccess(List<Dish> dishes) {
+                if (dishes == null || dishes.isEmpty())
+                    view.showEmptyState("Nenhum prato encontrado para \"" + query + "\".");
+                else
+                    view.showDishes(dishes);
             }
-        } catch (Exception e) {
-            view.showError("Erro ao buscar prato.");
-        }
+            @Override public void onFailure(String error) { view.showError("Erro ao buscar prato."); }
+        });
     }
 }

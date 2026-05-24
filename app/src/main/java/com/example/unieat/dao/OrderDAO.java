@@ -1,201 +1,192 @@
 package com.example.unieat.dao;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-
-import com.example.unieat.data.DatabaseHelper;
+import com.example.unieat.data.FirebaseHelper;
 import com.example.unieat.enums.OrderStatus;
 import com.example.unieat.model.Dish;
 import com.example.unieat.model.Order;
 import com.example.unieat.model.OrderItem;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrderDAO {
 
-    private DatabaseHelper dbHelper;
-    private DishDAO dishDAO;
+    private final DishDAO dishDAO = new DishDAO();
 
-    public OrderDAO(Context context) {
-        dbHelper = new DatabaseHelper(context);
-        dishDAO = new DishDAO(context);
+    public void insert(Order order, FirebaseCallback<Order> cb) {
+        String orderId = FirebaseHelper.orders().push().getKey();
+        order.setId(orderId);
+
+        Map<String, Object> batch = new HashMap<>();
+        batch.put("orders/" + orderId + "/annotation",   order.getAnnotation());
+        batch.put("orders/" + orderId + "/orderStatus",  order.getStatus().name());
+        batch.put("orders/" + orderId + "/time",         order.getTime().getTime());
+
+        for (OrderItem item : order.getItems()) {
+            String itemId = FirebaseHelper.orders()
+                    .child(orderId).child("items").push().getKey();
+            item.setId(itemId);
+            batch.put("orders/" + orderId + "/items/" + itemId + "/dishId",   item.getDish().getId());
+            batch.put("orders/" + orderId + "/items/" + itemId + "/quantity", item.getQuantity());
+        }
+
+        FirebaseHelper.getInstance().getReference()
+                .updateChildren(batch)
+                .addOnSuccessListener(a -> cb.onSuccess(order))
+                .addOnFailureListener(e -> cb.onFailure(e.getMessage()));
     }
 
-    public void insert(Order order) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.beginTransaction();
-        try {
-            ContentValues values = new ContentValues();
-            values.put("id", order.getId());
-            values.put("annotation", order.getAnnotation());
-            values.put("order_status", order.getStatus().name());
-            values.put("time", order.getTime().getTime()); // Date → long
-            db.insert("orders", null, values);
-
-            for (OrderItem item : order.getItems()) {
-                ContentValues itemValues = new ContentValues();
-                itemValues.put("id", item.getId());
-                itemValues.put("quantity", item.getQuantity());
-                itemValues.put("dish_id", item.getDish().getId());
-                itemValues.put("order_id", order.getId());
-                db.insert("order_items", null, itemValues);
+    public void findById(String id, FirebaseCallback<Order> cb) {
+        FirebaseHelper.orders().child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override public void onDataChange(DataSnapshot snap) {
+                if (!snap.exists()) { cb.onSuccess(null); return; }
+                buildOrderFromSnap(snap, cb);
             }
-
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
-            db.close();
-        }
+            @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+        });
     }
 
-    public Order findById(String id) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Order order = null;
-        Cursor cursor = db.query("orders", null, "id = ?", new String[]{id}, null, null, null);
-
-        if (cursor.moveToFirst()) {
-            order = new Order(
-                    cursor.getString(cursor.getColumnIndexOrThrow("id")),
-                    findItemsByOrderId(id, db),
-                    OrderStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("order_status"))),
-                    new Date(cursor.getLong(cursor.getColumnIndexOrThrow("time"))),
-                    cursor.getString(cursor.getColumnIndexOrThrow("annotation"))
-            );
-        }
-
-        cursor.close();
-        db.close();
-        return order;
+    public void findAll(FirebaseCallback<List<Order>> cb) {
+        FirebaseHelper.orders().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override public void onDataChange(DataSnapshot snap) {
+                List<DataSnapshot> snaps = new ArrayList<>();
+                for (DataSnapshot child : snap.getChildren()) snaps.add(child);
+                buildOrderList(snaps, cb);
+            }
+            @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+        });
     }
 
-    public int countByStatus(OrderStatus status) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM orders WHERE order_status = ?", new String[]{status.name()});
-        int count = 0;
-        if (cursor.moveToFirst()) {
-            count = cursor.getInt(0);
-        }
-        cursor.close();
-        db.close();
-        return count;
-    }
-    
-    public List<Order> findRecentOrders(int limit) {
-        List<Order> list = new ArrayList<>();
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query("orders", null, null, null, null, null, "time DESC", String.valueOf(limit));
-
-        if (cursor.moveToFirst()) {
-            do {
-                String orderId = cursor.getString(cursor.getColumnIndexOrThrow("id"));
-                Order order = new Order(
-                        orderId,
-                        findItemsByOrderId(orderId, db),
-                        OrderStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("order_status"))),
-                        new Date(cursor.getLong(cursor.getColumnIndexOrThrow("time"))),
-                        cursor.getString(cursor.getColumnIndexOrThrow("annotation"))
-                );
-                list.add(order);
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.close();
-        return list;
+    public void findByStatus(OrderStatus status, FirebaseCallback<List<Order>> cb) {
+        FirebaseHelper.orders()
+                .orderByChild("orderStatus").equalTo(status.name())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override public void onDataChange(DataSnapshot snap) {
+                        List<DataSnapshot> snaps = new ArrayList<>();
+                        for (DataSnapshot child : snap.getChildren()) snaps.add(child);
+                        buildOrderList(snaps, cb);
+                    }
+                    @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+                });
     }
 
-    public List<Order> findAll() {
-        List<Order> list = new ArrayList<>();
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM orders", null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                String orderId = cursor.getString(cursor.getColumnIndexOrThrow("id"));
-                Order order = new Order(
-                        orderId,
-                        findItemsByOrderId(orderId, db),
-                        OrderStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("order_status"))),
-                        new Date(cursor.getLong(cursor.getColumnIndexOrThrow("time"))),
-                        cursor.getString(cursor.getColumnIndexOrThrow("annotation"))
-                );
-                list.add(order);
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.close();
-        return list;
+    public void findRecentOrders(int limit, FirebaseCallback<List<Order>> cb) {
+        FirebaseHelper.orders()
+                .orderByChild("time").limitToLast(limit)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override public void onDataChange(DataSnapshot snap) {
+                        List<DataSnapshot> snaps = new ArrayList<>();
+                        for (DataSnapshot child : snap.getChildren()) snaps.add(child);
+                        buildOrderList(snaps, cb);
+                    }
+                    @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+                });
     }
 
-    public List<Order> findByStatus(OrderStatus status) {
-        List<Order> list = new ArrayList<>();
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query("orders", null, "order_status = ?",
-                new String[]{status.name()}, null, null, null);
+    public void countByStatus(OrderStatus status, FirebaseCallback<Integer> cb) {
+        findByStatus(status, new FirebaseCallback<List<Order>>() {
+            @Override public void onSuccess(List<Order> orders) { cb.onSuccess(orders.size()); }
+            @Override public void onFailure(String error) { cb.onFailure(error); }
+        });
+    }
 
-        if (cursor.moveToFirst()) {
-            do {
-                String orderId = cursor.getString(cursor.getColumnIndexOrThrow("id"));
-                Order order = new Order(
-                        orderId,
-                        findItemsByOrderId(orderId, db),
-                        OrderStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("order_status"))),
-                        new Date(cursor.getLong(cursor.getColumnIndexOrThrow("time"))),
-                        cursor.getString(cursor.getColumnIndexOrThrow("annotation"))
-                );
-                list.add(order);
-            } while (cursor.moveToNext());
+    public void updateStatus(String id, OrderStatus status, FirebaseCallback<Void> cb) {
+        FirebaseHelper.orders().child(id).child("orderStatus").setValue(status.name())
+                .addOnSuccessListener(a -> cb.onSuccess(null))
+                .addOnFailureListener(e -> cb.onFailure(e.getMessage()));
+    }
+
+    public void delete(String id, FirebaseCallback<Void> cb) {
+        FirebaseHelper.orders().child(id).removeValue()
+                .addOnSuccessListener(a -> cb.onSuccess(null))
+                .addOnFailureListener(e -> cb.onFailure(e.getMessage()));
+    }
+
+    public ValueEventListener listenToOrder(String orderId, FirebaseCallback<Order> cb) {
+        ValueEventListener listener = new ValueEventListener() {
+            @Override public void onDataChange(DataSnapshot snap) {
+                if (snap.exists()) buildOrderFromSnap(snap, cb);
+            }
+            @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+        };
+        FirebaseHelper.orders().child(orderId).addValueEventListener(listener);
+        return listener;
+    }
+
+    public ValueEventListener listenToAllOrders(FirebaseCallback<List<Order>> cb) {
+        ValueEventListener listener = new ValueEventListener() {
+            @Override public void onDataChange(DataSnapshot snap) {
+                List<DataSnapshot> snaps = new ArrayList<>();
+                for (DataSnapshot child : snap.getChildren()) snaps.add(child);
+                buildOrderList(snaps, cb);
+            }
+            @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+        };
+        FirebaseHelper.orders().addValueEventListener(listener);
+        return listener;
+    }
+
+    // helpers
+    private void buildOrderFromSnap(DataSnapshot snap, FirebaseCallback<Order> cb) {
+        String orderId = snap.getKey();
+        String annotation = snap.child("annotation").getValue(String.class);
+        String statusStr  = snap.child("orderStatus").getValue(String.class);
+        Long time         = snap.child("time").getValue(Long.class);
+
+        OrderStatus status = statusStr != null ? OrderStatus.valueOf(statusStr) : OrderStatus.PENDENTE;
+        Date date = time != null ? new Date(time) : new Date();
+
+        List<DataSnapshot> itemSnaps = new ArrayList<>();
+        for (DataSnapshot itemSnap : snap.child("items").getChildren())
+            itemSnaps.add(itemSnap);
+
+        if (itemSnaps.isEmpty()) {
+            cb.onSuccess(new Order(orderId, new ArrayList<>(), status, date, annotation));
+            return;
         }
 
-        cursor.close();
-        db.close();
-        return list;
-    }
-
-    public void updateStatus(String id, OrderStatus status) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("order_status", status.name());
-        db.update("orders", values, "id = ?", new String[]{id});
-        db.close();
-    }
-
-    public void delete(String id) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.beginTransaction();
-        try {
-            db.delete("order_items", "order_id = ?", new String[]{id});
-            db.delete("orders", "id = ?", new String[]{id});
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
-            db.close();
-        }
-    }
-
-    private List<OrderItem> findItemsByOrderId(String orderId, SQLiteDatabase db) {
         List<OrderItem> items = new ArrayList<>();
-        Cursor cursor = db.query("order_items", null, "order_id = ?",
-                new String[]{orderId}, null, null, null);
+        final int[] remaining = {itemSnaps.size()};
 
-        if (cursor.moveToFirst()) {
-            do {
-                Dish dish = dishDAO.findById(cursor.getString(cursor.getColumnIndexOrThrow("dish_id")));
-                OrderItem item = new OrderItem(
-                        cursor.getString(cursor.getColumnIndexOrThrow("id")),
-                        cursor.getInt(cursor.getColumnIndexOrThrow("quantity")),
-                        dish
-                );
-                items.add(item);
-            } while (cursor.moveToNext());
+        for (DataSnapshot itemSnap : itemSnaps) {
+            String dishId  = itemSnap.child("dishId").getValue(String.class);
+            int quantity   = itemSnap.child("quantity").getValue(Integer.class);
+            String itemId  = itemSnap.getKey();
+
+            dishDAO.findById(dishId, new FirebaseCallback<Dish>() {
+                @Override public void onSuccess(Dish dish) {
+                    items.add(new OrderItem(itemId, quantity, dish));
+                    remaining[0]--;
+                    if (remaining[0] == 0)
+                        cb.onSuccess(new Order(orderId, items, status, date, annotation));
+                }
+                @Override public void onFailure(String error) { cb.onFailure(error); }
+            });
         }
+    }
 
-        cursor.close();
-        return items;
+    private void buildOrderList(List<DataSnapshot> snaps, FirebaseCallback<List<Order>> cb) {
+        if (snaps.isEmpty()) { cb.onSuccess(new ArrayList<>()); return; }
+
+        List<Order> orders = new ArrayList<>();
+        final int[] remaining = {snaps.size()};
+
+        for (DataSnapshot snap : snaps) {
+            buildOrderFromSnap(snap, new FirebaseCallback<Order>() {
+                @Override public void onSuccess(Order order) {
+                    orders.add(order);
+                    remaining[0]--;
+                    if (remaining[0] == 0) cb.onSuccess(orders);
+                }
+                @Override public void onFailure(String error) { cb.onFailure(error); }
+            });
+        }
     }
 }

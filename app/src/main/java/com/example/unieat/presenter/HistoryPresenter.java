@@ -2,6 +2,7 @@ package com.example.unieat.presenter;
 
 import android.content.Context;
 
+import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.dao.OrderDAO;
 import com.example.unieat.enums.OrderStatus;
 import com.example.unieat.model.Order;
@@ -13,25 +14,41 @@ import java.util.List;
 
 public class HistoryPresenter {
 
-    private OrderDAO orderDAO;
-
-    public HistoryPresenter(Context context) {
-        orderDAO = new OrderDAO(context);
+    public interface HistoryView {
+        void onHistoryLoaded(List<Order> orders);
+        void onError(String message);
     }
 
-    public List<Order> getHistory() {
-        return orderDAO.findAll();
-    }
-    
-    public List<Order> getHistoryByStatus(OrderStatus status) {
-        return orderDAO.findByStatus(status);
-    }
-    
-    public String formatDate(Date date) {
-        return DateUtils.formatDate(date);
+    private final OrderDAO orderDAO;
+    private final HistoryView view;
+
+    public HistoryPresenter(Context context, HistoryView view) {
+        this.orderDAO = new OrderDAO();
+        this.view = view;
     }
 
-    public String formatStatus(OrderStatus status) {
-        return OrderUtils.formatStatus(status);
+    public void getHistory() {
+        orderDAO.findAll(new FirebaseCallback<List<Order>>() {
+            @Override public void onSuccess(List<Order> orders) {
+                view.onHistoryLoaded(orders);
+            }
+            @Override public void onFailure(String error) {
+                view.onError(error);
+            }
+        });
     }
+
+    public void getHistoryByStatus(OrderStatus status) {
+        orderDAO.findByStatus(status, new FirebaseCallback<List<Order>>() {
+            @Override public void onSuccess(List<Order> orders) {
+                view.onHistoryLoaded(orders);
+            }
+            @Override public void onFailure(String error) {
+                view.onError(error);
+            }
+        });
+    }
+
+    public String formatDate(Date date) { return DateUtils.formatDate(date); }
+    public String formatStatus(OrderStatus status) { return OrderUtils.formatStatus(status); }
 }

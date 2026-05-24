@@ -1,13 +1,12 @@
 package com.example.unieat.dao;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-
-import com.example.unieat.data.DatabaseHelper;
+import com.example.unieat.data.FirebaseHelper;
 import com.example.unieat.enums.PaymentMethod;
 import com.example.unieat.model.Payment;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,82 +14,65 @@ import java.util.List;
 
 public class PaymentDAO {
 
-    private DatabaseHelper dbhelper;
-
-    public PaymentDAO(Context context){
-        dbhelper = new DatabaseHelper(context);
+    public void insert(Payment payment, FirebaseCallback<String> cb) {
+        DatabaseReference ref = FirebaseHelper.payments().push();
+        payment.setId(ref.getKey());
+        ref.setValue(payment)
+                .addOnSuccessListener(a -> cb.onSuccess(payment.getId()))
+                .addOnFailureListener(e -> cb.onFailure(e.getMessage()));
     }
 
-    public void insert(Payment payment){
-        SQLiteDatabase db = dbhelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("id", payment.getId());
-        values.put("order_id", payment.getOrderId());
-        values.put("method", payment.getMethod().name());
-        values.put("amount", payment.getAmount());
-        values.put("time", payment.getTime().getTime());
-
-        db.insert("payment", null, values);
-        db.close();
+    public void findByOrderId(String orderId, FirebaseCallback<Payment> cb) {
+        FirebaseHelper.payments()
+                .orderByChild("orderId").equalTo(orderId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override public void onDataChange(DataSnapshot snap) {
+                        for (DataSnapshot child : snap.getChildren()) {
+                            cb.onSuccess(snapToPayment(child));
+                            return;
+                        }
+                        cb.onSuccess(null);
+                    }
+                    @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+                });
     }
 
-    public Payment findByOrderId(String id) {
-        SQLiteDatabase db = dbhelper.getReadableDatabase();
-        Payment payment = null;
-        Cursor cursor = db.query("payment", null, "order_id = ?", new String[]{id}, null, null, null);
-
-        if(cursor.moveToFirst()){
-            payment = new Payment(
-            cursor.getString(cursor.getColumnIndexOrThrow("id")),
-            cursor.getString(cursor.getColumnIndexOrThrow("order_id")),
-            PaymentMethod.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("method"))),
-            cursor.getFloat(cursor.getColumnIndexOrThrow("amount")),
-            new Date(cursor.getLong(cursor.getColumnIndexOrThrow("time")))
-            );
-        }
-        cursor.close();
-        db.close();
-        return payment;
+    public void findById(String id, FirebaseCallback<Payment> cb) {
+        FirebaseHelper.payments().child(id)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override public void onDataChange(DataSnapshot snap) {
+                        cb.onSuccess(snap.exists() ? snapToPayment(snap) : null);
+                    }
+                    @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+                });
     }
 
-    public Payment findById(String id) {
-        SQLiteDatabase db = dbhelper.getReadableDatabase();
-        Payment payment = null;
-        Cursor cursor = db.query("payment", null, "id = ?", new String[]{id}, null, null, null);
-
-        if(cursor.moveToFirst()){
-            payment = new Payment(
-                    cursor.getString(cursor.getColumnIndexOrThrow("id")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("order_id")),
-                    PaymentMethod.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("method"))),
-                    cursor.getFloat(cursor.getColumnIndexOrThrow("amount")),
-                    new Date(cursor.getLong(cursor.getColumnIndexOrThrow("time")))
-            );
-        }
-        cursor.close();
-        db.close();
-        return payment;
+    public void findAll(FirebaseCallback<List<Payment>> cb) {
+        FirebaseHelper.payments()
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override public void onDataChange(DataSnapshot snap) {
+                        List<Payment> list = new ArrayList<>();
+                        for (DataSnapshot child : snap.getChildren())
+                            list.add(snapToPayment(child));
+                        cb.onSuccess(list);
+                    }
+                    @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+                });
     }
 
-    public List<Payment> findAll() {
-        List<Payment> list = new ArrayList<>();
-        SQLiteDatabase db = dbhelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM payment", null);
+    private Payment snapToPayment(DataSnapshot snap) {
+        String id        = snap.getKey();
+        String orderId   = snap.child("orderId").getValue(String.class);
+        String methodStr = snap.child("method").getValue(String.class);
+        Double amount    = snap.child("amount").getValue(Double.class);
+        Long time        = snap.child("timeMillis").getValue(Long.class);
 
-        if(cursor.moveToFirst()) {
-            do {
-                Payment payment = new Payment(
-                        cursor.getString(cursor.getColumnIndexOrThrow("id")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("order_id")),
-                        PaymentMethod.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("method"))),
-                        cursor.getFloat(cursor.getColumnIndexOrThrow("amount")),
-                        new Date(cursor.getLong(cursor.getColumnIndexOrThrow("time")))
-                );
-                list.add(payment);
-            } while(cursor.moveToNext());
-        }
-        cursor.close();
-        db.close();
-        return list;
+        return new Payment(
+                id,
+                orderId,
+                methodStr != null ? PaymentMethod.valueOf(methodStr) : null,
+                amount != null ? amount : 0.0,
+                time != null ? new Date(time) : new Date()
+        );
     }
 }

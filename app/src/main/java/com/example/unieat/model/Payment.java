@@ -62,6 +62,14 @@ public class Payment {
     public void setTime(Date time) {
         this.time = time;
     }
+
+    public long getTimeMillis() {
+        return time != null ? time.getTime() : 0;
+    }
+
+    public void setTimeMillis(long millis) {
+        this.time = new Date(millis);
+    }
 }
 
 
