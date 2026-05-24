@@ -77,6 +77,11 @@ public class KitchenHomePresenter {
                     return;
                 }
 
+                if (order.getStatus() == OrderStatus.ENTREGUE) {
+                    view.showError("Este pedido já foi entregue");
+                    return;
+                }
+
                 OrderStatus nextStatus;
                 switch (order.getStatus()) {
                     case PENDENTE:   nextStatus = OrderStatus.PREPARANDO; break;
