@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.example.unieat.R;
 import com.example.unieat.enums.PaymentMethod;
 import com.example.unieat.presenter.PaymentPresenter;
-import com.example.unieat.util.AppNotification;
+import android.widget.Toast;
 import com.google.android.material.card.MaterialCardView;
 
 public class PaymentActivity extends BaseActivity {
@@ -94,7 +94,7 @@ public class PaymentActivity extends BaseActivity {
                 presenter.processPayment(orderId, PaymentMethod.CASH, total,
                     new PaymentPresenter.PaymentView() {
                         @Override public void onPaymentSuccess(com.example.unieat.model.Payment p) {
-                            AppNotification.success(PaymentActivity.this, "Pagamento registrado!");
+                            Toast.makeText(PaymentActivity.this, "Pagamento registrado!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(PaymentActivity.this, OrderSuccessActivity.class);
                             intent.putExtra("dish_id",  getIntent().getStringExtra("dish_id"));
                             intent.putExtra("order_id", orderId);
@@ -104,7 +104,7 @@ public class PaymentActivity extends BaseActivity {
                         }
                         @Override public void onPaymentError(String message) {
                             btnConfirmOrder.setEnabled(true);
-                            AppNotification.error(PaymentActivity.this, message);
+                            Toast.makeText(PaymentActivity.this, message, Toast.LENGTH_SHORT).show();
                         }
                     });
             }

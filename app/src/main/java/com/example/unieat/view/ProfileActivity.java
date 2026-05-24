@@ -18,7 +18,6 @@ import com.example.unieat.dao.UserDAO;
 import com.example.unieat.data.SessionManager;
 import com.example.unieat.enums.UserType;
 import com.example.unieat.presenter.ProfilePresenter;
-import com.example.unieat.util.AppNotification;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ProfileActivity extends BaseActivity
@@ -119,10 +118,10 @@ public class ProfileActivity extends BaseActivity
             String qrUrl = etPixQrUrl.getText().toString().trim();
             new SettingsDAO().savePixInfo(key, qrUrl, new FirebaseCallback<Void>() {
                 @Override public void onSuccess(Void ignored) {
-                    AppNotification.success(ProfileActivity.this, "Informações PIX salvas!");
+                    Toast.makeText(ProfileActivity.this, "Informações PIX salvas!", Toast.LENGTH_SHORT).show();
                 }
                 @Override public void onFailure(String error) {
-                    AppNotification.error(ProfileActivity.this, "Erro ao salvar PIX");
+                    Toast.makeText(ProfileActivity.this, "Erro ao salvar PIX", Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -178,10 +177,10 @@ public class ProfileActivity extends BaseActivity
             @Override public void onSuccess(Void v) {
                 sessionManager.setProfilePicture(index);
                 ivProfilePicture.setImageResource(getProfileDrawable(index));
-                AppNotification.success(ProfileActivity.this, "Foto atualizada!");
+                Toast.makeText(ProfileActivity.this, "Foto atualizada!", Toast.LENGTH_SHORT).show();
             }
             @Override public void onFailure(String error) {
-                AppNotification.error(ProfileActivity.this, "Erro ao salvar foto");
+                Toast.makeText(ProfileActivity.this, "Erro ao salvar foto", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -222,5 +221,5 @@ public class ProfileActivity extends BaseActivity
 
     @Override public void onEmailLoaded(String email) { tvUserEmail.setText(email); }
     @Override public void onTotalOrdersLoaded(int total) { tvOrderCount.setText(String.valueOf(total)); }
-    @Override public void onError(String message) { AppNotification.error(this, message); }
+    @Override public void onError(String message) { Toast.makeText(this, message, Toast.LENGTH_SHORT).show(); }
 }

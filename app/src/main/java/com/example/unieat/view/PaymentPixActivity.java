@@ -15,7 +15,7 @@ import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.dao.SettingsDAO;
 import com.example.unieat.enums.PaymentMethod;
 import com.example.unieat.presenter.PaymentPresenter;
-import com.example.unieat.util.AppNotification;
+import android.widget.Toast;
 
 public class PaymentPixActivity extends BaseActivity {
 
@@ -87,7 +87,7 @@ public class PaymentPixActivity extends BaseActivity {
             presenter.processPayment(orderId, PaymentMethod.PIX, orderAmount,
                 new PaymentPresenter.PaymentView() {
                     @Override public void onPaymentSuccess(com.example.unieat.model.Payment p) {
-                        AppNotification.success(PaymentPixActivity.this, "Pagamento via PIX confirmado!");
+                        Toast.makeText(PaymentPixActivity.this, "Pagamento via PIX confirmado!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(PaymentPixActivity.this, OrderSuccessActivity.class);
                         intent.putExtra("order_id",  orderId);
                         intent.putExtra("dish_id",   getIntent().getStringExtra("dish_id"));
@@ -97,7 +97,7 @@ public class PaymentPixActivity extends BaseActivity {
                     }
                     @Override public void onPaymentError(String message) {
                         btnConfirmOrder.setEnabled(true);
-                        AppNotification.error(PaymentPixActivity.this, message);
+                        Toast.makeText(PaymentPixActivity.this, message, Toast.LENGTH_SHORT).show();
                     }
                 });
         });
@@ -108,11 +108,11 @@ public class PaymentPixActivity extends BaseActivity {
 
     private void copyToClipboard() {
         if (pixKey.isEmpty()) {
-            AppNotification.info(this, "Nenhuma chave PIX cadastrada");
+            Toast.makeText(this, "Nenhuma chave PIX cadastrada", Toast.LENGTH_SHORT).show();
             return;
         }
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         clipboard.setPrimaryClip(ClipData.newPlainText("Chave Pix", pixKey));
-        AppNotification.success(this, "Chave PIX copiada!");
+        Toast.makeText(this, "Chave PIX copiada!", Toast.LENGTH_SHORT).show();
     }
 }
