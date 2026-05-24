@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.unieat.R;
 import com.example.unieat.model.OrderItem;
 
@@ -45,6 +46,17 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.Orde
 
         holder.tvName.setText(item.getDish().getName());
         holder.tvPrice.setText(String.format("R$ %.2f", item.getDish().getPrice()));
+
+        String imageUrl = item.getDish().getImageName();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.shape_logo_placeholder)
+                    .error(R.drawable.shape_logo_placeholder)
+                    .into(holder.imgDish);
+        } else {
+            holder.imgDish.setImageResource(R.drawable.shape_logo_placeholder);
+        }
         holder.tvQuantity.setText(String.valueOf(item.getQuantity()));
         holder.tvSubtotal.setText(String.format("R$ %.2f",
                 item.getDish().getPrice() * item.getQuantity()));

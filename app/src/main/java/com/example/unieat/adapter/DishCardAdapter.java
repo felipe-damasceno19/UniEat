@@ -10,25 +10,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.unieat.R;
 import com.example.unieat.model.Dish;
 import com.google.android.material.button.MaterialButton;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class DishCardAdapter extends RecyclerView.Adapter<DishCardAdapter.DishViewHolder> {
 
     public interface OnDishClickListener {
         void onOrderClick(Dish dish);
-    }
-
-    private static final Map<String, Integer> DISH_IMAGES = new HashMap<>();
-
-    static {
-        // adicione aqui conforme for criando as imagens em res/drawable
-        // exemplo: DISH_IMAGES.put("dish_frango_grelhado", R.drawable.dish_frango_grelhado);
     }
 
     private final List<Dish> dishes;
@@ -55,8 +47,13 @@ public class DishCardAdapter extends RecyclerView.Adapter<DishCardAdapter.DishVi
         holder.tvName.setText(dish.getName());
         holder.tvPrice.setText(String.format("R$ %.2f", dish.getPrice()));
 
-        if (dish.getImageName() != null && DISH_IMAGES.containsKey(dish.getImageName())) {
-            holder.imgDish.setImageResource(DISH_IMAGES.get(dish.getImageName()));
+        String imageUrl = dish.getImageName();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.shape_logo_placeholder)
+                    .error(R.drawable.shape_logo_placeholder)
+                    .into(holder.imgDish);
         } else {
             holder.imgDish.setImageResource(R.drawable.shape_logo_placeholder);
         }

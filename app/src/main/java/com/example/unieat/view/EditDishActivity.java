@@ -22,7 +22,7 @@ import java.util.Locale;
 public class EditDishActivity extends BaseActivity
         implements KitchenMenuPresenter.KitchenView {
 
-    private EditText editDishName, editDishDescription, editDishPrice;
+    private EditText editDishName, editDishDescription, editDishPrice, editImageUrl;
     private Spinner spinnerDishType;
     private SwitchCompat switchAvailable;
     private KitchenMenuPresenter presenter;
@@ -50,6 +50,7 @@ public class EditDishActivity extends BaseActivity
         editDishName = findViewById(R.id.editDishName);
         editDishDescription = findViewById(R.id.editDishDescription);
         editDishPrice = findViewById(R.id.editDishPrice);
+        editImageUrl = findViewById(R.id.editImageUrl);
         spinnerDishType = findViewById(R.id.spinnerDishType);
         switchAvailable = findViewById(R.id.switchAvailable);
     }
@@ -71,6 +72,7 @@ public class EditDishActivity extends BaseActivity
                 editDishName.setText(dish.getName());
                 editDishDescription.setText(dish.getDescription());
                 editDishPrice.setText(String.format(Locale.US, "%.2f", dish.getPrice()).replace(".", ","));
+                editImageUrl.setText(dish.getImageName() != null ? dish.getImageName() : "");
                 switchAvailable.setChecked(dish.isAvailable());
 
                 FoodType[] types = FoodType.values();
@@ -111,6 +113,7 @@ public class EditDishActivity extends BaseActivity
         String name = editDishName.getText().toString().trim();
         String description = editDishDescription.getText().toString().trim();
         String priceStr = editDishPrice.getText().toString().trim().replace(",", ".");
+        String imageUrl = editImageUrl.getText().toString().trim();
         FoodType type = (FoodType) spinnerDishType.getSelectedItem();
         boolean available = switchAvailable.isChecked();
 
@@ -129,9 +132,11 @@ public class EditDishActivity extends BaseActivity
                 dish.setDescription(description);
                 dish.setPrice(price);
                 dish.setType(type);
+                dish.setImageName(imageUrl);
                 dish.setAvailable(available);
             } else {
                 dish = new Dish(null, name, description, price, type);
+                dish.setImageName(imageUrl);
                 dish.setAvailable(available);
             }
 

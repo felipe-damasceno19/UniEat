@@ -147,6 +147,26 @@
                     android:padding="12dp"
                     android:spinnerMode="dropdown" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="URL da Imagem"
+                    android:textColor="@color/text_label"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/editImageUrl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_input"
+                    android:hint="https://..."
+                    android:inputType="textUri"
+                    android:padding="12dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
