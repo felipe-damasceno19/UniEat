@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unieat.R;
@@ -16,19 +17,22 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 
-public class HistoryActivity extends BaseActivity {
+public class HistoryActivity extends BaseActivity implements HistoryPresenter.HistoryView {
 
     private HistoryPresenter presenter;
+    private RecyclerView rvHistory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        presenter = new HistoryPresenter(this);
+        presenter = new HistoryPresenter(this, this);
+        rvHistory = findViewById(R.id.rvHistory);
+        rvHistory.setLayoutManager(new LinearLayoutManager(this));
 
         setupNavigation();
-        setupRecyclerView();
+        presenter.getHistory();
     }
 
     private void setupNavigation() {
@@ -36,10 +40,8 @@ public class HistoryActivity extends BaseActivity {
         NavigationHelper.setupBottomNavigation(this, bottomNav, R.id.nav_history);
     }
 
-    private void setupRecyclerView() {
-        List<Order> orders = presenter.getHistory();
-        RecyclerView rvHistory = findViewById(R.id.rvHistory);
-
+    @Override
+    public void onHistoryLoaded(List<Order> orders) {
         rvHistory.setAdapter(new HistoryAdapter(this, orders, new HistoryAdapter.OnHistoryClickListener() {
             @Override
             public void onReorder(Order order) {
@@ -57,5 +59,10 @@ public class HistoryActivity extends BaseActivity {
                 startActivity(intent);
             }
         }));
+    }
+
+    @Override
+    public void onError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

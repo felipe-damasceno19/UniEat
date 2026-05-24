@@ -6,14 +6,19 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.unieat.R;
+import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.presenter.ProfilePresenter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class ProfileActivity extends BaseActivity {
+public class ProfileActivity extends BaseActivity
+        implements ProfilePresenter.ProfileView {
 
     private ProfilePresenter presenter;
+    private TextView tvUserEmail;
+    private TextView tvOrderCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +29,16 @@ public class ProfileActivity extends BaseActivity {
 
         setupNavigation();
         setupViews();
+
+        TextView tvUserName    = findViewById(R.id.tvUserName);
+        TextView tvBalance     = findViewById(R.id.tvBalance);
+        TextView tvMemberSince = findViewById(R.id.tvMemberSince);
+        tvUserName.setText(presenter.getUserName());
+        tvBalance.setText(String.format("R$ %.2f", presenter.getBalance()));
+        tvMemberSince.setText(presenter.getMemberSince());
+
+        presenter.getUserEmail(this);
+        presenter.getTotalOrders(this);
     }
 
     private void setupNavigation() {
@@ -32,20 +47,12 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void setupViews() {
-        TextView tvBalance = findViewById(R.id.tvBalance);
-        TextView tvUserName = findViewById(R.id.tvUserName);
-        TextView tvUserEmail = findViewById(R.id.tvUserEmail);
-        TextView tvOrderCount = findViewById(R.id.tvOrderCount);
-        TextView tvMemberSince = findViewById(R.id.tvMemberSince);
-        LinearLayout rowChangePassword = findViewById(R.id.rowChangePassword);
-        LinearLayout rowDeleteAccount = findViewById(R.id.rowDeleteAccount);
-        Button btnLogout = findViewById(R.id.btnLogout);
+        tvUserEmail  = findViewById(R.id.tvUserEmail);
+        tvOrderCount = findViewById(R.id.tvOrderCount);
 
-        tvBalance.setText(String.format("R$ %.2f", presenter.getBalance()));
-        tvUserName.setText(presenter.getUserName());
-        tvUserEmail.setText(presenter.getUserEmail());
-        tvOrderCount.setText(String.valueOf(presenter.getTotalOrders()));
-        tvMemberSince.setText(presenter.getMemberSince());
+        LinearLayout rowChangePassword = findViewById(R.id.rowChangePassword);
+        LinearLayout rowDeleteAccount  = findViewById(R.id.rowDeleteAccount);
+        Button btnLogout               = findViewById(R.id.btnLogout);
 
         rowChangePassword.setOnClickListener(v ->
                 startActivity(new Intent(this, ForgotPasswordActivity.class))
@@ -65,13 +72,38 @@ public class ProfileActivity extends BaseActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Excluir Conta")
                 .setMessage("Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.")
-                .setPositiveButton("Excluir", (dialog, which) -> {
-                    presenter.deleteAccount();
-                    Intent intent = new Intent(this, LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                })
+                .setPositiveButton("Excluir", (dialog, which) ->
+                        presenter.deleteAccount(new FirebaseCallback<Void>() {
+                            @Override
+                            public void onSuccess(Void v) {
+                                Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                            }
+                            @Override
+                            public void onFailure(String error) {
+                                Toast.makeText(ProfileActivity.this,
+                                        "Erro ao excluir conta: " + error, Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                )
                 .setNegativeButton("Cancelar", null)
                 .show();
+    }
+
+
+    @Override
+    public void onEmailLoaded(String email) {
+        tvUserEmail.setText(email);
+    }
+
+    @Override
+    public void onTotalOrdersLoaded(int total) {
+        tvOrderCount.setText(String.valueOf(total));
+    }
+
+    @Override
+    public void onError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

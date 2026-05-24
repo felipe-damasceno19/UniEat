@@ -32,7 +32,7 @@ public class KitchenHomeActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kitchen_home);
 
-        presenter = new KitchenHomePresenter(this, this);
+        presenter = new KitchenHomePresenter(this);
 
         bindViews();
         setupFilters();

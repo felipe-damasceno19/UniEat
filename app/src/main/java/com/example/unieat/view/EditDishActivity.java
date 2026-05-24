@@ -34,7 +34,7 @@ public class EditDishActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_dish);
 
-        presenter = new KitchenMenuPresenter(this, new DishDAO(this));
+        presenter = new KitchenMenuPresenter(this, new DishDAO());
         dishId = getIntent().getStringExtra("dish_id");
 
         bindViews();
@@ -64,23 +64,27 @@ public class EditDishActivity extends BaseActivity
     }
 
     private void loadDish() {
-        DishDAO dishDAO = new DishDAO(this);
-        currentDish = dishDAO.findById(dishId);
+        new DishDAO().findById(dishId, new com.example.unieat.dao.FirebaseCallback<Dish>() {
+            @Override public void onSuccess(Dish dish) {
+                if (dish == null) return;
+                currentDish = dish;
+                editDishName.setText(dish.getName());
+                editDishDescription.setText(dish.getDescription());
+                editDishPrice.setText(String.format(Locale.US, "%.2f", dish.getPrice()).replace(".", ","));
+                switchAvailable.setChecked(dish.isAvailable());
 
-        if (currentDish != null) {
-            editDishName.setText(currentDish.getName());
-            editDishDescription.setText(currentDish.getDescription());
-            editDishPrice.setText(String.format(Locale.US, "%.2f", currentDish.getPrice()).replace(".", ","));
-            switchAvailable.setChecked(currentDish.isAvailable());
-
-            FoodType[] types = FoodType.values();
-            for (int i = 0; i < types.length; i++) {
-                if (types[i] == currentDish.getType()) {
-                    spinnerDishType.setSelection(i);
-                    break;
+                FoodType[] types = FoodType.values();
+                for (int i = 0; i < types.length; i++) {
+                    if (types[i] == dish.getType()) {
+                        spinnerDishType.setSelection(i);
+                        break;
+                    }
                 }
             }
-        }
+            @Override public void onFailure(String error) {
+                Toast.makeText(EditDishActivity.this, "Erro ao carregar prato", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupListeners() {

@@ -21,7 +21,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        DataSeeder.seed(this);
+        DataSeeder.seed();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 

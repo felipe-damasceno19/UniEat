@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.unieat.R;
 import com.example.unieat.adapter.DishCardAdapter;
 import com.example.unieat.dao.DishDAO;
+import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.data.SessionManager;
 import com.example.unieat.enums.FoodType;
 import com.example.unieat.model.Dish;
@@ -21,12 +22,14 @@ import com.example.unieat.presenter.OrderPresenter;
 import com.example.unieat.presenter.student.MenuPresenter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MenuActivity extends AppCompatActivity implements MenuPresenter.View {
 
     private MenuPresenter presenter;
     private OrderPresenter orderPresenter;
+    private DishDAO dishDAO;
     private RecyclerView rvMainDishes, rvSnacks, rvDrinks, rvDesserts;
     private TextView tvBalance;
 
@@ -35,7 +38,8 @@ public class MenuActivity extends AppCompatActivity implements MenuPresenter.Vie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        presenter = new MenuPresenter(this, new DishDAO(this));
+        dishDAO = new DishDAO();
+        presenter = new MenuPresenter(this, dishDAO);
         orderPresenter = new OrderPresenter(this);
 
         setupNavigation();
@@ -57,78 +61,75 @@ public class MenuActivity extends AppCompatActivity implements MenuPresenter.Vie
 
     private void bindViews() {
         rvMainDishes = findViewById(R.id.rvMainDishes);
-        rvSnacks = findViewById(R.id.rvSnacks);
-        rvDrinks = findViewById(R.id.rvDrinks);
-        rvDesserts = findViewById(R.id.rvDesserts);
-        tvBalance = findViewById(R.id.tvBalance);
+        rvSnacks     = findViewById(R.id.rvSnacks);
+        rvDrinks     = findViewById(R.id.rvDrinks);
+        rvDesserts   = findViewById(R.id.rvDesserts);
+        tvBalance    = findViewById(R.id.tvBalance);
 
-        rvMainDishes.setLayoutManager(
-                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        rvSnacks.setLayoutManager(
-                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        rvDrinks.setLayoutManager(
-                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        rvDesserts.setLayoutManager(
-                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        rvMainDishes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        rvSnacks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        rvDrinks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        rvDesserts.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        SessionManager session = new SessionManager(this);
-        tvBalance.setText(String.format("R$ %.2f", session.getBalance()));
+        tvBalance.setText(String.format("R$ %.2f", new SessionManager(this).getBalance()));
     }
 
     private void setupSearch() {
         EditText etSearch = findViewById(R.id.etSearch);
         etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().isEmpty()) {
-                    loadData();
-                } else {
-                    presenter.searchByName(s.toString());
-                }
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void afterTextChanged(Editable s) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().isEmpty()) loadData();
+                else presenter.searchByName(s.toString());
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
         });
     }
 
     private void loadData() {
-        DishDAO dishDAO = new DishDAO(this);
+        dishDAO.getDishesByType(FoodType.REFEICAO, new FirebaseCallback<List<Dish>>() {
+            @Override public void onSuccess(List<Dish> dishes) {
+                setAdapter(rvMainDishes, dishes);
+            }
+            @Override public void onFailure(String e) {}
+        });
 
-        List<Dish> mainDishes = dishDAO.getDishesByType(FoodType.REFEICAO);
+        FoodType[] snackTypes = {
+                FoodType.SANDUICHE_NATURAL, FoodType.SALGADO_ASSADO,
+                FoodType.SALGADO_FRITO, FoodType.SNACK,
+                FoodType.TAPIOCA, FoodType.CUSCUZ
+        };
+        loadMerged(snackTypes, rvSnacks);
 
-        List<Dish> snacks = dishDAO.getDishesByType(FoodType.SANDUICHE_NATURAL);
-        snacks.addAll(dishDAO.getDishesByType(FoodType.SALGADO_ASSADO));
-        snacks.addAll(dishDAO.getDishesByType(FoodType.SALGADO_FRITO));
-        snacks.addAll(dishDAO.getDishesByType(FoodType.SNACK));
-        snacks.addAll(dishDAO.getDishesByType(FoodType.TAPIOCA));
-        snacks.addAll(dishDAO.getDishesByType(FoodType.CUSCUZ));
+        FoodType[] drinkTypes = {FoodType.BEBIDA_QUENTE, FoodType.BEBIDA_GELADA};
+        loadMerged(drinkTypes, rvDrinks);
 
-        List<Dish> drinks = dishDAO.getDishesByType(FoodType.BEBIDA_QUENTE);
-        drinks.addAll(dishDAO.getDishesByType(FoodType.BEBIDA_GELADA));
+        FoodType[] dessertTypes = {FoodType.SOBREMESA_GELADA, FoodType.DOCE_CAKE};
+        loadMerged(dessertTypes, rvDesserts);
+    }
 
-        List<Dish> desserts = dishDAO.getDishesByType(FoodType.SOBREMESA_GELADA);
-        desserts.addAll(dishDAO.getDishesByType(FoodType.DOCE_CAKE));
+    // Busca múltiplos tipos e junta na mesma RecyclerView
+    private void loadMerged(FoodType[] types, RecyclerView recyclerView) {
+        List<Dish> merged = new ArrayList<>();
+        final int[] remaining = {types.length};
 
-        rvMainDishes.setAdapter(new DishCardAdapter(this, mainDishes, dish -> {
-            orderPresenter.addItem(dish);
-            startActivity(new Intent(this, OrderActivity.class));
-        }));
+        for (FoodType type : types) {
+            dishDAO.getDishesByType(type, new FirebaseCallback<List<Dish>>() {
+                @Override public void onSuccess(List<Dish> dishes) {
+                    merged.addAll(dishes);
+                    remaining[0]--;
+                    if (remaining[0] == 0) setAdapter(recyclerView, merged);
+                }
+                @Override public void onFailure(String e) {
+                    remaining[0]--;
+                    if (remaining[0] == 0) setAdapter(recyclerView, merged);
+                }
+            });
+        }
+    }
 
-        rvSnacks.setAdapter(new DishCardAdapter(this, snacks, dish -> {
-            orderPresenter.addItem(dish);
-            startActivity(new Intent(this, OrderActivity.class));
-        }));
-
-        rvDrinks.setAdapter(new DishCardAdapter(this, drinks, dish -> {
-            orderPresenter.addItem(dish);
-            startActivity(new Intent(this, OrderActivity.class));
-        }));
-
-        rvDesserts.setAdapter(new DishCardAdapter(this, desserts, dish -> {
+    private void setAdapter(RecyclerView rv, List<Dish> dishes) {
+        rv.setAdapter(new DishCardAdapter(this, dishes, dish -> {
             orderPresenter.addItem(dish);
             startActivity(new Intent(this, OrderActivity.class));
         }));
@@ -137,25 +138,20 @@ public class MenuActivity extends AppCompatActivity implements MenuPresenter.Vie
     // MenuPresenter.View callbacks
     @Override
     public void showDishes(List<Dish> dishes) {
-        rvMainDishes.setAdapter(new DishCardAdapter(this, dishes, dish -> {
-            orderPresenter.addItem(dish);
-            startActivity(new Intent(this, OrderActivity.class));
-        }));
+        setAdapter(rvMainDishes, dishes);
         rvSnacks.setAdapter(null);
         rvDrinks.setAdapter(null);
         rvDesserts.setAdapter(null);
     }
 
-    @Override
-    public void showEmptyState(String message) {
+    @Override public void showEmptyState(String message) {
         rvMainDishes.setAdapter(null);
         rvSnacks.setAdapter(null);
         rvDrinks.setAdapter(null);
         rvDesserts.setAdapter(null);
     }
 
-    @Override
-    public void showError(String message) {
+    @Override public void showError(String message) {
         android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show();
     }
 }

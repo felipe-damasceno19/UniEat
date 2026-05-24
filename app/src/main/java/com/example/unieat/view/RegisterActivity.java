@@ -1,6 +1,5 @@
 package com.example.unieat.view;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -9,17 +8,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.example.unieat.R;
-import com.example.unieat.dao.UserDAO;
 import com.example.unieat.enums.UserType;
-import com.example.unieat.model.User;
 import com.example.unieat.presenter.RegisterPresenter;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.util.UUID;
-
-public class RegisterActivity extends BaseActivity implements RegisterPresenter.View{
+public class RegisterActivity extends BaseActivity implements RegisterPresenter.View {
 
     private TextInputEditText etName, etUsername, etEmail, etPassword;
     private Button btnRoleStudent, btnRoleKitchen, btnRegister;
@@ -27,8 +21,8 @@ public class RegisterActivity extends BaseActivity implements RegisterPresenter.
     private UserType selectedType = UserType.ALUNO;
     private RegisterPresenter presenter;
 
-    private final int colorRed = Color.parseColor("#7B1C1C");
-    private final int colorWhite = Color.WHITE;
+    private final int colorRed      = Color.parseColor("#7B1C1C");
+    private final int colorWhite    = Color.WHITE;
     private final int colorInactive = Color.parseColor("#F0E8E8");
 
     @Override
@@ -36,7 +30,8 @@ public class RegisterActivity extends BaseActivity implements RegisterPresenter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        presenter = new RegisterPresenter(this, this);
+        presenter = new RegisterPresenter(this);
+
         bindViews();
         setupToggle();
         setupRegister();
@@ -45,13 +40,13 @@ public class RegisterActivity extends BaseActivity implements RegisterPresenter.
     }
 
     private void bindViews() {
-        etName = findViewById(R.id.etName);
-        etUsername = findViewById(R.id.etUsername);
-        etEmail = findViewById(R.id.etEmail);
-        etPassword = findViewById(R.id.etPassword);
+        etName        = findViewById(R.id.etName);
+        etUsername    = findViewById(R.id.etUsername);
+        etEmail       = findViewById(R.id.etEmail);
+        etPassword    = findViewById(R.id.etPassword);
         btnRoleStudent = findViewById(R.id.btnRoleStudent);
         btnRoleKitchen = findViewById(R.id.btnRoleKitchen);
-        btnRegister = findViewById(R.id.btnRegister);
+        btnRegister   = findViewById(R.id.btnRegister);
         tvBackToLogin = findViewById(R.id.tvBackToLogin);
     }
 
@@ -75,19 +70,20 @@ public class RegisterActivity extends BaseActivity implements RegisterPresenter.
 
     private void setupRegister() {
         btnRegister.setOnClickListener(v -> {
-            String name = etName.getText().toString().trim();
+            String name     = etName.getText().toString().trim();
             String username = etUsername.getText().toString().trim();
-            String email = etEmail.getText().toString().trim();
+            String email    = etEmail.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
 
+            btnRegister.setEnabled(false);
             presenter.register(name, username, email, password, selectedType);
         });
     }
 
+
     @Override
     public void onRegisterSuccess() {
         Toast.makeText(this, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show();
-
         Intent intent = new Intent(this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -96,7 +92,7 @@ public class RegisterActivity extends BaseActivity implements RegisterPresenter.
 
     @Override
     public void onRegisterError(String message) {
+        btnRegister.setEnabled(true);
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-
 }
