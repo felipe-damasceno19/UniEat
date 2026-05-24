@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.unieat.R;
 import com.example.unieat.enums.OrderStatus;
 import com.example.unieat.model.Order;
@@ -56,6 +58,19 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         String statusText = OrderUtils.formatStatus(order.getStatus());
         holder.tvOrderStatus.setText(statusText);
         applyStatusStyle(holder.tvOrderStatus, order.getStatus());
+
+        // imagem do primeiro prato
+        if (!order.getItems().isEmpty() && order.getItems().get(0).getDish() != null) {
+            String imageUrl = order.getItems().get(0).getDish().getImageName();
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                Glide.with(context).load(imageUrl)
+                        .placeholder(R.drawable.shape_logo_placeholder)
+                        .error(R.drawable.shape_logo_placeholder)
+                        .into(holder.imgDish);
+            } else {
+                holder.imgDish.setImageResource(R.drawable.shape_logo_placeholder);
+            }
+        }
 
         // resumo dos itens
         holder.tvOrderItems.setText(buildItemsSummary(order.getItems()));
@@ -108,11 +123,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     public int getItemCount() { return orders.size(); }
 
     static class HistoryViewHolder extends RecyclerView.ViewHolder {
+        ImageView imgDish;
         TextView tvOrderId, tvOrderDate, tvOrderStatus, tvOrderItems, tvOrderTotal;
         Button btnReorder, btnDetails;
 
         HistoryViewHolder(@NonNull View itemView) {
             super(itemView);
+            imgDish = itemView.findViewById(R.id.imgDish);
             tvOrderId = itemView.findViewById(R.id.tvOrderId);
             tvOrderDate = itemView.findViewById(R.id.tvOrderDate);
             tvOrderStatus = itemView.findViewById(R.id.tvOrderStatus);

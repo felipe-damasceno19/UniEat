@@ -7,9 +7,12 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 
 import com.example.unieat.R;
@@ -112,6 +115,17 @@ public class KitchenMenuActivity extends BaseActivity
         TextView tvStockStatus = cardView.findViewById(R.id.tvStockStatus);
         SwitchMaterial switchAvailable = cardView.findViewById(R.id.switchAvailable);
         View cardDish = cardView.findViewById(R.id.cardDish);
+
+        ImageView imgDish = cardView.findViewById(R.id.imgDish);
+        String imageUrl = dish.getImageName();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Glide.with(this).load(imageUrl)
+                    .placeholder(R.drawable.shape_logo_placeholder)
+                    .error(R.drawable.shape_logo_placeholder)
+                    .into(imgDish);
+        } else {
+            imgDish.setImageResource(R.drawable.shape_logo_placeholder);
+        }
 
         tvName.setText(dish.getName());
         tvPrice.setText(String.format(Locale.getDefault(), "R$ %.2f", dish.getPrice()));
