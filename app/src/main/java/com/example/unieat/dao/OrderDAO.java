@@ -173,17 +173,31 @@ public class OrderDAO {
 
         for (DataSnapshot itemSnap : itemSnaps) {
             String dishId  = itemSnap.child("dishId").getValue(String.class);
-            int quantity   = itemSnap.child("quantity").getValue(Integer.class);
+            Integer qty    = itemSnap.child("quantity").getValue(Integer.class);
             String itemId  = itemSnap.getKey();
+            int quantity   = qty != null ? qty : 1;
+
+            if (dishId == null) {
+                remaining[0]--;
+                if (remaining[0] == 0)
+                    cb.onSuccess(new Order(orderId, userId, items, status, date, annotation));
+                continue;
+            }
 
             dishDAO.findById(dishId, new FirebaseCallback<Dish>() {
                 @Override public void onSuccess(Dish dish) {
-                    items.add(new OrderItem(itemId, quantity, dish));
+                    if (dish != null) {
+                        items.add(new OrderItem(itemId, quantity, dish));
+                    }
                     remaining[0]--;
                     if (remaining[0] == 0)
                         cb.onSuccess(new Order(orderId, userId, items, status, date, annotation));
                 }
-                @Override public void onFailure(String error) { cb.onFailure(error); }
+                @Override public void onFailure(String error) {
+                    remaining[0]--;
+                    if (remaining[0] == 0)
+                        cb.onSuccess(new Order(orderId, userId, items, status, date, annotation));
+                }
             });
         }
     }
