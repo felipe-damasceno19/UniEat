@@ -46,8 +46,8 @@ public class UserDAO {
         });
     }
 
-    public void findById (String id, FirebaseCallback<User> cb) {
-        FirebaseHelper.users().addListenerForSingleValueEvent(new ValueEventListener() {
+    public void findById(String id, FirebaseCallback<User> cb) {
+        FirebaseHelper.users().child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 cb.onSuccess(snapshot.exists() ? snapToUser(snapshot) : null);
