@@ -28,6 +28,16 @@ public class RegisterPresenter {
             return;
         }
 
+        if (username.length() < 3) {
+            view.onRegisterError("O username deve ter pelo menos 3 caracteres");
+            return;
+        }
+
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            view.onRegisterError("Informe um email válido");
+            return;
+        }
+
         if (password.length() < 6) {
             view.onRegisterError("A senha deve ter pelo menos 6 caracteres");
             return;
