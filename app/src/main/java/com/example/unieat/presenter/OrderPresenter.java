@@ -24,7 +24,7 @@ public class OrderPresenter {
 
     private final OrderDAO orderDAO;
     private final SessionManager sessionManager;
-    private final List<OrderItem> cart = new ArrayList<>();
+    private static final List<OrderItem> cart = new ArrayList<>();
 
     public OrderPresenter(Context context) {
         this.orderDAO = new OrderDAO();
