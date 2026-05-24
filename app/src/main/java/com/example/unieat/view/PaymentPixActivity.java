@@ -8,40 +8,66 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-
+import com.bumptech.glide.Glide;
 import com.example.unieat.R;
+import com.example.unieat.dao.FirebaseCallback;
+import com.example.unieat.dao.SettingsDAO;
+import com.example.unieat.enums.PaymentMethod;
 import com.example.unieat.presenter.PaymentPresenter;
+import com.example.unieat.util.AppNotification;
 
 public class PaymentPixActivity extends BaseActivity {
 
-    private String pixKey = "12.345.678/0001-99"; // sua chave pix
+    private String pixKey   = "";
+    private String pixQrUrl = "";
+
     private PaymentPresenter presenter;
     private double orderAmount;
+
+    private TextView tvAmountTop, tvPixKey;
+    private ImageView imgQrCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_pix);
 
-        presenter = new PaymentPresenter(this);
-
+        presenter   = new PaymentPresenter(this);
         orderAmount = getIntent().getDoubleExtra("order_amount", 0.0);
 
-        setupViews();
+        tvAmountTop = findViewById(R.id.tvAmountTop);
+        imgQrCode   = findViewById(R.id.imgQrCode);
+        tvPixKey    = findViewById(R.id.tvPixKey);
+
+        tvAmountTop.setText(String.format("R$ %.2f", orderAmount));
+
+        new SettingsDAO().getPixInfo(new FirebaseCallback<String[]>() {
+            @Override public void onSuccess(String[] info) {
+                pixKey   = info[0];
+                pixQrUrl = info[1];
+                bindPixData();
+            }
+            @Override public void onFailure(String error) {
+                bindPixData();
+            }
+        });
+
         setupListeners();
     }
 
-    private void setupViews() {
-        TextView tvAmountTop = findViewById(R.id.tvAmountTop);
-        tvAmountTop.setText(String.format("R$ %.2f", orderAmount));
+    private void bindPixData() {
+        tvPixKey.setText(pixKey.isEmpty() ? "Chave não cadastrada" : pixKey);
 
-        ImageView imgQrCode = findViewById(R.id.imgQrCode);
-        imgQrCode.setImageResource(R.drawable.circle_bg_dark);
-
-        TextView tvPixKey = findViewById(R.id.tvPixKey);
-        tvPixKey.setText(pixKey);
+        if (!pixQrUrl.isEmpty()) {
+            Glide.with(this)
+                    .load(pixQrUrl)
+                    .placeholder(R.drawable.shape_logo_placeholder)
+                    .error(R.drawable.shape_logo_placeholder)
+                    .into(imgQrCode);
+        } else {
+            imgQrCode.setImageResource(R.drawable.shape_logo_placeholder);
+        }
     }
 
     private void setupListeners() {
@@ -57,19 +83,21 @@ public class PaymentPixActivity extends BaseActivity {
         Button btnConfirmOrder = findViewById(R.id.btnConfirmOrder);
         btnConfirmOrder.setOnClickListener(v -> {
             String orderId = getIntent().getStringExtra("order_id");
-            presenter.processPayment(orderId, com.example.unieat.enums.PaymentMethod.PIX, orderAmount,
+            btnConfirmOrder.setEnabled(false);
+            presenter.processPayment(orderId, PaymentMethod.PIX, orderAmount,
                 new PaymentPresenter.PaymentView() {
-                    @Override public void onPaymentSuccess(com.example.unieat.model.Payment payment) {
-                        presenter.deductBalance(orderAmount);
+                    @Override public void onPaymentSuccess(com.example.unieat.model.Payment p) {
+                        AppNotification.success(PaymentPixActivity.this, "Pagamento via PIX confirmado!");
                         Intent intent = new Intent(PaymentPixActivity.this, OrderSuccessActivity.class);
-                        intent.putExtra("order_id", orderId);
-                        intent.putExtra("dish_id", getIntent().getStringExtra("dish_id"));
+                        intent.putExtra("order_id",  orderId);
+                        intent.putExtra("dish_id",   getIntent().getStringExtra("dish_id"));
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         finish();
                     }
                     @Override public void onPaymentError(String message) {
-                        Toast.makeText(PaymentPixActivity.this, message, Toast.LENGTH_SHORT).show();
+                        btnConfirmOrder.setEnabled(true);
+                        AppNotification.error(PaymentPixActivity.this, message);
                     }
                 });
         });
@@ -79,9 +107,12 @@ public class PaymentPixActivity extends BaseActivity {
     }
 
     private void copyToClipboard() {
+        if (pixKey.isEmpty()) {
+            AppNotification.info(this, "Nenhuma chave PIX cadastrada");
+            return;
+        }
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("Chave Pix", pixKey);
-        clipboard.setPrimaryClip(clip);
-        Toast.makeText(this, "Chave Pix copiada!", Toast.LENGTH_SHORT).show();
+        clipboard.setPrimaryClip(ClipData.newPlainText("Chave Pix", pixKey));
+        AppNotification.success(this, "Chave PIX copiada!");
     }
 }

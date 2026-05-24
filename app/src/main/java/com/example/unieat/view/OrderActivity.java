@@ -43,7 +43,7 @@ public class OrderActivity extends BaseActivity implements OrderPresenter.OrderV
         btnClose.setOnClickListener(v -> finish());
 
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
-        NavigationHelper.setupBottomNavigation(this, bottomNav, R.id.nav_orders);
+        NavigationHelper.setupBottomNavigation(this, bottomNav, -1);
     }
 
     private void setupViews() {
@@ -78,7 +78,7 @@ public class OrderActivity extends BaseActivity implements OrderPresenter.OrderV
             intent.putExtra("dish_id", order.getItems().get(0).getDish().getId());
         }
         startActivity(intent);
-        btnGoToPayment.setEnabled(true);
+        finish();
     }
 
     @Override
