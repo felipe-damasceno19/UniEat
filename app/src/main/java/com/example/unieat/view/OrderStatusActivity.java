@@ -1,9 +1,9 @@
 package com.example.unieat.view;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,53 +16,44 @@ import com.example.unieat.presenter.OrderStatusPresenter;
 import com.example.unieat.util.DateUtils;
 import com.example.unieat.util.OrderUtils;
 
-public class OrderStatusActivity extends AppCompatActivity {
+public class OrderStatusActivity extends AppCompatActivity
+        implements OrderStatusPresenter.OrderStatusView {
 
     private OrderStatusPresenter presenter;
     private TextView tvOrderNumber, tvOrderDate, tvCurrentStatus, tvStatusDescription, tvTotal;
     private RecyclerView rvOrderItems;
     private String orderId;
 
-    private final Handler handler = new Handler();
-    private final Runnable refreshRunnable = new Runnable() {
-        @Override
-        public void run() {
-            loadOrder();
-            handler.postDelayed(this, 5000);
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_status);
 
+        orderId   = getIntent().getStringExtra("order_id");
         presenter = new OrderStatusPresenter(this);
-        orderId = getIntent().getStringExtra("order_id");
 
         bindViews();
         setupListeners();
-        loadOrder();
+
+        if (orderId != null) {
+            presenter.listenToOrder(orderId, this);
+        }
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        handler.post(refreshRunnable);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        handler.removeCallbacks(refreshRunnable);
+    protected void onDestroy() {
+        super.onDestroy();
+        if (orderId != null) {
+            presenter.stopListening(orderId);
+        }
     }
 
     private void bindViews() {
-        tvOrderNumber = findViewById(R.id.tvOrderNumber);
-        tvOrderDate = findViewById(R.id.tvOrderDate);
-        tvCurrentStatus = findViewById(R.id.tvCurrentStatus);
-        tvTotal = findViewById(R.id.tvTotal);
-        rvOrderItems = findViewById(R.id.rvOrderItems);
+        tvOrderNumber       = findViewById(R.id.tvOrderNumber);
+        tvOrderDate         = findViewById(R.id.tvOrderDate);
+        tvCurrentStatus     = findViewById(R.id.tvCurrentStatus);
+        tvTotal             = findViewById(R.id.tvTotal);
+        rvOrderItems        = findViewById(R.id.rvOrderItems);
     }
 
     private void setupListeners() {
@@ -70,15 +61,12 @@ public class OrderStatusActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v -> finish());
     }
 
-    private void loadOrder() {
-        if (orderId == null) return;
 
-        Order order = presenter.getOrderById(orderId);
-        if (order == null) return;
-
+    @Override
+    public void onOrderLoaded(Order order) {
         tvOrderNumber.setText("Pedido #" + orderId.substring(0, 4).toUpperCase());
-        tvOrderDate.setText(DateUtils.formatDate(order.getTime()));
-        tvCurrentStatus.setText(OrderUtils.formatStatus(order.getStatus()));
+        tvOrderDate.setText(presenter.formatDate(order.getTime()));
+        tvCurrentStatus.setText(presenter.formatStatus(order.getStatus()));
         tvStatusDescription.setText(getStatusDescription(order.getStatus()));
 
         double total = 0;
@@ -90,13 +78,19 @@ public class OrderStatusActivity extends AppCompatActivity {
         rvOrderItems.setAdapter(new OrderStatusAdapter(order.getItems()));
     }
 
+    @Override
+    public void onError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+
     private String getStatusDescription(OrderStatus status) {
         switch (status) {
             case PENDENTE:   return "Seu pedido foi recebido pela cozinha!";
             case PREPARANDO: return "Aguarde um momento...";
             case PRONTO:     return "Dirija-se ao balcão para retirar!";
-            case ENTREGUE: return "Bom apetite!";
-            default:        return "";
+            case ENTREGUE:   return "Bom apetite!";
+            default:         return "";
         }
     }
 }
