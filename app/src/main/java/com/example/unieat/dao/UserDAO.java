@@ -101,6 +101,12 @@ public class UserDAO {
                 .addOnFailureListener(e -> cb.onFailure(e.getMessage()));
     }
 
+    public void updateProfilePicture(String id, int profilePicture, FirebaseCallback<Void> cb) {
+        FirebaseHelper.users().child(id).child("profilePicture").setValue(profilePicture)
+                .addOnSuccessListener(a -> cb.onSuccess(null))
+                .addOnFailureListener(e -> cb.onFailure(e.getMessage()));
+    }
+
     public void updateBalance(String id, double balance, FirebaseCallback<Void> cb) {
         FirebaseHelper.users().child(id).child("balance").setValue(balance)
                 .addOnSuccessListener(a -> cb.onSuccess(null))

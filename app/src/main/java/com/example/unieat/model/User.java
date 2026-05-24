@@ -20,6 +20,8 @@ public class User {
 
     private UserType type;
 
+    private int profilePicture = 1;
+
     public User() {}
 
     public User(String id, String name, String username, String password, String email, Double balance, UserType type) {
@@ -87,6 +89,9 @@ public class User {
     public void setType(UserType type) {
         this.type = type;
     }
+
+    public int getProfilePicture() { return profilePicture > 0 ? profilePicture : 1; }
+    public void setProfilePicture(int profilePicture) { this.profilePicture = profilePicture; }
 
     @Override
     public String toString() {

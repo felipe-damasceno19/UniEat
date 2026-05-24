@@ -15,6 +15,7 @@ public class SessionManager {
     private static final String KEY_USER_TYPE= "user_type";
     private static final String KEY_IS_LOGGED= "is_logged";
     private static final String KEY_REGISTRATION_DATE = "registration_date";
+    private static final String KEY_PROFILE_PICTURE = "profile_picture";
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
 
@@ -65,6 +66,12 @@ public class SessionManager {
     public UserType getUserType() { return UserType.valueOf(prefs.getString(KEY_USER_TYPE, UserType.ALUNO.name())); }
 
     public String getRegistrationDate() { return prefs.getString(KEY_REGISTRATION_DATE, ""); }
+
+    public int getProfilePicture() { return prefs.getInt(KEY_PROFILE_PICTURE, 1); }
+    public void setProfilePicture(int index) {
+        editor.putInt(KEY_PROFILE_PICTURE, index);
+        editor.apply();
+    }
 
     public void updateBalance(double newBalance) {
         editor.putFloat(KEY_BALANCE, (float) newBalance);

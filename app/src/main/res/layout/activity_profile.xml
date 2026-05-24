@@ -79,14 +79,16 @@
                     android:layout_height="96dp">
 
                     <ImageView
+                        android:id="@+id/ivProfilePicture"
                         android:layout_width="96dp"
                         android:layout_height="96dp"
                         android:background="@drawable/shape_profile_avatar"
-                        android:src="@android:drawable/ic_menu_myplaces"
-                        android:padding="22dp"
-                        app:tint="#7B1C1C" />
+                        android:scaleType="centerCrop"
+                        android:clipToOutline="true"
+                        android:outlineProvider="background" />
 
                     <ImageView
+                        android:id="@+id/btnEditAvatar"
                         android:layout_width="26dp"
                         android:layout_height="26dp"
                         android:layout_gravity="bottom|end"
@@ -94,6 +96,8 @@
                         android:backgroundTint="#7B1C1C"
                         android:src="@android:drawable/ic_menu_edit"
                         android:padding="5dp"
+                        android:clickable="true"
+                        android:focusable="true"
                         app:tint="#FFFFFF" />
                 </FrameLayout>
 

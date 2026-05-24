@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Escolha sua foto de perfil"
+        android:textColor="#000000"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="12dp">
+
+        <ImageView
+            android:id="@+id/avatar1"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:layout_margin="6dp"
+            android:src="@drawable/profile_1"
+            android:scaleType="centerCrop"
+            android:background="@drawable/shape_profile_avatar"
+            android:clipToOutline="true"
+            android:outlineProvider="background"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <ImageView
+            android:id="@+id/avatar2"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:layout_margin="6dp"
+            android:src="@drawable/profile_2"
+            android:scaleType="centerCrop"
+            android:background="@drawable/shape_profile_avatar"
+            android:clipToOutline="true"
+            android:outlineProvider="background"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <ImageView
+            android:id="@+id/avatar3"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:layout_margin="6dp"
+            android:src="@drawable/profile_3"
+            android:scaleType="centerCrop"
+            android:background="@drawable/shape_profile_avatar"
+            android:clipToOutline="true"
+            android:outlineProvider="background"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <ImageView
+            android:id="@+id/avatar4"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:layout_margin="6dp"
+            android:src="@drawable/profile_4"
+            android:scaleType="centerCrop"
+            android:background="@drawable/shape_profile_avatar"
+            android:clipToOutline="true"
+            android:outlineProvider="background"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/avatar5"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:layout_margin="6dp"
+            android:src="@drawable/profile_5"
+            android:scaleType="centerCrop"
+            android:background="@drawable/shape_profile_avatar"
+            android:clipToOutline="true"
+            android:outlineProvider="background"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <ImageView
+            android:id="@+id/avatar6"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:layout_margin="6dp"
+            android:src="@drawable/profile_6"
+            android:scaleType="centerCrop"
+            android:background="@drawable/shape_profile_avatar"
+            android:clipToOutline="true"
+            android:outlineProvider="background"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <ImageView
+            android:id="@+id/avatar7"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:layout_margin="6dp"
+            android:src="@drawable/profile_7"
+            android:scaleType="centerCrop"
+            android:background="@drawable/shape_profile_avatar"
+            android:clipToOutline="true"
+            android:outlineProvider="background"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <ImageView
+            android:id="@+id/avatar8"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:layout_margin="6dp"
+            android:src="@drawable/profile_8"
+            android:scaleType="centerCrop"
+            android:background="@drawable/shape_profile_avatar"
+            android:clipToOutline="true"
+            android:outlineProvider="background"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+</LinearLayout>
