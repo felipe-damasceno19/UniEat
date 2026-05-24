@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -12,10 +13,12 @@ import android.widget.Toast;
 
 import com.example.unieat.R;
 import com.example.unieat.dao.FirebaseCallback;
+import com.example.unieat.dao.SettingsDAO;
 import com.example.unieat.dao.UserDAO;
 import com.example.unieat.data.SessionManager;
 import com.example.unieat.enums.UserType;
 import com.example.unieat.presenter.ProfilePresenter;
+import com.example.unieat.util.AppNotification;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ProfileActivity extends BaseActivity
@@ -54,6 +57,10 @@ public class ProfileActivity extends BaseActivity
         loadProfilePicture();
         presenter.getUserEmail(this);
         presenter.getTotalOrders(this);
+
+        if (sessionManager.getUserType() == UserType.COZINHEIRO) {
+            setupPixSection();
+        }
     }
 
     private void setupNavigation() {
@@ -88,6 +95,36 @@ public class ProfileActivity extends BaseActivity
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+        });
+    }
+
+    private void setupPixSection() {
+        LinearLayout sectionPix = findViewById(R.id.sectionPix);
+        sectionPix.setVisibility(View.VISIBLE);
+
+        EditText etPixKey   = findViewById(R.id.etPixKey);
+        EditText etPixQrUrl = findViewById(R.id.etPixQrUrl);
+        Button btnSavePix   = findViewById(R.id.btnSavePix);
+
+        new SettingsDAO().getPixInfo(new FirebaseCallback<String[]>() {
+            @Override public void onSuccess(String[] info) {
+                etPixKey.setText(info[0]);
+                etPixQrUrl.setText(info[1]);
+            }
+            @Override public void onFailure(String error) {}
+        });
+
+        btnSavePix.setOnClickListener(v -> {
+            String key   = etPixKey.getText().toString().trim();
+            String qrUrl = etPixQrUrl.getText().toString().trim();
+            new SettingsDAO().savePixInfo(key, qrUrl, new FirebaseCallback<Void>() {
+                @Override public void onSuccess(Void ignored) {
+                    AppNotification.success(ProfileActivity.this, "Informações PIX salvas!");
+                }
+                @Override public void onFailure(String error) {
+                    AppNotification.error(ProfileActivity.this, "Erro ao salvar PIX");
+                }
+            });
         });
     }
 
@@ -141,10 +178,10 @@ public class ProfileActivity extends BaseActivity
             @Override public void onSuccess(Void v) {
                 sessionManager.setProfilePicture(index);
                 ivProfilePicture.setImageResource(getProfileDrawable(index));
-                Toast.makeText(ProfileActivity.this, "Foto atualizada!", Toast.LENGTH_SHORT).show();
+                AppNotification.success(ProfileActivity.this, "Foto atualizada!");
             }
             @Override public void onFailure(String error) {
-                Toast.makeText(ProfileActivity.this, "Erro ao salvar foto", Toast.LENGTH_SHORT).show();
+                AppNotification.error(ProfileActivity.this, "Erro ao salvar foto");
             }
         });
     }
@@ -185,5 +222,5 @@ public class ProfileActivity extends BaseActivity
 
     @Override public void onEmailLoaded(String email) { tvUserEmail.setText(email); }
     @Override public void onTotalOrdersLoaded(int total) { tvOrderCount.setText(String.valueOf(total)); }
-    @Override public void onError(String message) { Toast.makeText(this, message, Toast.LENGTH_SHORT).show(); }
+    @Override public void onError(String message) { AppNotification.error(this, message); }
 }

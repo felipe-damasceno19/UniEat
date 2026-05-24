@@ -216,6 +216,80 @@
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
+            <!-- Section: PIX (cozinheiro only, visibility set in code) -->
+            <LinearLayout
+                android:id="@+id/sectionPix"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="20dp"
+                    android:paddingBottom="8dp"
+                    android:text="CONFIGURAÇÕES PIX"
+                    android:textColor="#999999"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginBottom="24dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#EEEEEE"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <EditText
+                            android:id="@+id/etPixKey"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Chave PIX (ex: CNPJ, e-mail, celular)"
+                            android:inputType="text"
+                            android:textSize="14sp"
+                            android:textColor="#222222"
+                            android:background="@drawable/shape_input_bg"
+                            android:padding="12dp"
+                            android:layout_marginBottom="12dp" />
+
+                        <EditText
+                            android:id="@+id/etPixQrUrl"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="URL da imagem do QR Code PIX"
+                            android:inputType="textUri"
+                            android:textSize="14sp"
+                            android:textColor="#222222"
+                            android:background="@drawable/shape_input_bg"
+                            android:padding="12dp"
+                            android:layout_marginBottom="16dp" />
+
+                        <Button
+                            android:id="@+id/btnSavePix"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:backgroundTint="#7B1C1C"
+                            android:text="Salvar PIX"
+                            android:textAllCaps="false"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            app:cornerRadius="12dp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
             <!-- Section: Segurança e Privacidade -->
             <TextView
                 android:layout_width="match_parent"
