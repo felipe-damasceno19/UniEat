@@ -4,6 +4,7 @@ import com.example.unieat.dao.DishDAO;
 import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.enums.FoodType;
 import com.example.unieat.model.Dish;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class MenuPresenter {
 
     private final View view;
     private final DishDAO dishDAO;
+    private ValueEventListener dishListener;
 
     public MenuPresenter(View view, DishDAO dishDAO) {
         this.view = view;
@@ -49,6 +51,25 @@ public class MenuPresenter {
             }
             @Override public void onFailure(String error) { view.showError("Erro ao filtrar cardápio."); }
         });
+    }
+
+    public void startListeningDishes() {
+        dishListener = dishDAO.listenToAvailableDishes(new FirebaseCallback<List<Dish>>() {
+            @Override public void onSuccess(List<Dish> dishes) {
+                if (dishes == null || dishes.isEmpty())
+                    view.showEmptyState("Nenhum prato disponível no momento.");
+                else
+                    view.showDishes(dishes);
+            }
+            @Override public void onFailure(String error) { view.showError("Erro ao carregar cardápio."); }
+        });
+    }
+
+    public void stopListeningDishes() {
+        if (dishListener != null) {
+            dishDAO.removeListener(dishListener);
+            dishListener = null;
+        }
     }
 
     public void searchByName(String query) {

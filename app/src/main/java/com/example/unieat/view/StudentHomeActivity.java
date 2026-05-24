@@ -61,6 +61,18 @@ public class StudentHomeActivity extends BaseActivity
         );
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        presenter.startListeningDishes();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.stopListeningDishes();
+    }
+
     private void loadData() {
         presenter.getFeaturedDishes();
     }

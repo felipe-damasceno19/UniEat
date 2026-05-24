@@ -49,6 +49,18 @@ public class MenuActivity extends AppCompatActivity implements MenuPresenter.Vie
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        presenter.startListeningDishes();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.stopListeningDishes();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         loadData();

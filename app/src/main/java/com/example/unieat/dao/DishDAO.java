@@ -91,6 +91,26 @@ public class DishDAO {
                 .addOnFailureListener(e -> cb.onFailure(e.getMessage()));
     }
 
+    public ValueEventListener listenToAvailableDishes(FirebaseCallback<List<Dish>> cb) {
+        ValueEventListener listener = new ValueEventListener() {
+            @Override public void onDataChange(DataSnapshot snap) {
+                List<Dish> list = new ArrayList<>();
+                for (DataSnapshot child : snap.getChildren()) {
+                    Dish dish = snapToDish(child);
+                    if (dish != null && dish.isAvailable()) list.add(dish);
+                }
+                cb.onSuccess(list);
+            }
+            @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+        };
+        FirebaseHelper.dishes().addValueEventListener(listener);
+        return listener;
+    }
+
+    public void removeListener(ValueEventListener listener) {
+        FirebaseHelper.dishes().removeEventListener(listener);
+    }
+
     public void searchByName(String name, FirebaseCallback<List<Dish>> cb) {
         findAll(new FirebaseCallback<List<Dish>>() {
             @Override public void onSuccess(List<Dish> dishes) {
