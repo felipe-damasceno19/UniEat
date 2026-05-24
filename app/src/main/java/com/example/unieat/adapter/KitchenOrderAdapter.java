@@ -1,5 +1,6 @@
 package com.example.unieat.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,16 +24,21 @@ import java.util.List;
 public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapter.KitchenOrderViewHolder> {
 
     public interface OnOrderActionListener {
-        void onAdvanceStatus(Order order);
+        void onChangeStatus(Order order, OrderStatus newStatus);
     }
+
+    private static final String[] STATUS_LABELS   = {"Pendente", "Em Preparo", "Pronto", "Entregue"};
+    private static final OrderStatus[] STATUS_VALUES = {
+            OrderStatus.PENDENTE, OrderStatus.PREPARANDO, OrderStatus.PRONTO, OrderStatus.ENTREGUE
+    };
 
     private List<Order> orders;
     private final Context context;
     private final OnOrderActionListener listener;
 
     public KitchenOrderAdapter(Context context, List<Order> orders, OnOrderActionListener listener) {
-        this.context = context;
-        this.orders = orders;
+        this.context  = context;
+        this.orders   = orders;
         this.listener = listener;
     }
 
@@ -53,7 +59,7 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
     public void onBindViewHolder(@NonNull KitchenOrderViewHolder holder, int position) {
         Order order = orders.get(position);
 
-        holder.tvOrderNumber.setText("Order #" + order.getId().substring(0, 4).toUpperCase());
+        holder.tvOrderNumber.setText("Pedido #" + order.getId().substring(0, 4).toUpperCase());
         holder.tvOrderTime.setText(DateUtils.formatDate(order.getTime()));
 
         applyStatusStyle(holder, order.getStatus());
@@ -66,14 +72,24 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
             holder.chipGroupItems.addView(chip);
         }
 
-        holder.btnOrderAction.setText(getActionLabel(order.getStatus()));
-        holder.btnOrderAction.setOnClickListener(v -> listener.onAdvanceStatus(order));
+        holder.btnOrderAction.setText("Alterar Status");
+        holder.btnOrderAction.setOnClickListener(v -> showStatusDialog(order));
+    }
 
-        if (order.getStatus() == OrderStatus.ENTREGUE) {
-            holder.btnOrderAction.setVisibility(View.GONE);
-        } else {
-            holder.btnOrderAction.setVisibility(View.VISIBLE);
+    private void showStatusDialog(Order order) {
+        int current = -1;
+        for (int i = 0; i < STATUS_VALUES.length; i++) {
+            if (STATUS_VALUES[i] == order.getStatus()) { current = i; break; }
         }
+
+        new AlertDialog.Builder(context)
+                .setTitle("Alterar Status do Pedido")
+                .setSingleChoiceItems(STATUS_LABELS, current, (dialog, which) -> {
+                    dialog.dismiss();
+                    listener.onChangeStatus(order, STATUS_VALUES[which]);
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
     }
 
     private void applyStatusStyle(KitchenOrderViewHolder holder, OrderStatus status) {
@@ -101,20 +117,11 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
                 break;
             default:
                 holder.viewStatusIndicator.setBackgroundColor(0xFF888888);
-                holder.tvStatusBadge.setText("CONCLUÍDO");
+                holder.tvStatusBadge.setText("ENTREGUE");
                 holder.tvStatusBadge.setTextColor(0xFF888888);
                 holder.tvStatusBadge.setBackgroundTintList(
                         android.content.res.ColorStateList.valueOf(0xFFEEEEEE));
                 break;
-        }
-    }
-
-    private String getActionLabel(OrderStatus status) {
-        switch (status) {
-            case PENDENTE:   return "Accept Order";
-            case PREPARANDO: return "Mark as Ready";
-            case PRONTO:     return "Mark as Delivered";
-            default:        return "";
         }
     }
 
@@ -130,11 +137,11 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
         KitchenOrderViewHolder(@NonNull View itemView) {
             super(itemView);
             viewStatusIndicator = itemView.findViewById(R.id.viewStatusIndicator);
-            tvOrderNumber = itemView.findViewById(R.id.tvOrderNumber);
-            tvOrderTime = itemView.findViewById(R.id.tvOrderTime);
-            tvStatusBadge = itemView.findViewById(R.id.tvStatusBadge);
-            chipGroupItems = itemView.findViewById(R.id.chipGroupItems);
-            btnOrderAction = itemView.findViewById(R.id.btnOrderAction);
+            tvOrderNumber       = itemView.findViewById(R.id.tvOrderNumber);
+            tvOrderTime         = itemView.findViewById(R.id.tvOrderTime);
+            tvStatusBadge       = itemView.findViewById(R.id.tvStatusBadge);
+            chipGroupItems      = itemView.findViewById(R.id.chipGroupItems);
+            btnOrderAction      = itemView.findViewById(R.id.btnOrderAction);
         }
     }
 }

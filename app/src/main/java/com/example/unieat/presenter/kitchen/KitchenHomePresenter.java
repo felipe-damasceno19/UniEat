@@ -89,32 +89,9 @@ public class KitchenHomePresenter {
         });
     }
 
-    public void advanceOrderStatus(String orderId) {
-        orderDAO.findById(orderId, new FirebaseCallback<Order>() {
-            @Override public void onSuccess(Order order) {
-                if (order == null) {
-                    view.showError("Pedido não encontrado");
-                    return;
-                }
-
-                if (order.getStatus() == OrderStatus.ENTREGUE) {
-                    view.showError("Este pedido já foi entregue");
-                    return;
-                }
-
-                OrderStatus nextStatus;
-                switch (order.getStatus()) {
-                    case PENDENTE:   nextStatus = OrderStatus.PREPARANDO; break;
-                    case PREPARANDO: nextStatus = OrderStatus.PRONTO;     break;
-                    case PRONTO:     nextStatus = OrderStatus.ENTREGUE;   break;
-                    default: return;
-                }
-
-                orderDAO.updateStatus(orderId, nextStatus, new FirebaseCallback<Void>() {
-                    @Override public void onSuccess(Void v) { loadDashboard(); }
-                    @Override public void onFailure(String error) { view.showError(error); }
-                });
-            }
+    public void setOrderStatus(String orderId, OrderStatus newStatus) {
+        orderDAO.updateStatus(orderId, newStatus, new FirebaseCallback<Void>() {
+            @Override public void onSuccess(Void v) { loadDashboard(); }
             @Override public void onFailure(String error) { view.showError(error); }
         });
     }

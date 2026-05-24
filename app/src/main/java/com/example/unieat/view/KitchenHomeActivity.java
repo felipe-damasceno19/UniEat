@@ -109,9 +109,8 @@ public class KitchenHomeActivity extends BaseActivity
     @Override
     public void showRecentOrders(List<Order> orders) {
         if (adapter == null) {
-            adapter = new KitchenOrderAdapter(this, orders, order ->
-                    presenter.advanceOrderStatus(order.getId())
-            );
+            adapter = new KitchenOrderAdapter(this, orders,
+                    (order, newStatus) -> presenter.setOrderStatus(order.getId(), newStatus));
             recyclerOrders.setAdapter(adapter);
         } else {
             adapter.updateData(orders);

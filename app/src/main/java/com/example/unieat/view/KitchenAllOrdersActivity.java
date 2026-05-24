@@ -91,7 +91,8 @@ public class KitchenAllOrdersActivity extends BaseActivity {
         FirebaseCallback<List<Order>> listCallback = new FirebaseCallback<List<Order>>() {
             @Override public void onSuccess(List<Order> orders) {
                 if (adapter == null) {
-                    adapter = new KitchenOrderAdapter(KitchenAllOrdersActivity.this, orders, KitchenAllOrdersActivity.this::advanceStatus);
+                    adapter = new KitchenOrderAdapter(KitchenAllOrdersActivity.this, orders,
+                            (order, newStatus) -> changeStatus(order.getId(), newStatus));
                     recyclerAllOrders.setAdapter(adapter);
                 } else {
                     adapter.updateData(orders);
@@ -107,15 +108,8 @@ public class KitchenAllOrdersActivity extends BaseActivity {
         }
     }
 
-    private void advanceStatus(Order order) {
-        OrderStatus next;
-        switch (order.getStatus()) {
-            case PENDENTE:   next = OrderStatus.PREPARANDO; break;
-            case PREPARANDO: next = OrderStatus.PRONTO;     break;
-            case PRONTO:     next = OrderStatus.ENTREGUE;   break;
-            default: return;
-        }
-        orderDAO.updateStatus(order.getId(), next, new FirebaseCallback<Void>() {
+    private void changeStatus(String orderId, OrderStatus newStatus) {
+        orderDAO.updateStatus(orderId, newStatus, new FirebaseCallback<Void>() {
             @Override public void onSuccess(Void v) { loadOrders(); }
             @Override public void onFailure(String error) {}
         });
