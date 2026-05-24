@@ -286,11 +286,11 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="100dp"
         android:src="@drawable/shopping_cart"
-        app:backgroundTint="#7B1C1C"
+        app:backgroundTint="#FFB84C"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:tint="#FFFFFF" />
+        app:tint="#7B1C1C" />
 
     <!-- Navigation Bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView

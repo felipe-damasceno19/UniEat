@@ -101,8 +101,8 @@
                         android:layout_height="60dp"
                         android:background="@drawable/shape_toggle_bg"
                         android:backgroundTint="#FFB84C"
-                        android:padding="16dp"
-                        android:src="@android:drawable/ic_menu_send"
+                        android:padding="14dp"
+                        android:src="@drawable/ic_pix"
                         app:tint="#7B1C1C" />
 
                     <LinearLayout
@@ -154,8 +154,8 @@
                         android:layout_height="60dp"
                         android:background="@drawable/shape_toggle_bg"
                         android:backgroundTint="#F0E8E8"
-                        android:padding="16dp"
-                        android:src="@android:drawable/ic_menu_save"
+                        android:padding="14dp"
+                        android:src="@drawable/ic_cash"
                         app:tint="#666666" />
 
                     <LinearLayout
