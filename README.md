@@ -59,7 +59,25 @@ cd UniEat
 - Crie um projeto no [Firebase Console](https://console.firebase.google.com/)
 - Adicione um app Android com o pacote `com.example.unieat`
 - Baixe o `google-services.json` gerado e coloque em `app/google-services.json`
-- No Firebase Console, habilite o **Realtime Database** em modo de teste
+- No Firebase Console, habilite o **Realtime Database**
+- Em **Realtime Database → Regras**, cole as regras abaixo e publique:
+
+```json
+{
+  "rules": {
+    ".read": true,
+    ".write": true,
+    "users": {
+      ".indexOn": ["email", "username"]
+    },
+    "orders": {
+      ".indexOn": ["userId", "orderStatus", "time"]
+    }
+  }
+}
+```
+
+> As regras acima são para desenvolvimento. Em produção, restrinja o acesso por autenticação.
 
 **3. Abra no Android Studio**
 
@@ -77,8 +95,8 @@ Conecte um dispositivo físico ou emulador (API 28+) e pressione **Run**.
 
 | Tipo | Email | Senha |
 |---|---|---|
-| Estudante | `felipe@teste.com` | `123456` |
-| Cozinha | `cozinha@teste.com` | `123456` |
+| Estudante | `felipe@email.com` | `felipe321` |
+| Cozinha | `cozinha@email.com` | `123456` |
 
 > Esses dados são inseridos pelo `DataSeeder` na primeira execução.
 
