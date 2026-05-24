@@ -63,6 +63,7 @@ public class MenuActivity extends AppCompatActivity implements MenuPresenter.Vie
     @Override
     protected void onResume() {
         super.onResume();
+        tvBalance.setText(String.format("R$ %.2f", new SessionManager(this).getBalance()));
         loadData();
     }
 

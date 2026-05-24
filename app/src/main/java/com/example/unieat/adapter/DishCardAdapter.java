@@ -69,14 +69,15 @@ public class DishCardAdapter extends RecyclerView.Adapter<DishCardAdapter.DishVi
 
         ratingDAO.findByDishId(dish.getId(), new FirebaseCallback<List<Rating>>() {
             @Override public void onSuccess(List<Rating> ratings) {
-                if (ratings == null || ratings.isEmpty()) return;
-                double sum = 0;
-                for (Rating r : ratings) if (r.getRating() != null) sum += r.getRating();
-                double avg = sum / ratings.size();
-
                 int adapterPos = holder.getBindingAdapterPosition();
                 if (adapterPos == RecyclerView.NO_POSITION) return;
 
+                double avg = 0.0;
+                if (ratings != null && !ratings.isEmpty()) {
+                    double sum = 0;
+                    for (Rating r : ratings) if (r.getRating() != null) sum += r.getRating();
+                    avg = sum / ratings.size();
+                }
                 holder.tvRating.setText(String.format(Locale.getDefault(), "%.1f", avg));
                 holder.ratingBadge.setVisibility(View.VISIBLE);
             }

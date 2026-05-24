@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.dao.PaymentDAO;
+import com.example.unieat.dao.SettingsDAO;
 import com.example.unieat.dao.UserDAO;
 import com.example.unieat.data.SessionManager;
 import com.example.unieat.enums.PaymentMethod;
@@ -45,6 +46,8 @@ public class PaymentPresenter {
         });
     }
 
+    public double getBalance() { return sessionManager.getBalance(); }
+
     public boolean hasSufficientBalance(double amount) {
         return sessionManager.getBalance() >= amount;
     }
@@ -67,6 +70,20 @@ public class PaymentPresenter {
         paymentDAO.findAll(cb);
     }
 
-    public double calculateServiceFee(double amount) { return amount * 0.10; }
-    public double calculateTotal(double amount)       { return amount + calculateServiceFee(amount); }
+    public double calculateServiceFee(double amount) {
+        double fee = sessionManager.getServiceFee();
+        return sessionManager.isServiceFeePercent() ? amount * (fee / 100.0) : fee;
+    }
+    public double calculateTotal(double amount) { return amount + calculateServiceFee(amount); }
+
+    public void loadServiceFeeSettings(FirebaseCallback<Void> cb) {
+        new SettingsDAO().getServiceFee(new FirebaseCallback<double[]>() {
+            @Override public void onSuccess(double[] data) {
+                sessionManager.setServiceFeeIsPercent(data[0] == 1.0);
+                sessionManager.setServiceFee(data[1]);
+                cb.onSuccess(null);
+            }
+            @Override public void onFailure(String error) { cb.onSuccess(null); }
+        });
+    }
 }

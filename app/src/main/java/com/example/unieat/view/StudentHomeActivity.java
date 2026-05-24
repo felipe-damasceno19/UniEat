@@ -23,7 +23,8 @@ public class StudentHomeActivity extends BaseActivity
 
     private StudentHomePresenter presenter;
     private OrderPresenter orderPresenter;
-    private RecyclerView rvFeatured;
+    private RecyclerView rvFeatured, rvRecentOrders;
+    private TextView tvBalance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,6 @@ public class StudentHomeActivity extends BaseActivity
 
         setupNavigation();
         setupViews();
-        loadData();
     }
 
     private void setupNavigation() {
@@ -50,15 +50,26 @@ public class StudentHomeActivity extends BaseActivity
 
     private void setupViews() {
         TextView tvWelcome = findViewById(R.id.tvWelcomeName);
-        TextView tvBalance = findViewById(R.id.tvBalance);
-
         tvWelcome.setText(presenter.getWelcomeMessage());
-        tvBalance.setText(String.format("R$ %.2f", presenter.getBalance()));
+
+        tvBalance = findViewById(R.id.tvBalance);
 
         rvFeatured = findViewById(R.id.rvFeaturedDishes);
         rvFeatured.setLayoutManager(
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         );
+
+        rvRecentOrders = findViewById(R.id.rvRecentOrders);
+        rvRecentOrders.setLayoutManager(
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        );
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        tvBalance.setText(String.format("R$ %.2f", presenter.getBalance()));
+        presenter.getRecentDishes();
     }
 
     @Override
@@ -73,14 +84,17 @@ public class StudentHomeActivity extends BaseActivity
         presenter.stopListeningDishes();
     }
 
-    private void loadData() {
-        presenter.getFeaturedDishes();
-    }
-
-
     @Override
     public void onFeaturedDishesLoaded(List<Dish> dishes) {
         rvFeatured.setAdapter(new DishCardAdapter(this, dishes, dish -> {
+            orderPresenter.addItem(dish);
+            startActivity(new Intent(this, OrderActivity.class));
+        }));
+    }
+
+    @Override
+    public void onRecentDishesLoaded(List<Dish> dishes) {
+        rvRecentOrders.setAdapter(new DishCardAdapter(this, dishes, dish -> {
             orderPresenter.addItem(dish);
             startActivity(new Intent(this, OrderActivity.class));
         }));

@@ -2,6 +2,7 @@ package com.example.unieat.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,6 +22,7 @@ public class HistoryActivity extends BaseActivity implements HistoryPresenter.Hi
 
     private HistoryPresenter presenter;
     private RecyclerView rvHistory;
+    private TextView tvBalance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +32,15 @@ public class HistoryActivity extends BaseActivity implements HistoryPresenter.Hi
         presenter = new HistoryPresenter(this, this);
         rvHistory = findViewById(R.id.rvHistory);
         rvHistory.setLayoutManager(new LinearLayoutManager(this));
+        tvBalance = findViewById(R.id.tvBalance);
 
         setupNavigation();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        tvBalance.setText(String.format("R$ %.2f", new com.example.unieat.data.SessionManager(this).getBalance()));
         presenter.getHistory();
     }
 
@@ -47,7 +56,7 @@ public class HistoryActivity extends BaseActivity implements HistoryPresenter.Hi
             public void onReorder(Order order) {
                 OrderPresenter orderPresenter = new OrderPresenter(HistoryActivity.this);
                 for (OrderItem item : order.getItems()) {
-                    orderPresenter.addItem(item.getDish());
+                    if (item.getDish() != null) orderPresenter.addItem(item.getDish());
                 }
                 startActivity(new Intent(HistoryActivity.this, OrderActivity.class));
             }

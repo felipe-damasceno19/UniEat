@@ -10,6 +10,7 @@ import com.example.unieat.model.Order;
 import com.example.unieat.util.DateUtils;
 import com.example.unieat.util.OrderUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,9 +32,16 @@ public class HistoryPresenter {
     }
 
     public void getHistory() {
-        orderDAO.findByUserId(sessionManager.getId(), new FirebaseCallback<List<Order>>() {
+        String userId = sessionManager.getId();
+        orderDAO.findAll(new FirebaseCallback<List<Order>>() {
             @Override public void onSuccess(List<Order> orders) {
-                view.onHistoryLoaded(orders);
+                List<Order> mine = new ArrayList<>();
+                if (orders != null) {
+                    for (Order o : orders) {
+                        if (userId.equals(o.getUserId())) mine.add(o);
+                    }
+                }
+                view.onHistoryLoaded(mine);
             }
             @Override public void onFailure(String error) {
                 view.onError(error);

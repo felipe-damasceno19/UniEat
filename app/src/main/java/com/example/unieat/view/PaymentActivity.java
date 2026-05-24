@@ -7,20 +7,22 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.unieat.R;
 import com.example.unieat.enums.PaymentMethod;
+import com.example.unieat.model.Payment;
 import com.example.unieat.presenter.PaymentPresenter;
-import android.widget.Toast;
 import com.google.android.material.card.MaterialCardView;
 
 public class PaymentActivity extends BaseActivity {
 
-    private MaterialCardView cardPix, cardCash;
-    private ImageView imgPix, imgCash;
+    private MaterialCardView cardPix, cardCash, cardBalance;
+    private ImageView imgPix, imgCash, imgBalance;
     private Button btnConfirmOrder;
-    private TextView tvOrderSubtotal, tvServiceFee, tvTotalAmount;
+    private TextView tvOrderSubtotal, tvServiceFee, tvTotalAmount, tvBalanceAmount, tvBalance;
 
-    private boolean isPixSelected = true;
+    private PaymentMethod selectedMethod = PaymentMethod.PIX;
 
     private PaymentPresenter presenter;
     private double orderAmount;
@@ -41,6 +43,10 @@ public class PaymentActivity extends BaseActivity {
         setupColors();
         setupListeners();
         loadSummary();
+        presenter.loadServiceFeeSettings(new com.example.unieat.dao.FirebaseCallback<Void>() {
+            @Override public void onSuccess(Void v) { loadSummary(); }
+            @Override public void onFailure(String e) {}
+        });
         selectPix();
     }
 
@@ -48,14 +54,18 @@ public class PaymentActivity extends BaseActivity {
         ImageView btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
 
-        cardPix          = findViewById(R.id.cardPix);
-        cardCash         = findViewById(R.id.cardCash);
-        imgPix           = findViewById(R.id.imgPix);
-        imgCash          = findViewById(R.id.imgCash);
-        btnConfirmOrder  = findViewById(R.id.btnConfirmOrder);
-        tvOrderSubtotal  = findViewById(R.id.tvOrderSubtotal);
-        tvServiceFee     = findViewById(R.id.tvServiceFee);
-        tvTotalAmount    = findViewById(R.id.tvTotalAmount);
+        cardPix         = findViewById(R.id.cardPix);
+        cardCash        = findViewById(R.id.cardCash);
+        cardBalance     = findViewById(R.id.cardBalance);
+        imgPix          = findViewById(R.id.imgPix);
+        imgCash         = findViewById(R.id.imgCash);
+        imgBalance      = findViewById(R.id.imgBalance);
+        btnConfirmOrder = findViewById(R.id.btnConfirmOrder);
+        tvOrderSubtotal = findViewById(R.id.tvOrderSubtotal);
+        tvServiceFee    = findViewById(R.id.tvServiceFee);
+        tvTotalAmount   = findViewById(R.id.tvTotalAmount);
+        tvBalanceAmount = findViewById(R.id.tvBalanceAmount);
+        tvBalance       = findViewById(R.id.tvBalance);
     }
 
     private void loadSummary() {
@@ -64,13 +74,15 @@ public class PaymentActivity extends BaseActivity {
         tvOrderSubtotal.setText(String.format("R$ %.2f", orderAmount));
         tvServiceFee.setText(String.format("R$ %.2f", fee));
         tvTotalAmount.setText(String.format("R$ %.2f", total));
+        tvBalanceAmount.setText(String.format("Disponível: R$ %.2f", presenter.getBalance()));
+        tvBalance.setText(String.format("R$ %.2f", presenter.getBalance()));
     }
 
     private void setupColors() {
-        colorSelected   = Color.parseColor("#7B1C1C");
-        colorDefault    = Color.parseColor("#EEEEEE");
-        iconBgSelected  = Color.parseColor("#FFB84C");
-        iconBgDefault   = Color.parseColor("#F0E8E8");
+        colorSelected    = Color.parseColor("#7B1C1C");
+        colorDefault     = Color.parseColor("#EEEEEE");
+        iconBgSelected   = Color.parseColor("#FFB84C");
+        iconBgDefault    = Color.parseColor("#F0E8E8");
         iconTintSelected = Color.parseColor("#7B1C1C");
         iconTintDefault  = Color.parseColor("#666666");
     }
@@ -78,23 +90,47 @@ public class PaymentActivity extends BaseActivity {
     private void setupListeners() {
         cardPix.setOnClickListener(v -> selectPix());
         cardCash.setOnClickListener(v -> selectCash());
+        cardBalance.setOnClickListener(v -> selectBalance());
 
         btnConfirmOrder.setOnClickListener(v -> {
             double total   = presenter.calculateTotal(orderAmount);
             String orderId = getIntent().getStringExtra("order_id");
 
-            if (isPixSelected) {
+            if (selectedMethod == PaymentMethod.PIX) {
                 Intent intent = new Intent(this, PaymentPixActivity.class);
                 intent.putExtra("order_amount", total);
                 intent.putExtra("order_id", orderId);
                 intent.putExtra("dish_id", getIntent().getStringExtra("dish_id"));
                 startActivity(intent);
-            } else {
+            } else if (selectedMethod == PaymentMethod.CASH) {
                 btnConfirmOrder.setEnabled(false);
                 presenter.processPayment(orderId, PaymentMethod.CASH, total,
                     new PaymentPresenter.PaymentView() {
-                        @Override public void onPaymentSuccess(com.example.unieat.model.Payment p) {
+                        @Override public void onPaymentSuccess(Payment p) {
                             Toast.makeText(PaymentActivity.this, "Pagamento registrado!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(PaymentActivity.this, OrderSuccessActivity.class);
+                            intent.putExtra("dish_id",  getIntent().getStringExtra("dish_id"));
+                            intent.putExtra("order_id", orderId);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+                        }
+                        @Override public void onPaymentError(String message) {
+                            btnConfirmOrder.setEnabled(true);
+                            Toast.makeText(PaymentActivity.this, message, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            } else {
+                if (!presenter.hasSufficientBalance(total)) {
+                    Toast.makeText(this, "Saldo insuficiente", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                btnConfirmOrder.setEnabled(false);
+                presenter.processPayment(orderId, PaymentMethod.BALANCE, total,
+                    new PaymentPresenter.PaymentView() {
+                        @Override public void onPaymentSuccess(Payment p) {
+                            presenter.deductBalance(total);
+                            Toast.makeText(PaymentActivity.this, "Saldo debitado com sucesso!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(PaymentActivity.this, OrderSuccessActivity.class);
                             intent.putExtra("dish_id",  getIntent().getStringExtra("dish_id"));
                             intent.putExtra("order_id", orderId);
@@ -111,29 +147,39 @@ public class PaymentActivity extends BaseActivity {
         });
     }
 
-    private void selectPix() {
-        isPixSelected = true;
-        cardPix.setStrokeColor(colorSelected);
-        cardPix.setStrokeWidth(6);
-        imgPix.setBackgroundTintList(ColorStateList.valueOf(iconBgSelected));
-        imgPix.setImageTintList(ColorStateList.valueOf(iconTintSelected));
+    private void deselectAll() {
+        MaterialCardView[] cards = {cardPix, cardCash, cardBalance};
+        ImageView[] icons = {imgPix, imgCash, imgBalance};
+        for (MaterialCardView card : cards) {
+            card.setStrokeColor(colorDefault);
+            card.setStrokeWidth(2);
+        }
+        for (ImageView img : icons) {
+            img.setBackgroundTintList(ColorStateList.valueOf(iconBgDefault));
+            img.setImageTintList(ColorStateList.valueOf(iconTintDefault));
+        }
+    }
 
-        cardCash.setStrokeColor(colorDefault);
-        cardCash.setStrokeWidth(2);
-        imgCash.setBackgroundTintList(ColorStateList.valueOf(iconBgDefault));
-        imgCash.setImageTintList(ColorStateList.valueOf(iconTintDefault));
+    private void selectCard(MaterialCardView card, ImageView img) {
+        deselectAll();
+        card.setStrokeColor(colorSelected);
+        card.setStrokeWidth(6);
+        img.setBackgroundTintList(ColorStateList.valueOf(iconBgSelected));
+        img.setImageTintList(ColorStateList.valueOf(iconTintSelected));
+    }
+
+    private void selectPix() {
+        selectedMethod = PaymentMethod.PIX;
+        selectCard(cardPix, imgPix);
     }
 
     private void selectCash() {
-        isPixSelected = false;
-        cardCash.setStrokeColor(colorSelected);
-        cardCash.setStrokeWidth(6);
-        imgCash.setBackgroundTintList(ColorStateList.valueOf(iconBgSelected));
-        imgCash.setImageTintList(ColorStateList.valueOf(iconTintSelected));
+        selectedMethod = PaymentMethod.CASH;
+        selectCard(cardCash, imgCash);
+    }
 
-        cardPix.setStrokeColor(colorDefault);
-        cardPix.setStrokeWidth(2);
-        imgPix.setBackgroundTintList(ColorStateList.valueOf(iconBgDefault));
-        imgPix.setImageTintList(ColorStateList.valueOf(iconTintDefault));
+    private void selectBalance() {
+        selectedMethod = PaymentMethod.BALANCE;
+        selectCard(cardBalance, imgBalance);
     }
 }

@@ -31,7 +31,7 @@ public class ProfileActivity extends BaseActivity
     private ProfilePresenter presenter;
     private SessionManager sessionManager;
     private ImageView ivProfilePicture;
-    private TextView tvUserEmail;
+    private TextView tvUserEmail, tvBalance;
     private TextView tvOrderCount;
     private int selectedProfilePicture = 1;
 
@@ -46,8 +46,8 @@ public class ProfileActivity extends BaseActivity
         setupNavigation();
         setupViews();
 
+        tvBalance = findViewById(R.id.tvBalance);
         TextView tvUserName    = findViewById(R.id.tvUserName);
-        TextView tvBalance     = findViewById(R.id.tvBalance);
         TextView tvMemberSince = findViewById(R.id.tvMemberSince);
         tvUserName.setText(presenter.getUserName());
         tvBalance.setText(String.format("R$ %.2f", presenter.getBalance()));
@@ -59,7 +59,14 @@ public class ProfileActivity extends BaseActivity
 
         if (sessionManager.getUserType() == UserType.COZINHEIRO) {
             setupPixSection();
+            setupServiceFeeSection();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        tvBalance.setText(String.format("R$ %.2f", presenter.getBalance()));
     }
 
     private void setupNavigation() {
@@ -94,6 +101,54 @@ public class ProfileActivity extends BaseActivity
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+        });
+    }
+
+    private void setupServiceFeeSection() {
+        LinearLayout section = findViewById(R.id.sectionServiceFee);
+        section.setVisibility(View.VISIBLE);
+
+        android.widget.RadioGroup rgFeeType = findViewById(R.id.rgFeeType);
+        android.widget.RadioButton rbPercent = findViewById(R.id.rbPercent);
+        android.widget.RadioButton rbFixed   = findViewById(R.id.rbFixed);
+        EditText etValue = findViewById(R.id.etServiceFeeValue);
+        Button btnSave   = findViewById(R.id.btnSaveServiceFee);
+
+        new SettingsDAO().getServiceFee(new FirebaseCallback<double[]>() {
+            @Override public void onSuccess(double[] data) {
+                boolean isPercent = data[0] == 1.0;
+                rbPercent.setChecked(isPercent);
+                rbFixed.setChecked(!isPercent);
+                etValue.setText(data[1] % 1 == 0
+                        ? String.format("%.0f", data[1])
+                        : String.format("%.2f", data[1]));
+            }
+            @Override public void onFailure(String error) {}
+        });
+
+        btnSave.setOnClickListener(v -> {
+            String valueStr = etValue.getText().toString().trim();
+            if (valueStr.isEmpty()) {
+                Toast.makeText(this, "Informe um valor", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            double value;
+            try { value = Double.parseDouble(valueStr); }
+            catch (NumberFormatException e) {
+                Toast.makeText(this, "Valor inválido", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            boolean isPercent = rgFeeType.getCheckedRadioButtonId() == R.id.rbPercent;
+            new SettingsDAO().saveServiceFee(isPercent, value, new FirebaseCallback<Void>() {
+                @Override public void onSuccess(Void ignored) {
+                    sessionManager.setServiceFee(value);
+                    sessionManager.setServiceFeeIsPercent(isPercent);
+                    Toast.makeText(ProfileActivity.this, "Taxa salva!", Toast.LENGTH_SHORT).show();
+                }
+                @Override public void onFailure(String error) {
+                    Toast.makeText(ProfileActivity.this, "Erro ao salvar", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
     }
 

@@ -28,12 +28,12 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/shape_chip_saldo"
-            android:backgroundTint="#F0E8E8"
+            android:background="@drawable/shape_badge_destaque"
+            android:backgroundTint="#FFB84C"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingHorizontal="12dp"
-            android:paddingVertical="6dp"
+            android:paddingVertical="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -282,6 +282,93 @@
                             android:layout_height="48dp"
                             android:backgroundTint="#7B1C1C"
                             android:text="Salvar PIX"
+                            android:textAllCaps="false"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            app:cornerRadius="12dp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Section: Taxa de Serviço (cozinheiro only, visibility set in code) -->
+            <LinearLayout
+                android:id="@+id/sectionServiceFee"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="20dp"
+                    android:paddingBottom="8dp"
+                    android:text="TAXA DE SERVIÇO"
+                    android:textColor="#999999"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginBottom="24dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#EEEEEE"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <RadioGroup
+                            android:id="@+id/rgFeeType"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="12dp">
+
+                            <RadioButton
+                                android:id="@+id/rbPercent"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:checked="true"
+                                android:text="Porcentagem (%)"
+                                android:textColor="#222222" />
+
+                            <RadioButton
+                                android:id="@+id/rbFixed"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Valor Fixo (R$)"
+                                android:textColor="#222222" />
+                        </RadioGroup>
+
+                        <EditText
+                            android:id="@+id/etServiceFeeValue"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Ex: 10 (para 10% ou R$ 10,00)"
+                            android:inputType="numberDecimal"
+                            android:textSize="14sp"
+                            android:textColor="#222222"
+                            android:background="@drawable/shape_input_bg"
+                            android:padding="12dp"
+                            android:layout_marginBottom="16dp" />
+
+                        <Button
+                            android:id="@+id/btnSaveServiceFee"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:backgroundTint="#7B1C1C"
+                            android:text="Salvar Taxa"
                             android:textAllCaps="false"
                             android:textColor="#FFFFFF"
                             android:textStyle="bold"

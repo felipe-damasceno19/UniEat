@@ -39,7 +39,7 @@ public class RatingActivity extends BaseActivity
 
     private void setupNavigation() {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
-        NavigationHelper.setupBottomNavigation(this, bottomNav, R.id.nav_orders);
+        NavigationHelper.setupBottomNavigation(this, bottomNav, -1);
     }
 
     private void setupViews() {

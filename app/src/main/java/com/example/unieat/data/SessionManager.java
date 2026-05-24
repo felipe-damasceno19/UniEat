@@ -78,4 +78,20 @@ public class SessionManager {
         editor.apply();
     }
 
+    private static final String KEY_SERVICE_FEE            = "service_fee";
+    private static final String KEY_SERVICE_FEE_IS_PERCENT = "service_fee_is_percent";
+
+    public double getServiceFee()          { return prefs.getFloat(KEY_SERVICE_FEE, 10f); }
+    public boolean isServiceFeePercent()   { return prefs.getBoolean(KEY_SERVICE_FEE_IS_PERCENT, true); }
+
+    public void setServiceFee(double v) {
+        editor.putFloat(KEY_SERVICE_FEE, (float) v);
+        editor.apply();
+    }
+
+    public void setServiceFeeIsPercent(boolean v) {
+        editor.putBoolean(KEY_SERVICE_FEE_IS_PERCENT, v);
+        editor.apply();
+    }
+
 }
