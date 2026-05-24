@@ -20,7 +20,7 @@ public class OrderStatusActivity extends AppCompatActivity
         implements OrderStatusPresenter.OrderStatusView {
 
     private OrderStatusPresenter presenter;
-    private TextView tvOrderNumber, tvOrderDate, tvCurrentStatus, tvStatusDescription, tvTotal;
+    private TextView tvOrderNumber, tvOrderDate, tvCurrentStatus, tvTotal;
     private RecyclerView rvOrderItems;
     private String orderId;
 
@@ -66,8 +66,7 @@ public class OrderStatusActivity extends AppCompatActivity
     public void onOrderLoaded(Order order) {
         tvOrderNumber.setText("Pedido #" + orderId.substring(0, 4).toUpperCase());
         tvOrderDate.setText(presenter.formatDate(order.getTime()));
-        tvCurrentStatus.setText(presenter.formatStatus(order.getStatus()));
-        tvStatusDescription.setText(getStatusDescription(order.getStatus()));
+        tvCurrentStatus.setText(getStatusDescription(order.getStatus()));
 
         double total = 0;
         for (com.example.unieat.model.OrderItem item : order.getItems()) {
