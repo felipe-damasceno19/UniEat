@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import com.example.unieat.R;
 import com.example.unieat.dao.FirebaseCallback;
+import com.example.unieat.data.SessionManager;
+import com.example.unieat.enums.UserType;
 import com.example.unieat.presenter.ProfilePresenter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -43,7 +45,14 @@ public class ProfileActivity extends BaseActivity
 
     private void setupNavigation() {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
-        NavigationHelper.setupBottomNavigation(this, bottomNav, R.id.nav_profile);
+        SessionManager session = new SessionManager(this);
+        if (session.getUserType() == UserType.COZINHEIRO) {
+            bottomNav.getMenu().clear();
+            bottomNav.inflateMenu(R.menu.kitchen_nav_menu);
+            NavigationHelper.setupKitchenNavigation(this, bottomNav, R.id.nav_kitchen_profile);
+        } else {
+            NavigationHelper.setupBottomNavigation(this, bottomNav, R.id.nav_profile);
+        }
     }
 
     private void setupViews() {

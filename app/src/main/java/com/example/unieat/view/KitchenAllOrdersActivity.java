@@ -12,6 +12,7 @@ import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.dao.OrderDAO;
 import com.example.unieat.enums.OrderStatus;
 import com.example.unieat.model.Order;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 import java.util.Locale;
@@ -33,8 +34,14 @@ public class KitchenAllOrdersActivity extends BaseActivity {
         orderDAO = new OrderDAO();
         bindViews();
         setupFilters();
-        findViewById(R.id.imgBack).setOnClickListener(v -> finish());
+        setupNavigation();
         loadOrders();
+    }
+
+    private void setupNavigation() {
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
+        NavigationHelper.setupKitchenNavigation(this, bottomNav, R.id.nav_kitchen_history);
+        findViewById(R.id.imgBack).setOnClickListener(v -> finish());
     }
 
     private void bindViews() {

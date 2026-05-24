@@ -54,9 +54,9 @@ public class NavigationHelper {
             } else if (itemId == R.id.nav_kitchen_menu) {
                 intent = new Intent(activity, KitchenMenuActivity.class);
             } else if (itemId == R.id.nav_kitchen_history) {
-                // intent = new Intent(activity, KitchenHistoryActivity.class);
+                intent = new Intent(activity, KitchenAllOrdersActivity.class);
             } else if (itemId == R.id.nav_kitchen_profile) {
-                // intent = new Intent(activity, ProfileActivity.class);
+                intent = new Intent(activity, ProfileActivity.class);
             }
 
             if (intent != null) {
