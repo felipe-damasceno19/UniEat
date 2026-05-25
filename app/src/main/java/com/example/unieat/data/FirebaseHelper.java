@@ -6,6 +6,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class FirebaseHelper {
 
     private static FirebaseDatabase instance;
+    private static DatabaseReference usersRef;
 
     public static FirebaseDatabase getInstance() {
         if(instance == null) {
@@ -15,7 +16,13 @@ public class FirebaseHelper {
         return instance;
     }
 
-    public static DatabaseReference users()    { return getInstance().getReference("users"); }
+    public static DatabaseReference users() {
+        if (usersRef == null) {
+            usersRef = getInstance().getReference("users");
+            usersRef.keepSynced(true);
+        }
+        return usersRef;
+    }
     public static DatabaseReference dishes()   { return getInstance().getReference("dishes"); }
     public static DatabaseReference orders()   { return getInstance().getReference("orders"); }
     public static DatabaseReference payments() { return getInstance().getReference("payments"); }
