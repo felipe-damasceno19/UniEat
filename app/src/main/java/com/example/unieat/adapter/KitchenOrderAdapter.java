@@ -11,9 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unieat.R;
+import com.example.unieat.dao.FirebaseCallback;
+import com.example.unieat.dao.UserDAO;
 import com.example.unieat.enums.OrderStatus;
 import com.example.unieat.model.Order;
 import com.example.unieat.model.OrderItem;
+import com.example.unieat.model.User;
 import com.example.unieat.util.DateUtils;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
@@ -35,6 +38,7 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
     private List<Order> orders;
     private final Context context;
     private final OnOrderActionListener listener;
+    private final UserDAO userDAO = new UserDAO();
 
     public KitchenOrderAdapter(Context context, List<Order> orders, OnOrderActionListener listener) {
         this.context  = context;
@@ -61,6 +65,28 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
 
         holder.tvOrderNumber.setText("Pedido #" + order.getId().substring(0, 4).toUpperCase());
         holder.tvOrderTime.setText(DateUtils.formatDate(order.getTime()));
+
+        holder.tvCustomerName.setText("Carregando...");
+        if (order.getUserId() != null && !order.getUserId().isEmpty()) {
+            userDAO.findById(order.getUserId(), new FirebaseCallback<User>() {
+                @Override
+                public void onSuccess(User user) {
+                    int current = holder.getBindingAdapterPosition();
+                    if (current != RecyclerView.NO_ID && current < orders.size()
+                            && orders.get(current).getId().equals(order.getId())) {
+                        holder.tvCustomerName.setText(
+                                user != null && user.getName() != null ? user.getName() : "—"
+                        );
+                    }
+                }
+                @Override
+                public void onFailure(String error) {
+                    holder.tvCustomerName.setText("—");
+                }
+            });
+        } else {
+            holder.tvCustomerName.setText("—");
+        }
 
         applyStatusStyle(holder, order.getStatus());
 
@@ -130,7 +156,7 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
 
     static class KitchenOrderViewHolder extends RecyclerView.ViewHolder {
         View viewStatusIndicator;
-        TextView tvOrderNumber, tvOrderTime, tvStatusBadge;
+        TextView tvOrderNumber, tvCustomerName, tvOrderTime, tvStatusBadge;
         ChipGroup chipGroupItems;
         MaterialButton btnOrderAction;
 
@@ -138,6 +164,7 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
             super(itemView);
             viewStatusIndicator = itemView.findViewById(R.id.viewStatusIndicator);
             tvOrderNumber       = itemView.findViewById(R.id.tvOrderNumber);
+            tvCustomerName      = itemView.findViewById(R.id.tvCustomerName);
             tvOrderTime         = itemView.findViewById(R.id.tvOrderTime);
             tvStatusBadge       = itemView.findViewById(R.id.tvStatusBadge);
             chipGroupItems      = itemView.findViewById(R.id.chipGroupItems);
