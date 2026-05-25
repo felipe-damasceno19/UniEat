@@ -2,6 +2,7 @@ package com.example.unieat.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ public class StudentHomeActivity extends BaseActivity
     private OrderPresenter orderPresenter;
     private RecyclerView rvFeatured, rvRecentOrders;
     private TextView tvBalance;
+    private TextView tvCartBadge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,18 @@ public class StudentHomeActivity extends BaseActivity
         fabCart.setOnClickListener(v ->
                 startActivity(new Intent(this, OrderActivity.class))
         );
+
+        tvCartBadge = findViewById(R.id.tvCartBadge);
+    }
+
+    private void updateCartBadge() {
+        int count = orderPresenter.getCartItemCount();
+        if (count > 0) {
+            tvCartBadge.setText(String.valueOf(count));
+            tvCartBadge.setVisibility(View.VISIBLE);
+        } else {
+            tvCartBadge.setVisibility(View.GONE);
+        }
     }
 
     private void setupViews() {
@@ -70,6 +84,7 @@ public class StudentHomeActivity extends BaseActivity
         super.onResume();
         tvBalance.setText(String.format("R$ %.2f", presenter.getBalance()));
         presenter.getRecentDishes();
+        updateCartBadge();
     }
 
     @Override
@@ -88,7 +103,8 @@ public class StudentHomeActivity extends BaseActivity
     public void onFeaturedDishesLoaded(List<Dish> dishes) {
         rvFeatured.setAdapter(new DishCardAdapter(this, dishes, dish -> {
             orderPresenter.addItem(dish);
-            startActivity(new Intent(this, OrderActivity.class));
+            updateCartBadge();
+            Toast.makeText(this, dish.getName() + " adicionado ao carrinho", Toast.LENGTH_SHORT).show();
         }));
     }
 
@@ -96,7 +112,8 @@ public class StudentHomeActivity extends BaseActivity
     public void onRecentDishesLoaded(List<Dish> dishes) {
         rvRecentOrders.setAdapter(new DishCardAdapter(this, dishes, dish -> {
             orderPresenter.addItem(dish);
-            startActivity(new Intent(this, OrderActivity.class));
+            updateCartBadge();
+            Toast.makeText(this, dish.getName() + " adicionado ao carrinho", Toast.LENGTH_SHORT).show();
         }));
     }
 

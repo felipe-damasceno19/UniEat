@@ -46,6 +46,12 @@ public class OrderPresenter {
     public List<OrderItem> getCart()                        { return cart; }
     public boolean isCartEmpty()                            { return cart.isEmpty(); }
 
+    public int getCartItemCount() {
+        int count = 0;
+        for (OrderItem item : cart) count += item.getQuantity();
+        return count;
+    }
+
     public double calculateSubTotal(OrderItem item) {
         return item.getQuantity() * item.getDish().getPrice();
     }
