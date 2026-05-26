@@ -97,10 +97,15 @@ public class KitchenHomePresenter {
     }
 
     public void loadOrdersByStatus(OrderStatus status) {
+        if (status == null) {
+            orderDAO.findRecentOrders(10, new FirebaseCallback<List<Order>>() {
+                @Override public void onSuccess(List<Order> orders) { view.showRecentOrders(orders); }
+                @Override public void onFailure(String error) { view.showError(error); }
+            });
+            return;
+        }
         orderDAO.findByStatus(status, new FirebaseCallback<List<Order>>() {
-            @Override public void onSuccess(List<Order> orders) {
-                view.showRecentOrders(orders);
-            }
+            @Override public void onSuccess(List<Order> orders) { view.showRecentOrders(orders); }
             @Override public void onFailure(String error) { view.showError(error); }
         });
     }
