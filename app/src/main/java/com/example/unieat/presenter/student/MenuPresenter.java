@@ -6,6 +6,7 @@ import com.example.unieat.enums.FoodType;
 import com.example.unieat.model.Dish;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MenuPresenter {
@@ -37,19 +38,27 @@ public class MenuPresenter {
         });
     }
 
-    public void filterByType(FoodType foodType) {
-        if (foodType == null) {
-            loadAvailableDishes();
-            return;
-        }
-        dishDAO.getDishesByType(foodType, new FirebaseCallback<List<Dish>>() {
-            @Override public void onSuccess(List<Dish> dishes) {
-                if (dishes == null || dishes.isEmpty())
+    public void filterByType(List<FoodType> types) {
+        dishDAO.getAvailableDishes(new FirebaseCallback<List<Dish>>() {
+            @Override
+            public void onSuccess(List<Dish> dishes) {
+                List<Dish> filtered = new ArrayList<>();
+                for (Dish d : dishes) {
+                    if (types.contains(d.getType())) {
+                        filtered.add(d);
+                    }
+                }
+                if (filtered.isEmpty()) {
                     view.showEmptyState("Nenhum prato encontrado nessa categoria.");
-                else
-                    view.showDishes(dishes);
+                } else {
+                    view.showDishes(filtered);
+                }
             }
-            @Override public void onFailure(String error) { view.showError("Erro ao filtrar cardápio."); }
+
+            @Override
+            public void onFailure(String error) {
+                view.showError("Erro ao filtrar cardápio.");
+            }
         });
     }
 
