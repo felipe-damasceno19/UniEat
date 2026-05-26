@@ -13,8 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-
-
 import com.example.unieat.R;
 import com.example.unieat.dao.DishDAO;
 import com.example.unieat.enums.FoodType;
@@ -23,6 +21,7 @@ import com.example.unieat.presenter.kitchen.KitchenMenuPresenter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -77,21 +76,30 @@ public class KitchenMenuActivity extends BaseActivity
 
     private void setupFilters() {
         findViewById(R.id.chipAll).setOnClickListener(v ->
-                presenter.loadAvailableDishes()
+                presenter.getAllDishes()
         );
 
         findViewById(R.id.chipMainDishes).setOnClickListener(v ->
-                presenter.filterByType(FoodType.REFEICAO)
+                presenter.filterByType(List.of(FoodType.REFEICAO))
         );
 
         findViewById(R.id.chipSnacks).setOnClickListener(v ->
-                presenter.filterByType(FoodType.SALGADO_FRITO)
+                presenter.filterByType(Arrays.asList(
+                        FoodType.SALGADO_FRITO,
+                        FoodType.SALGADO_ASSADO,
+                        FoodType.SANDUICHE_NATURAL,
+                        FoodType.CUSCUZ,
+                        FoodType.TAPIOCA,
+                        FoodType.SNACK
+                ))
         );
 
         findViewById(R.id.chipBeverages).setOnClickListener(v ->
-                presenter.filterByType(FoodType.BEBIDA_GELADA)
+                presenter.filterByType(Arrays.asList(
+                        FoodType.BEBIDA_QUENTE,
+                        FoodType.BEBIDA_GELADA
+                ))
         );
-
     }
 
     private void setupNavigation() {

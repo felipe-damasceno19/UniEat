@@ -95,7 +95,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="NEW"
+                            android:text="NOVO"
                             android:textColor="#7B4A00"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -134,7 +134,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="IN PREP"
+                            android:text="EM PREPARO"
                             android:textColor="#1A4A7A"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -173,7 +173,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="READY"
+                            android:text="PRONTO"
                             android:textColor="#1A6A45"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -204,7 +204,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Active Orders"
+                    android:text="Pedidos ativos"
                     android:textColor="#1A1A1A"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -213,7 +213,7 @@
                     android:id="@+id/tvViewAll"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="View All"
+                    android:text="Ver todos"
                     android:textColor="#8B0000"
                     android:textSize="14sp"
                     android:textStyle="bold"
