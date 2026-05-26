@@ -65,7 +65,6 @@ public class KitchenAllOrdersActivity extends BaseActivity {
     }
 
     private void loadOrders() {
-        // contadores em paralelo
         orderDAO.countByStatus(OrderStatus.PENDENTE, new FirebaseCallback<Integer>() {
             @Override public void onSuccess(Integer count) {
                 tvNewCount.setText(String.format(Locale.getDefault(), "%02d", count));
@@ -87,7 +86,6 @@ public class KitchenAllOrdersActivity extends BaseActivity {
             @Override public void onFailure(String error) {}
         });
 
-        // lista filtrada ou completa
         FirebaseCallback<List<Order>> listCallback = new FirebaseCallback<List<Order>>() {
             @Override public void onSuccess(List<Order> orders) {
                 if (adapter == null) {

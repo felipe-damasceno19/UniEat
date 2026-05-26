@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:background="#FDFDFD"
     android:fitsSystemWindows="true">
-
-    <!-- Top Bar -->
+    
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"

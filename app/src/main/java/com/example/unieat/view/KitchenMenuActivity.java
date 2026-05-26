@@ -44,7 +44,6 @@ public class KitchenMenuActivity extends BaseActivity
         setupNavigation();
 
         findViewById(R.id.btnAddDish).setOnClickListener(v -> {
-            // futuramente abre EditDishActivity com prato vazio
             Intent intent = new Intent(this, EditDishActivity.class);
             startActivity(intent);
         });
@@ -163,7 +162,6 @@ public class KitchenMenuActivity extends BaseActivity
         }
     }
 
-    // KitchenMenuPresenter.KitchenView callbacks
     @Override
     public void showDishes(List<Dish> dishes) {
         renderDishes(dishes);

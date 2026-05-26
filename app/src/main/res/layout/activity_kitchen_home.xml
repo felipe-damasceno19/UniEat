@@ -7,8 +7,7 @@
     android:layout_height="match_parent"
     android:background="#F2F2F7"
     android:fitsSystemWindows="true">
-
-    <!-- TOP BAR -->
+    
     <LinearLayout
         android:id="@+id/topBar"
         android:layout_width="0dp"
@@ -60,8 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <!-- STATUS SUMMARY CARDS -->
+            
             <LinearLayout
                 android:id="@+id/statusCardsRow"
                 android:layout_width="match_parent"
@@ -71,8 +69,7 @@
                 android:paddingTop="16dp"
                 android:paddingBottom="8dp"
                 android:weightSum="3">
-
-                <!-- NEW Card -->
+                
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardFilterNew"
                     android:layout_width="0dp"
@@ -110,8 +107,7 @@
                             android:textStyle="bold" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
-
-                <!-- IN PREP Card -->
+                
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardFilterInPrep"
                     android:layout_width="0dp"
@@ -149,8 +145,7 @@
                             android:textStyle="bold" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
-
-                <!-- READY Card -->
+                
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardFilterReady"
                     android:layout_width="0dp"
@@ -189,8 +184,7 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
-
-            <!-- ACTIVE ORDERS HEADER -->
+            
             <LinearLayout
                 android:id="@+id/activeOrdersHeader"
                 android:layout_width="match_parent"
@@ -222,8 +216,7 @@
                     android:clickable="true"
                     android:focusable="true" />
             </LinearLayout>
-
-            <!-- ORDERS LIST (non-scrollable preview) -->
+            
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerOrders"
                 android:layout_width="match_parent"

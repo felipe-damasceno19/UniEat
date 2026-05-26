@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:background="#FDFDFD"
     android:fitsSystemWindows="true">
-
-    <!-- Top Bar -->
+    
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
@@ -64,8 +63,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Banner header card (image + tag + subtitle) -->
+    
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardBannerHeader"
         android:layout_width="match_parent"
@@ -122,8 +120,7 @@
                 android:textSize="13sp" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
-
-    <!-- Products label -->
+    
     <TextView
         android:id="@+id/tvProductsLabel"
         android:layout_width="wrap_content"
@@ -136,8 +133,7 @@
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cardBannerHeader" />
-
-    <!-- Products RecyclerView -->
+    
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvBannerProducts"
         android:layout_width="match_parent"
@@ -151,8 +147,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- FAB Cart -->
+    
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabCart"
         android:layout_width="wrap_content"

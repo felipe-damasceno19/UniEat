@@ -5,8 +5,7 @@
     android:layout_height="match_parent"
     android:background="#F5F5F5"
     android:fitsSystemWindows="true">
-
-    <!-- Top Bar -->
+    
     <LinearLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
@@ -49,8 +48,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
-
-            <!-- Card: Identificação -->
+            
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -109,8 +107,7 @@
                         app:tint="#FFB84C" />
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
-
-            <!-- Card: Tempo Estimado -->
+            
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -159,10 +156,7 @@
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
-
-
-            <!-- Card: Resumo dos Itens -->
+            
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

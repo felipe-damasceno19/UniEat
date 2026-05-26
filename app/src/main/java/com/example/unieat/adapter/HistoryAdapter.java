@@ -50,16 +50,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     public void onBindViewHolder(@NonNull HistoryViewHolder holder, int position) {
         Order order = orders.get(position);
 
-        // id e data
         holder.tvOrderId.setText(OrderUtils.formatOrderNumber(order.getId()));
         holder.tvOrderDate.setText(DateUtils.formatDate(order.getTime()));
 
-        // status com cor
         String statusText = OrderUtils.formatStatus(order.getStatus());
         holder.tvOrderStatus.setText(statusText);
         applyStatusStyle(holder.tvOrderStatus, order.getStatus());
 
-        // imagem do primeiro prato
         if (!order.getItems().isEmpty() && order.getItems().get(0).getDish() != null) {
             String imageUrl = order.getItems().get(0).getDish().getImageName();
             if (imageUrl != null && !imageUrl.isEmpty()) {
@@ -72,10 +69,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             }
         }
 
-        // resumo dos itens
         holder.tvOrderItems.setText(buildItemsSummary(order.getItems()));
 
-        // total
         double total = 0;
         for (OrderItem item : order.getItems()) {
             total += item.getDish().getPrice() * item.getQuantity();

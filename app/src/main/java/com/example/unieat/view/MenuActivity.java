@@ -230,7 +230,6 @@ public class MenuActivity extends AppCompatActivity implements MenuPresenter.Vie
         }));
     }
 
-    // MenuPresenter.View callbacks
     @Override
     public void showDishes(List<Dish> dishes) {
         setAdapter(rvMainDishes, dishes);

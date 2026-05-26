@@ -181,7 +181,6 @@ public class OrderDAO {
         FirebaseHelper.orders().child(orderId).removeEventListener(listener);
     }
 
-    // helpers
     private void buildOrderFromSnap(DataSnapshot snap, FirebaseCallback<Order> cb) {
         String orderId    = snap.getKey();
         String annotation = snap.child("annotation").getValue(String.class);
@@ -249,7 +248,6 @@ public class OrderDAO {
                     if (--remaining[0] == 0) cb.onSuccess(orders);
                 }
                 @Override public void onFailure(String error) {
-                    // skip individual failures so the rest of the list still loads
                     if (--remaining[0] == 0) cb.onSuccess(orders);
                 }
             });

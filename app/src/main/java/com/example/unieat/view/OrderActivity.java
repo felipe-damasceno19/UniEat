@@ -66,11 +66,9 @@ public class OrderActivity extends BaseActivity implements OrderPresenter.OrderV
             orderAmount = presenter.calculateTotal();
 
             btnGoToPayment.setEnabled(false);
-            presenter.placeOrder(annotation, this); // resultado vem no callback
+            presenter.placeOrder(annotation, this);
         });
     }
-
-    // ---- OrderPresenter.OrderView ----
 
     @Override
     public void onOrderPlaced(Order order) {
@@ -90,8 +88,6 @@ public class OrderActivity extends BaseActivity implements OrderPresenter.OrderV
         btnGoToPayment.setEnabled(true);
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-
-    // ---- RecyclerView ----
 
     private void setupRecyclerView() {
         RecyclerView rvItems = findViewById(R.id.rvOrderItems);

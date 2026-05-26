@@ -43,21 +43,18 @@ public class RegisterPresenter {
             return;
         }
 
-        // 1. verifica username
         userDAO.findByUsername(username, new FirebaseCallback<User>() {
             @Override public void onSuccess(User existing) {
                 if (existing != null) {
                     view.onRegisterError("Esse username já está sendo utilizado");
                     return;
                 }
-                // 2. verifica email
                 userDAO.findByEmail(email, new FirebaseCallback<User>() {
                     @Override public void onSuccess(User existing) {
                         if (existing != null) {
                             view.onRegisterError("Esse email já está sendo utilizado");
                             return;
                         }
-                        // 3. tudo ok — insere
                         User user = new User(
                                 UUID.randomUUID().toString(),
                                 name, username, password,

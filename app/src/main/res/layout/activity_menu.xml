@@ -19,8 +19,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="20dp">
-
-            <!-- Top Bar: Logo e Saldo -->
+            
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,8 +49,7 @@
                     android:textSize="14sp"
                     android:textStyle="bold" />
             </RelativeLayout>
-
-            <!-- Barra de Pesquisa -->
+            
             <EditText
                 android:id="@+id/etSearch"
                 android:layout_width="match_parent"
@@ -64,8 +62,7 @@
                 android:paddingHorizontal="16dp"
                 android:inputType="text"
                 android:textSize="14sp" />
-
-            <!-- Filtros/Categorias Rápidas -->
+            
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -122,8 +119,7 @@
                         android:textColor="#7B1C1C" />
                 </LinearLayout>
             </HorizontalScrollView>
-
-            <!-- Seção: Pratos Principais -->
+            
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -156,8 +152,7 @@
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_dish_card" />
-
-            <!-- Seção: Lanches -->
+            
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -190,8 +185,7 @@
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_dish_card" />
-
-            <!-- Seção: Bebidas -->
+            
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -224,8 +218,7 @@
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_dish_card" />
-
-            <!-- Seção: Sobremesas -->
+            
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -261,8 +254,7 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
-    <!-- Floating Cart Button -->
+    
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabCart"
         android:layout_width="wrap_content"
@@ -291,8 +283,7 @@
         app:layout_constraintEnd_toEndOf="@id/fabCart"
         android:layout_marginTop="-6dp"
         android:layout_marginEnd="-6dp" />
-
-    <!-- Bottom Navigation Fixa -->
+    
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"

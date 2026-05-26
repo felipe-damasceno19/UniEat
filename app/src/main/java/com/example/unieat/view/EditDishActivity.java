@@ -146,7 +146,6 @@ public class EditDishActivity extends BaseActivity
         }
     }
 
-    // KitchenMenuPresenter.KitchenView callbacks
     @Override
     public void showDishes(java.util.List<Dish> dishes) {}
 

@@ -46,8 +46,7 @@ public class KitchenHomePresenter {
     }
 
     public void loadDashboard() {
-        // Busca os 3 contadores em paralelo com um coordenador simples
-        final int[] counts = {-1, -1, -1}; // pending, preparing, ready
+        final int[] counts = {-1, -1, -1};
 
         orderDAO.countByStatus(OrderStatus.PENDENTE, new FirebaseCallback<Integer>() {
             @Override public void onSuccess(Integer count) {
@@ -77,7 +76,6 @@ public class KitchenHomePresenter {
         });
     }
 
-    // Só busca os pedidos recentes quando os 3 contadores já chegaram
     private void tryLoadRecent(int[] counts) {
         if (counts[0] < 0 || counts[1] < 0 || counts[2] < 0) return;
 

@@ -47,7 +47,7 @@ public class DataSeeder {
 
         dishDAO.findAll(new FirebaseCallback<List<Dish>>() {
             @Override public void onSuccess(List<Dish> dishes) {
-                if (!dishes.isEmpty()) return; // já foi populado
+                if (!dishes.isEmpty()) return;
 
                 dishDAO.insert(new Dish(UUID.randomUUID().toString(),
                         "Executivo do Dia", "Arroz, feijão, bife acebolado e batata.",
