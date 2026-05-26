@@ -2,10 +2,12 @@ package com.example.unieat.presenter;
 
 import android.content.Context;
 
+import com.example.unieat.dao.BannerDAO;
 import com.example.unieat.dao.DishDAO;
 import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.dao.OrderDAO;
 import com.example.unieat.data.SessionManager;
+import com.example.unieat.model.Banner;
 import com.example.unieat.model.Dish;
 import com.example.unieat.model.Order;
 import com.example.unieat.model.OrderItem;
@@ -21,11 +23,13 @@ public class StudentHomePresenter {
     public interface StudentHomeView {
         void onFeaturedDishesLoaded(List<Dish> dishes);
         void onRecentDishesLoaded(List<Dish> dishes);
+        void onBannersLoaded(List<Banner> banners);
         void onError(String message);
     }
 
     private final DishDAO dishDAO;
     private final OrderDAO orderDAO;
+    private final BannerDAO bannerDAO;
     private final SessionManager sessionManager;
     private final StudentHomeView view;
     private ValueEventListener dishListener;
@@ -33,6 +37,7 @@ public class StudentHomePresenter {
     public StudentHomePresenter(Context context, StudentHomeView view) {
         this.dishDAO        = new DishDAO();
         this.orderDAO       = new OrderDAO();
+        this.bannerDAO      = new BannerDAO();
         this.sessionManager = new SessionManager(context);
         this.view           = view;
     }
@@ -91,6 +96,13 @@ public class StudentHomePresenter {
             @Override public void onFailure(String error) {
                 view.onError("Erro ao carregar pratos: " + error);
             }
+        });
+    }
+
+    public void getBanners() {
+        bannerDAO.findAll(new FirebaseCallback<List<Banner>>() {
+            @Override public void onSuccess(List<Banner> banners) { view.onBannersLoaded(banners); }
+            @Override public void onFailure(String error) { view.onBannersLoaded(new ArrayList<>()); }
         });
     }
 

@@ -608,6 +608,179 @@
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
+            <!-- Section: Banners (cozinheiro only, visibility set in code) -->
+            <LinearLayout
+                android:id="@+id/sectionBanners"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#EEEEEE"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:id="@+id/rowBanners"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="16dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:contentDescription="@null"
+                            android:src="@android:drawable/ic_menu_gallery"
+                            app:tint="#7B1C1C" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:text="Gerenciar Banners"
+                            android:textColor="#222222"
+                            android:textSize="15sp" />
+
+                        <ImageView
+                            android:id="@+id/ivBannersArrow"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_back_arrow"
+                            android:rotation="180"
+                            app:tint="#BBBBBB" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardBannersContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="16dp"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#EEEEEE"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <!-- Banner list (populated dynamically) -->
+                        <LinearLayout
+                            android:id="@+id/llBannerList"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="12dp"
+                            android:background="#F0F0F0" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:text="Criar novo banner"
+                            android:textColor="#555555"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/etBannerTag"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Tag (ex: OFERTA LIMITADA)"
+                            android:inputType="textCapCharacters"
+                            android:textSize="14sp"
+                            android:textColor="#222222"
+                            android:background="@drawable/shape_input_bg"
+                            android:padding="12dp"
+                            android:layout_marginBottom="12dp" />
+
+                        <EditText
+                            android:id="@+id/etBannerTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Título do banner"
+                            android:inputType="textCapSentences"
+                            android:textSize="14sp"
+                            android:textColor="#222222"
+                            android:background="@drawable/shape_input_bg"
+                            android:padding="12dp"
+                            android:layout_marginBottom="12dp" />
+
+                        <EditText
+                            android:id="@+id/etBannerSubtitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Subtítulo"
+                            android:inputType="textCapSentences"
+                            android:textSize="14sp"
+                            android:textColor="#222222"
+                            android:background="@drawable/shape_input_bg"
+                            android:padding="12dp"
+                            android:layout_marginBottom="12dp" />
+
+                        <EditText
+                            android:id="@+id/etBannerImageUrl"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="URL da imagem (opcional)"
+                            android:inputType="textUri"
+                            android:textSize="14sp"
+                            android:textColor="#222222"
+                            android:background="@drawable/shape_input_bg"
+                            android:padding="12dp"
+                            android:layout_marginBottom="12dp" />
+
+                        <Button
+                            android:id="@+id/btnSelectBannerDishes"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:backgroundTint="#F5F5F5"
+                            android:text="Selecionar Produtos"
+                            android:textAllCaps="false"
+                            android:textColor="#333333"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="12dp"
+                            app:cornerRadius="12dp" />
+
+                        <Button
+                            android:id="@+id/btnCreateBanner"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:backgroundTint="#7B1C1C"
+                            android:text="Criar Banner"
+                            android:textAllCaps="false"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            app:cornerRadius="12dp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
             <!-- Section: Benefícios (aluno only, visibility set in code) -->
             <LinearLayout
                 android:id="@+id/sectionBeneficios"

@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unieat.R;
+import com.example.unieat.adapter.BannerAdapter;
 import com.example.unieat.adapter.DishCardAdapter;
+import com.example.unieat.model.Banner;
 import com.example.unieat.model.Dish;
 import com.example.unieat.presenter.OrderPresenter;
 import com.example.unieat.presenter.StudentHomePresenter;
@@ -24,7 +26,7 @@ public class StudentHomeActivity extends BaseActivity
 
     private StudentHomePresenter presenter;
     private OrderPresenter orderPresenter;
-    private RecyclerView rvFeatured, rvRecentOrders;
+    private RecyclerView rvFeatured, rvRecentOrders, rvBanners;
     private TextView tvBalance;
     private TextView tvCartBadge;
 
@@ -91,6 +93,11 @@ public class StudentHomeActivity extends BaseActivity
         rvRecentOrders.setLayoutManager(
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         );
+
+        rvBanners = findViewById(R.id.rvBanners);
+        rvBanners.setLayoutManager(
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        );
     }
 
     @Override
@@ -98,6 +105,7 @@ public class StudentHomeActivity extends BaseActivity
         super.onResume();
         tvBalance.setText(String.format("R$ %.2f", presenter.getBalance()));
         presenter.getRecentDishes();
+        presenter.getBanners();
         updateCartBadge();
     }
 
@@ -128,6 +136,15 @@ public class StudentHomeActivity extends BaseActivity
             orderPresenter.addItem(dish);
             updateCartBadge();
             Toast.makeText(this, dish.getName() + " adicionado ao carrinho", Toast.LENGTH_SHORT).show();
+        }));
+    }
+
+    @Override
+    public void onBannersLoaded(List<Banner> banners) {
+        rvBanners.setAdapter(new BannerAdapter(this, banners, banner -> {
+            Intent intent = new Intent(this, BannerProductsActivity.class);
+            intent.putExtra("banner_id", banner.getId());
+            startActivity(intent);
         }));
     }
 

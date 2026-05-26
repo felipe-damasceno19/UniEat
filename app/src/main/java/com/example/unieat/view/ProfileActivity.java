@@ -14,15 +14,21 @@ import android.widget.Toast;
 import com.google.android.material.card.MaterialCardView;
 
 import com.example.unieat.R;
+import com.example.unieat.dao.BannerDAO;
 import com.example.unieat.dao.CouponDAO;
+import com.example.unieat.dao.DishDAO;
 import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.dao.SettingsDAO;
 import com.example.unieat.dao.UserDAO;
 import com.example.unieat.data.SessionManager;
 import com.example.unieat.enums.UserType;
+import com.example.unieat.model.Banner;
 import com.example.unieat.model.Coupon;
+import com.example.unieat.model.Dish;
 import com.example.unieat.presenter.ProfilePresenter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.List;
 
 public class ProfileActivity extends BaseActivity
         implements ProfilePresenter.ProfileView {
@@ -38,6 +44,8 @@ public class ProfileActivity extends BaseActivity
     private TextView tvUserEmail, tvBalance;
     private TextView tvOrderCount;
     private int selectedProfilePicture = 1;
+    private List<String> selectedBannerDishIds = new java.util.ArrayList<>();
+    private List<Dish> allDishes = new java.util.ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +74,7 @@ public class ProfileActivity extends BaseActivity
             setupPixSection();
             setupServiceFeeSection();
             setupCouponCreationSection();
+            setupBannerSection();
         } else {
             setupCouponRedemptionSection();
         }
@@ -492,6 +501,170 @@ public class ProfileActivity extends BaseActivity
                     .setNegativeButton("Cancelar", null)
                     .show();
         });
+
+        row.addView(info);
+        row.addView(btnDelete);
+        parent.addView(row);
+    }
+
+    private void setupBannerSection() {
+        LinearLayout section = findViewById(R.id.sectionBanners);
+        section.setVisibility(View.VISIBLE);
+
+        LinearLayout rowBanners            = findViewById(R.id.rowBanners);
+        MaterialCardView cardBannersContent = findViewById(R.id.cardBannersContent);
+        ImageView ivBannersArrow           = findViewById(R.id.ivBannersArrow);
+        rowBanners.setOnClickListener(v -> {
+            toggleSection(cardBannersContent, ivBannersArrow);
+            if (cardBannersContent.getVisibility() == View.VISIBLE) loadBannerList();
+        });
+
+        EditText etTag      = findViewById(R.id.etBannerTag);
+        EditText etTitle    = findViewById(R.id.etBannerTitle);
+        EditText etSubtitle = findViewById(R.id.etBannerSubtitle);
+        EditText etImageUrl = findViewById(R.id.etBannerImageUrl);
+        Button btnSelect    = findViewById(R.id.btnSelectBannerDishes);
+        Button btnCreate    = findViewById(R.id.btnCreateBanner);
+
+        new DishDAO().findAll(new FirebaseCallback<List<Dish>>() {
+            @Override public void onSuccess(List<Dish> dishes) { allDishes = dishes != null ? dishes : new java.util.ArrayList<>(); }
+            @Override public void onFailure(String e) {}
+        });
+
+        btnSelect.setOnClickListener(v -> showDishPickerDialog(btnSelect));
+
+        btnCreate.setOnClickListener(v -> {
+            String tag      = etTag.getText().toString().trim().toUpperCase();
+            String title    = etTitle.getText().toString().trim();
+            String subtitle = etSubtitle.getText().toString().trim();
+            String imageUrl = etImageUrl.getText().toString().trim();
+
+            if (title.isEmpty()) {
+                Toast.makeText(this, "Informe o título do banner", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Banner banner = new Banner(null, tag, title, subtitle, imageUrl, new java.util.ArrayList<>(selectedBannerDishIds));
+            new BannerDAO().insert(banner, new FirebaseCallback<String>() {
+                @Override public void onSuccess(String id) {
+                    etTag.setText(""); etTitle.setText(""); etSubtitle.setText(""); etImageUrl.setText("");
+                    selectedBannerDishIds.clear();
+                    btnSelect.setText("Selecionar Produtos");
+                    Toast.makeText(ProfileActivity.this, "Banner criado!", Toast.LENGTH_SHORT).show();
+                    loadBannerList();
+                }
+                @Override public void onFailure(String error) {
+                    Toast.makeText(ProfileActivity.this, "Erro ao criar banner", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+    }
+
+    private void showDishPickerDialog(Button btnSelect) {
+        if (allDishes.isEmpty()) {
+            Toast.makeText(this, "Nenhum produto cadastrado", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String[] names = new String[allDishes.size()];
+        boolean[] checked = new boolean[allDishes.size()];
+        for (int i = 0; i < allDishes.size(); i++) {
+            names[i] = allDishes.get(i).getName();
+            checked[i] = selectedBannerDishIds.contains(allDishes.get(i).getId());
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Selecionar Produtos")
+                .setMultiChoiceItems(names, checked, (dialog, which, isChecked) -> {
+                    String dishId = allDishes.get(which).getId();
+                    if (isChecked) { if (!selectedBannerDishIds.contains(dishId)) selectedBannerDishIds.add(dishId); }
+                    else selectedBannerDishIds.remove(dishId);
+                })
+                .setPositiveButton("Confirmar", (d, w) ->
+                        btnSelect.setText(selectedBannerDishIds.isEmpty()
+                                ? "Selecionar Produtos"
+                                : selectedBannerDishIds.size() + " produto(s) selecionado(s)"))
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void loadBannerList() {
+        LinearLayout llBannerList = findViewById(R.id.llBannerList);
+        llBannerList.removeAllViews();
+
+        new BannerDAO().findAll(new FirebaseCallback<List<Banner>>() {
+            @Override public void onSuccess(List<Banner> banners) {
+                llBannerList.removeAllViews();
+                if (banners == null || banners.isEmpty()) {
+                    TextView empty = new TextView(ProfileActivity.this);
+                    empty.setText("Nenhum banner cadastrado");
+                    empty.setTextColor(0xFF888888);
+                    empty.setTextSize(13f);
+                    empty.setPadding(0, 0, 0, 8);
+                    llBannerList.addView(empty);
+                    return;
+                }
+                for (Banner banner : banners) addBannerRow(llBannerList, banner);
+            }
+            @Override public void onFailure(String error) {}
+        });
+    }
+
+    private void addBannerRow(LinearLayout parent, Banner banner) {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        rowParams.setMargins(0, 0, 0, 8);
+        row.setLayoutParams(rowParams);
+
+        LinearLayout info = new LinearLayout(this);
+        info.setOrientation(LinearLayout.VERTICAL);
+        info.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+
+        TextView tvTitle = new TextView(this);
+        tvTitle.setText(banner.getTitle());
+        tvTitle.setTextColor(0xFF222222);
+        tvTitle.setTextSize(14f);
+        tvTitle.setTypeface(null, android.graphics.Typeface.BOLD);
+
+        TextView tvDetail = new TextView(this);
+        tvDetail.setText((banner.getTag().isEmpty() ? "" : banner.getTag() + "  •  ")
+                + banner.getDishIds().size() + " produto(s)");
+        tvDetail.setTextColor(0xFF888888);
+        tvDetail.setTextSize(12f);
+
+        info.addView(tvTitle);
+        info.addView(tvDetail);
+
+        Button btnDelete = new Button(this);
+        btnDelete.setText("Excluir");
+        btnDelete.setTextSize(12f);
+        btnDelete.setTextColor(0xFFCC2222);
+        btnDelete.setBackgroundTintList(android.content.res.ColorStateList.valueOf(0xFFFFEBEE));
+        btnDelete.setPadding(16, 4, 16, 4);
+        LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        btnParams.setMarginStart(8);
+        btnDelete.setLayoutParams(btnParams);
+
+        btnDelete.setOnClickListener(v ->
+                new AlertDialog.Builder(this)
+                        .setTitle("Excluir Banner")
+                        .setMessage("Excluir o banner \"" + banner.getTitle() + "\"?")
+                        .setPositiveButton("Excluir", (d, w) ->
+                                new BannerDAO().delete(banner.getId(), new FirebaseCallback<Void>() {
+                                    @Override public void onSuccess(Void ignored) {
+                                        parent.removeView(row);
+                                        Toast.makeText(ProfileActivity.this, "Banner excluído", Toast.LENGTH_SHORT).show();
+                                    }
+                                    @Override public void onFailure(String error) {
+                                        Toast.makeText(ProfileActivity.this, "Erro ao excluir", Toast.LENGTH_SHORT).show();
+                                    }
+                                }))
+                        .setNegativeButton("Cancelar", null)
+                        .show());
 
         row.addView(info);
         row.addView(btnDelete);
