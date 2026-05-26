@@ -11,11 +11,12 @@ public class OrderUtils {
 
     public static String formatStatus(OrderStatus status) {
         switch (status){
-            case PENDENTE: return "Pendente";
+            case PENDENTE:   return "Pendente";
             case PREPARANDO: return "Preparando";
-            case PRONTO: return "Pronto";
-            case ENTREGUE: return "Entregue";
-            default: return status.name();
+            case PRONTO:     return "Pronto";
+            case ENTREGUE:   return "Entregue";
+            case REJEITADO:  return "Rejeitado";
+            default:         return status.name();
         }
     }
 }

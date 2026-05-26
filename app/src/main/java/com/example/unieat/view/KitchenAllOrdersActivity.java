@@ -92,7 +92,14 @@ public class KitchenAllOrdersActivity extends BaseActivity {
             @Override public void onSuccess(List<Order> orders) {
                 if (adapter == null) {
                     adapter = new KitchenOrderAdapter(KitchenAllOrdersActivity.this, orders,
-                            (order, newStatus) -> changeStatus(order.getId(), newStatus));
+                            new KitchenOrderAdapter.OnOrderActionListener() {
+                                @Override public void onChangeStatus(Order order, OrderStatus newStatus) {
+                                    changeStatus(order.getId(), newStatus);
+                                }
+                                @Override public void onReject(Order order) {
+                                    changeStatus(order.getId(), OrderStatus.REJEITADO);
+                                }
+                            });
                     recyclerAllOrders.setAdapter(adapter);
                 } else {
                     adapter.updateData(orders);

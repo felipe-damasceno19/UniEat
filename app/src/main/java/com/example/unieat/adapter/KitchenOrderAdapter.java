@@ -18,6 +18,7 @@ import com.example.unieat.model.Order;
 import com.example.unieat.model.OrderItem;
 import com.example.unieat.model.User;
 import com.example.unieat.util.DateUtils;
+import com.example.unieat.util.OrderUtils;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -28,6 +29,7 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
 
     public interface OnOrderActionListener {
         void onChangeStatus(Order order, OrderStatus newStatus);
+        void onReject(Order order);
     }
 
     private static final String[] STATUS_LABELS   = {"Pendente", "Em Preparo", "Pronto", "Entregue"};
@@ -63,7 +65,7 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
     public void onBindViewHolder(@NonNull KitchenOrderViewHolder holder, int position) {
         Order order = orders.get(position);
 
-        holder.tvOrderNumber.setText("Pedido #" + order.getId().substring(0, 4).toUpperCase());
+        holder.tvOrderNumber.setText("Pedido " + OrderUtils.formatOrderNumber(order.getId()));
         holder.tvOrderTime.setText(DateUtils.formatDate(order.getTime()));
 
         holder.tvCustomerName.setText("Carregando...");
@@ -100,6 +102,17 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
 
         holder.btnOrderAction.setText("Alterar Status");
         holder.btnOrderAction.setOnClickListener(v -> showStatusDialog(order));
+        holder.btnRejectOrder.setOnClickListener(v -> showRejectConfirmation(order));
+    }
+
+    private void showRejectConfirmation(Order order) {
+        new AlertDialog.Builder(context)
+                .setTitle("Rejeitar Pedido")
+                .setMessage("Tem certeza que deseja rejeitar o pedido " + OrderUtils.formatOrderNumber(order.getId()) + "?")
+                .setPositiveButton("Rejeitar", (dialog, which) ->
+                        listener.onReject(order))
+                .setNegativeButton("Cancelar", null)
+                .show();
     }
 
     private void showStatusDialog(Order order) {
@@ -141,6 +154,13 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
                 holder.tvStatusBadge.setBackgroundTintList(
                         android.content.res.ColorStateList.valueOf(0xFFD6F5E8));
                 break;
+            case REJEITADO:
+                holder.viewStatusIndicator.setBackgroundColor(0xFFCC2222);
+                holder.tvStatusBadge.setText("REJEITADO");
+                holder.tvStatusBadge.setTextColor(0xFFCC2222);
+                holder.tvStatusBadge.setBackgroundTintList(
+                        android.content.res.ColorStateList.valueOf(0xFFFFEBEE));
+                break;
             default:
                 holder.viewStatusIndicator.setBackgroundColor(0xFF888888);
                 holder.tvStatusBadge.setText("ENTREGUE");
@@ -158,7 +178,7 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
         View viewStatusIndicator;
         TextView tvOrderNumber, tvCustomerName, tvOrderTime, tvStatusBadge;
         ChipGroup chipGroupItems;
-        MaterialButton btnOrderAction;
+        MaterialButton btnOrderAction, btnRejectOrder;
 
         KitchenOrderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -169,6 +189,7 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
             tvStatusBadge       = itemView.findViewById(R.id.tvStatusBadge);
             chipGroupItems      = itemView.findViewById(R.id.chipGroupItems);
             btnOrderAction      = itemView.findViewById(R.id.btnOrderAction);
+            btnRejectOrder      = itemView.findViewById(R.id.btnRejectOrder);
         }
     }
 }

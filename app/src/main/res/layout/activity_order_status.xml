@@ -34,11 +34,6 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/logo_unieat"
-            android:adjustViewBounds="true" />
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView

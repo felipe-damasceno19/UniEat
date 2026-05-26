@@ -4,5 +4,6 @@ public enum OrderStatus {
     PENDENTE,
     PREPARANDO,
     PRONTO,
-    ENTREGUE
+    ENTREGUE,
+    REJEITADO
 }

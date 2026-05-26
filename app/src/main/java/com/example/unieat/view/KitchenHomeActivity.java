@@ -110,7 +110,14 @@ public class KitchenHomeActivity extends BaseActivity
     public void showRecentOrders(List<Order> orders) {
         if (adapter == null) {
             adapter = new KitchenOrderAdapter(this, orders,
-                    (order, newStatus) -> presenter.setOrderStatus(order.getId(), newStatus));
+                    new KitchenOrderAdapter.OnOrderActionListener() {
+                        @Override public void onChangeStatus(Order order, OrderStatus newStatus) {
+                            presenter.setOrderStatus(order.getId(), newStatus);
+                        }
+                        @Override public void onReject(Order order) {
+                            presenter.setOrderStatus(order.getId(), OrderStatus.REJEITADO);
+                        }
+                    });
             recyclerOrders.setAdapter(adapter);
         } else {
             adapter.updateData(orders);

@@ -58,6 +58,15 @@ public class ProfilePresenter {
         });
     }
 
+    public void getTotalOrdersReceived(ProfileView view) {
+        orderDAO.findAll(new FirebaseCallback<List<Order>>() {
+            @Override public void onSuccess(List<Order> orders) {
+                view.onTotalOrdersLoaded(orders != null ? orders.size() : 0);
+            }
+            @Override public void onFailure(String error) { view.onError(error); }
+        });
+    }
+
     public void logout() { sessionManager.clearSession(); }
 
     public void deleteAccount(FirebaseCallback<Void> cb) {

@@ -105,7 +105,7 @@ public class OrderSuccessActivity extends BaseActivity {
             @Override public void onSuccess(Order order) {
                 if (order == null) return;
                 updateStepper(order.getStatus());
-                if (order.getStatus() == OrderStatus.ENTREGUE) {
+                if (order.getStatus() == OrderStatus.ENTREGUE || order.getStatus() == OrderStatus.REJEITADO) {
                     sessionManager.clearActiveOrderId();
                 }
             }
@@ -157,6 +157,15 @@ public class OrderSuccessActivity extends BaseActivity {
                 tvOrderStatus.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E3F2FD")));
                 tvOrderStatus.setTextColor(Color.parseColor("#1565C0"));
                 break;
+            case REJEITADO:
+                tvOrderStatus.setText("Pedido rejeitado");
+                tvOrderStatus.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFEBEE")));
+                tvOrderStatus.setTextColor(Color.parseColor("#CC2222"));
+                setStep(ivStepRecebido, tvStepRecebido, false, activeBg, inactiveBg, activeIcon, inactiveIcon, activeText, inactiveText);
+                vLine1.setBackgroundColor(inactiveLine);
+                vLine2.setBackgroundColor(inactiveLine);
+                vLine3.setBackgroundColor(inactiveLine);
+                return;
         }
     }
 

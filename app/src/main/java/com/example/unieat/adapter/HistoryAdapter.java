@@ -112,6 +112,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                 tv.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#E3F2FD")));
                 tv.setTextColor(Color.parseColor("#2196F3"));
                 break;
+            case REJEITADO:
+                tv.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#FFEBEE")));
+                tv.setTextColor(Color.parseColor("#CC2222"));
+                break;
             default:
                 tv.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#EEEEEE")));
                 tv.setTextColor(Color.parseColor("#888888"));
