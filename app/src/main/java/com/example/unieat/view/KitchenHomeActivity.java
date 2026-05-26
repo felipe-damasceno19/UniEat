@@ -1,5 +1,6 @@
 package com.example.unieat.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,8 +40,7 @@ public class KitchenHomeActivity extends BaseActivity
         setupNavigation();
 
         findViewById(R.id.tvViewAll).setOnClickListener(v -> {
-            currentFilter = null;
-            presenter.loadDashboard();
+            startActivity(new Intent(this, KitchenAllOrdersActivity.class));
         });
 
         presenter.loadDashboard();
