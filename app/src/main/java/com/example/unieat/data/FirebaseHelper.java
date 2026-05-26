@@ -28,4 +28,5 @@ public class FirebaseHelper {
     public static DatabaseReference payments() { return getInstance().getReference("payments"); }
     public static DatabaseReference ratings()  { return getInstance().getReference("avaliations"); }
     public static DatabaseReference settings() { return getInstance().getReference("settings"); }
+    public static DatabaseReference coupons()  { return getInstance().getReference("coupons"); }
 }

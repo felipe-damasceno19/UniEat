@@ -1,5 +1,6 @@
 package com.example.unieat.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -57,13 +58,18 @@ public class OrderStatusActivity extends BaseActivity
 
     private void setupListeners() {
         ImageView btnBack = findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(v -> finish());
+        btnBack.setOnClickListener(v -> {
+            Intent intent = new Intent(this, StudentHomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
     }
 
 
     @Override
     public void onOrderLoaded(Order order) {
-        tvOrderNumber.setText("Pedido #" + orderId.substring(0, 4).toUpperCase());
+        tvOrderNumber.setText("Pedido " + OrderUtils.formatOrderNumber(orderId));
         tvOrderDate.setText(presenter.formatDate(order.getTime()));
         tvCurrentStatus.setText(getStatusDescription(order.getStatus()));
 
