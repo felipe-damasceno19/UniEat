@@ -66,42 +66,62 @@
                 android:textSize="14sp" />
 
             <!-- Filtros/Categorias Rápidas -->
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <HorizontalScrollView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
-                android:orientation="horizontal">
+                android:scrollbars="none">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:background="@drawable/shape_badge_destaque"
-                    android:paddingHorizontal="20dp"
-                    android:paddingVertical="10dp"
-                    android:text="Pratos"
-                    android:textColor="#7B1C1C"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:background="@drawable/shape_quantity_selector_bg"
-                    android:paddingHorizontal="20dp"
-                    android:paddingVertical="10dp"
-                    android:text="Lanches"
-                    android:textColor="#7B1C1C" />
+                    <TextView
+                        android:id="@+id/chipAll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/shape_badge_destaque"
+                        android:paddingHorizontal="20dp"
+                        android:paddingVertical="10dp"
+                        android:text="Todos"
+                        android:textColor="#7B1C1C"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/shape_quantity_selector_bg"
-                    android:paddingHorizontal="20dp"
-                    android:paddingVertical="10dp"
-                    android:text="Bebidas"
-                    android:textColor="#7B1C1C" />
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/chipMainDishes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/shape_quantity_selector_bg"
+                        android:paddingHorizontal="20dp"
+                        android:paddingVertical="10dp"
+                        android:text="Pratos"
+                        android:textColor="#7B1C1C" />
+
+                    <TextView
+                        android:id="@+id/chipSnacks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/shape_quantity_selector_bg"
+                        android:paddingHorizontal="20dp"
+                        android:paddingVertical="10dp"
+                        android:text="Lanches"
+                        android:textColor="#7B1C1C" />
+
+                    <TextView
+                        android:id="@+id/chipBeverages"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_quantity_selector_bg"
+                        android:paddingHorizontal="20dp"
+                        android:paddingVertical="10dp"
+                        android:text="Bebidas"
+                        android:textColor="#7B1C1C" />
+                </LinearLayout>
+            </HorizontalScrollView>
 
             <!-- Seção: Pratos Principais -->
             <LinearLayout
@@ -122,8 +142,7 @@
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ver todos"
+                    android:layout_height="27dp"
                     android:textColor="#7B1C1C"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -158,7 +177,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ver todos"
                     android:textColor="#7B1C1C"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -193,7 +211,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ver todos"
                     android:textColor="#7B1C1C"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -228,7 +245,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ver todos"
                     android:textColor="#7B1C1C"
                     android:textSize="14sp" />
             </LinearLayout>

@@ -22,7 +22,10 @@ import com.example.unieat.presenter.OrderPresenter;
 import com.example.unieat.presenter.student.MenuPresenter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MenuActivity extends AppCompatActivity implements MenuPresenter.View {
@@ -45,6 +48,7 @@ public class MenuActivity extends AppCompatActivity implements MenuPresenter.Vie
         setupNavigation();
         bindViews();
         setupSearch();
+        setupFilters();
         loadData();
     }
 
@@ -71,6 +75,52 @@ public class MenuActivity extends AppCompatActivity implements MenuPresenter.Vie
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
         NavigationHelper.setupBottomNavigation(this, bottomNav, R.id.nav_menu);
     }
+
+    private void setupFilters() {
+        TextView chipAll = findViewById(R.id.chipAll);
+        TextView chipMainDishes = findViewById(R.id.chipMainDishes);
+        TextView chipSnacks = findViewById(R.id.chipSnacks);
+        TextView chipBeverages = findViewById(R.id.chipBeverages);
+
+        chipAll.setOnClickListener(v -> {
+            resetChips(chipAll, chipMainDishes, chipSnacks, chipBeverages);
+            loadData();
+        });
+
+        chipMainDishes.setOnClickListener(v -> {
+            resetChips(chipMainDishes, chipAll, chipSnacks, chipBeverages);
+            presenter.filterByType(List.of(FoodType.REFEICAO));
+        });
+
+        chipSnacks.setOnClickListener(v -> {
+            resetChips(chipSnacks, chipAll, chipMainDishes, chipBeverages);
+            presenter.filterByType(Arrays.asList(
+                    FoodType.SALGADO_FRITO, FoodType.SALGADO_ASSADO,
+                    FoodType.SANDUICHE_NATURAL, FoodType.CUSCUZ,
+                    FoodType.TAPIOCA, FoodType.SNACK
+            ));
+        });
+
+        chipBeverages.setOnClickListener(v -> {
+            resetChips(chipBeverages, chipAll, chipMainDishes, chipSnacks);
+            presenter.filterByType(Arrays.asList(
+                    FoodType.BEBIDA_GELADA,
+                    FoodType.BEBIDA_QUENTE
+            ));
+        });
+    }
+
+    private void resetChips(TextView active, TextView... inactive) {
+        active.setBackgroundResource(R.drawable.shape_badge_destaque);
+        active.setTextColor(getColor(R.color.primary_red));
+
+        for (TextView chip : inactive) {
+            chip.setBackgroundResource(R.drawable.shape_quantity_selector_bg);
+            chip.setTextColor(getColor(android.R.color.darker_gray));
+        }
+    }
+
+
 
     private void bindViews() {
         rvMainDishes = findViewById(R.id.rvMainDishes);
@@ -121,7 +171,6 @@ public class MenuActivity extends AppCompatActivity implements MenuPresenter.Vie
         loadMerged(dessertTypes, rvDesserts);
     }
 
-    // Busca múltiplos tipos e junta na mesma RecyclerView
     private void loadMerged(FoodType[] types, RecyclerView recyclerView) {
         List<Dish> merged = new ArrayList<>();
         final int[] remaining = {types.length};
