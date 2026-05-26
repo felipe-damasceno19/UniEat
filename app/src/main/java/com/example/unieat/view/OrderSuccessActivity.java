@@ -15,6 +15,7 @@ import com.example.unieat.dao.OrderDAO;
 import com.example.unieat.data.SessionManager;
 import com.example.unieat.enums.OrderStatus;
 import com.example.unieat.model.Order;
+import com.example.unieat.util.OrderUtils;
 import com.google.firebase.database.ValueEventListener;
 
 public class OrderSuccessActivity extends BaseActivity {
@@ -64,7 +65,7 @@ public class OrderSuccessActivity extends BaseActivity {
     private void setupViews() {
         TextView tvOrderNumber = findViewById(R.id.tvOrderNumber);
         if (orderId != null) {
-            tvOrderNumber.setText("#" + orderId.substring(0, 4).toUpperCase());
+            tvOrderNumber.setText(OrderUtils.formatOrderNumber(orderId));
         }
 
         TextView tvBalance = findViewById(R.id.tvBalance);
@@ -87,6 +88,14 @@ public class OrderSuccessActivity extends BaseActivity {
             intent.putExtra("dish_id", dishId);
             startActivity(intent);
             finish();
+        });
+
+        Button btnTrackOrder = findViewById(R.id.btnTrackOrder);
+        btnTrackOrder.setVisibility(View.VISIBLE);
+        btnTrackOrder.setOnClickListener(v -> {
+            Intent intent = new Intent(this, OrderStatusActivity.class);
+            intent.putExtra("order_id", orderId);
+            startActivity(intent);
         });
     }
 

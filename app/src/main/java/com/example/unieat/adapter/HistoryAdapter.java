@@ -51,7 +51,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         Order order = orders.get(position);
 
         // id e data
-        holder.tvOrderId.setText("#" + order.getId().substring(0, 4).toUpperCase());
+        holder.tvOrderId.setText(OrderUtils.formatOrderNumber(order.getId()));
         holder.tvOrderDate.setText(DateUtils.formatDate(order.getTime()));
 
         // status com cor

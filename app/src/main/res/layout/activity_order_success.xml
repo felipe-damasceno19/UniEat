@@ -264,7 +264,6 @@
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:visibility="gone"
                 app:cornerRadius="12dp"
                 app:icon="@android:drawable/ic_menu_info_details"
                 app:iconGravity="textStart"
