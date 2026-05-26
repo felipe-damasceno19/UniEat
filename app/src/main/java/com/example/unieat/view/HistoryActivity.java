@@ -2,6 +2,7 @@ package com.example.unieat.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +17,8 @@ import com.example.unieat.presenter.HistoryPresenter;
 import com.example.unieat.presenter.OrderPresenter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class HistoryActivity extends BaseActivity implements HistoryPresenter.HistoryView {
@@ -23,6 +26,8 @@ public class HistoryActivity extends BaseActivity implements HistoryPresenter.Hi
     private HistoryPresenter presenter;
     private RecyclerView rvHistory;
     private TextView tvBalance;
+    private List<Order> currentOrders = new ArrayList<>();
+    private boolean sortNewestFirst = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,25 @@ public class HistoryActivity extends BaseActivity implements HistoryPresenter.Hi
         tvBalance = findViewById(R.id.tvBalance);
 
         setupNavigation();
+        setupSortButton();
+    }
+
+    private void setupSortButton() {
+        ImageView btnSort = findViewById(R.id.btnSort);
+        btnSort.setOnClickListener(v -> {
+            sortNewestFirst = !sortNewestFirst;
+            applySort();
+        });
+    }
+
+    private void applySort() {
+        List<Order> sorted = new ArrayList<>(currentOrders);
+        if (sortNewestFirst) {
+            Collections.sort(sorted, (a, b) -> b.getTime().compareTo(a.getTime()));
+        } else {
+            Collections.sort(sorted, (a, b) -> a.getTime().compareTo(b.getTime()));
+        }
+        showOrders(sorted);
     }
 
     @Override
@@ -51,6 +75,11 @@ public class HistoryActivity extends BaseActivity implements HistoryPresenter.Hi
 
     @Override
     public void onHistoryLoaded(List<Order> orders) {
+        currentOrders = orders != null ? orders : new ArrayList<>();
+        applySort();
+    }
+
+    private void showOrders(List<Order> orders) {
         rvHistory.setAdapter(new HistoryAdapter(this, orders, new HistoryAdapter.OnHistoryClickListener() {
             @Override
             public void onReorder(Order order) {

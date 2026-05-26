@@ -76,11 +76,14 @@
                     android:textStyle="bold" />
 
                 <ImageView
+                    android:id="@+id/btnSort"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:src="@android:drawable/ic_menu_sort_by_size"
+                    android:clickable="true"
+                    android:focusable="true"
                     app:tint="#666666" />
             </RelativeLayout>
 
