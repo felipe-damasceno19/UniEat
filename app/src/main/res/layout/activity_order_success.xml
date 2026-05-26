@@ -15,7 +15,7 @@
         android:padding="8dp"
         android:src="@android:drawable/ic_menu_revert"
         android:background="@drawable/shape_icon_circle"
-        android:backgroundTint="#F0E8E8"
+        android:backgroundTint="#EEEEEE"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="#000000"
@@ -35,13 +35,12 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <!-- Check Icon -->
             <View
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginTop="32dp"
                 android:background="@drawable/shape_icon_circle"
-                android:backgroundTint="#F0E8E8" />
+                android:backgroundTint="#EEEEEE" />
 
             <ImageView
                 android:layout_width="40dp"
@@ -50,7 +49,6 @@
                 android:src="@android:drawable/ic_menu_directions"
                 app:tint="#7B1C1C" />
 
-            <!-- Success Message -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -69,7 +67,6 @@
                 android:textColor="#666666"
                 android:textSize="14sp" />
 
-            <!-- Order Number Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -107,7 +104,6 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Status Badge -->
             <TextView
                 android:id="@+id/tvOrderStatus"
                 android:layout_width="wrap_content"
@@ -125,7 +121,6 @@
                 app:drawableStartCompat="@android:drawable/ic_menu_edit"
                 app:drawableTint="#B0893F" />
 
-            <!-- Stepper Tracker -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -175,7 +170,7 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:background="@drawable/shape_icon_circle"
-                        android:backgroundTint="#F0E8E8"
+                        android:backgroundTint="#EEEEEE"
                         android:padding="8dp"
                         android:src="@android:drawable/ic_menu_sort_by_size"
                         app:tint="#888888" />
@@ -206,7 +201,7 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:background="@drawable/shape_icon_circle"
-                        android:backgroundTint="#F0E8E8"
+                        android:backgroundTint="#EEEEEE"
                         android:padding="8dp"
                         android:src="@android:drawable/ic_popup_reminder"
                         app:tint="#888888" />
@@ -237,7 +232,7 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:background="@drawable/shape_icon_circle"
-                        android:backgroundTint="#F0E8E8"
+                        android:backgroundTint="#EEEEEE"
                         android:padding="8dp"
                         android:src="@android:drawable/ic_menu_send"
                         app:tint="#888888" />
@@ -252,7 +247,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- btnTrackOrder mantido apenas por compatibilidade, oculto por padrão -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTrackOrder"
                 android:layout_width="240dp"

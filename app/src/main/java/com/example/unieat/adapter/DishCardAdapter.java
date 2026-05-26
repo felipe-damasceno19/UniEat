@@ -32,17 +32,23 @@ public class DishCardAdapter extends RecyclerView.Adapter<DishCardAdapter.DishVi
     private final Context context;
     private final OnDishClickListener listener;
     private final RatingDAO ratingDAO = new RatingDAO();
+    private final int layoutRes;
 
     public DishCardAdapter(Context context, List<Dish> dishes, OnDishClickListener listener) {
-        this.context  = context;
-        this.dishes   = dishes;
-        this.listener = listener;
+        this(context, dishes, listener, R.layout.item_dish_card);
+    }
+
+    public DishCardAdapter(Context context, List<Dish> dishes, OnDishClickListener listener, int layoutRes) {
+        this.context   = context;
+        this.dishes    = dishes;
+        this.listener  = listener;
+        this.layoutRes = layoutRes;
     }
 
     @NonNull
     @Override
     public DishViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_dish_card, parent, false);
+        View view = LayoutInflater.from(context).inflate(layoutRes, parent, false);
         return new DishViewHolder(view);
     }
 

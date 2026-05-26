@@ -66,7 +66,7 @@
                     android:id="@+id/imgDish"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#F0E8E8"
+                    android:background="#EEEEEE"
                     android:scaleType="centerCrop"
                     android:src="@drawable/shape_logo_placeholder" />
             </androidx.cardview.widget.CardView>
@@ -116,7 +116,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginStart="12dp"
-                android:backgroundTint="#F0E8E8"
+                android:backgroundTint="#EEEEEE"
                 android:paddingHorizontal="16dp"
                 android:text="Detalhes"
                 android:textAllCaps="false"

@@ -158,7 +158,7 @@
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:background="@drawable/shape_toggle_bg"
-                        android:backgroundTint="#F0E8E8"
+                        android:backgroundTint="#EEEEEE"
                         android:padding="14dp"
                         android:src="@drawable/ic_cash"
                         app:tint="#666666" />
@@ -211,7 +211,7 @@
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:background="@drawable/shape_toggle_bg"
-                        android:backgroundTint="#F0E8E8"
+                        android:backgroundTint="#EEEEEE"
                         android:padding="14dp"
                         android:src="@drawable/ic_wallet"
                         app:tint="#666666" />

@@ -207,7 +207,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:backgroundTint="#F0E8E8"
+                            android:backgroundTint="#EEEEEE"
                             android:text="Cozinheiro"
                             android:textAllCaps="false"
                             android:textColor="#7B1C1C"

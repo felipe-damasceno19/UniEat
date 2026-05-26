@@ -8,7 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -121,31 +121,27 @@ public class BannerProductsActivity extends AppCompatActivity {
         final int[] remaining = {dishIds.size()};
 
         RecyclerView rv = findViewById(R.id.rvBannerProducts);
-        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setLayoutManager(new GridLayoutManager(this, 2));
 
         for (String dishId : dishIds) {
             dishDAO.findById(dishId, new FirebaseCallback<Dish>() {
                 @Override public void onSuccess(Dish dish) {
                     if (dish != null) dishes.add(dish);
-                    if (--remaining[0] == 0) {
-                        rv.setAdapter(new DishCardAdapter(BannerProductsActivity.this, dishes, d -> {
-                            orderPresenter.addItem(d);
-                            updateCartBadge();
-                            Toast.makeText(BannerProductsActivity.this,
-                                    d.getName() + " adicionado ao carrinho", Toast.LENGTH_SHORT).show();
-                        }));
-                    }
+                    if (--remaining[0] == 0) showProducts(rv, dishes);
                 }
                 @Override public void onFailure(String error) {
-                    if (--remaining[0] == 0) {
-                        rv.setAdapter(new DishCardAdapter(BannerProductsActivity.this, dishes, d -> {
-                            orderPresenter.addItem(d);
-                            updateCartBadge();
-                        }));
-                    }
+                    if (--remaining[0] == 0) showProducts(rv, dishes);
                 }
             });
         }
+    }
+
+    private void showProducts(RecyclerView rv, List<Dish> dishes) {
+        rv.setAdapter(new DishCardAdapter(this, dishes, d -> {
+            orderPresenter.addItem(d);
+            updateCartBadge();
+            Toast.makeText(this, d.getName() + " adicionado ao carrinho", Toast.LENGTH_SHORT).show();
+        }, R.layout.item_dish_card_grid));
     }
 
     private void updateCartBadge() {
