@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.card.MaterialCardView;
+
 import com.example.unieat.R;
 import com.example.unieat.dao.CouponDAO;
 import com.example.unieat.dao.FirebaseCallback;
@@ -59,6 +61,8 @@ public class ProfileActivity extends BaseActivity
         presenter.getUserEmail(this);
 
         if (sessionManager.getUserType() == UserType.COZINHEIRO) {
+            TextView tvOrderCountLabel = findViewById(R.id.tvOrderCountLabel);
+            tvOrderCountLabel.setText("Pedidos Recebidos");
             setupPixSection();
             setupServiceFeeSection();
             setupCouponCreationSection();
@@ -71,7 +75,11 @@ public class ProfileActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         tvBalance.setText(String.format("R$ %.2f", presenter.getBalance()));
-        presenter.getTotalOrders(this);
+        if (sessionManager.getUserType() == UserType.COZINHEIRO) {
+            presenter.getTotalOrdersReceived(this);
+        } else {
+            presenter.getTotalOrders(this);
+        }
     }
 
     private void setupNavigation() {
@@ -112,6 +120,11 @@ public class ProfileActivity extends BaseActivity
     private void setupServiceFeeSection() {
         LinearLayout section = findViewById(R.id.sectionServiceFee);
         section.setVisibility(View.VISIBLE);
+
+        LinearLayout rowServiceFee          = findViewById(R.id.rowServiceFee);
+        MaterialCardView cardServiceFeeContent = findViewById(R.id.cardServiceFeeContent);
+        ImageView ivServiceFeeArrow         = findViewById(R.id.ivServiceFeeArrow);
+        rowServiceFee.setOnClickListener(v -> toggleSection(cardServiceFeeContent, ivServiceFeeArrow));
 
         android.widget.RadioGroup rgFeeType = findViewById(R.id.rgFeeType);
         android.widget.RadioButton rbPercent = findViewById(R.id.rbPercent);
@@ -160,6 +173,12 @@ public class ProfileActivity extends BaseActivity
     private void setupPixSection() {
         LinearLayout sectionPix = findViewById(R.id.sectionPix);
         sectionPix.setVisibility(View.VISIBLE);
+
+        LinearLayout rowPix         = findViewById(R.id.rowPix);
+        MaterialCardView cardPixContent = findViewById(R.id.cardPixContent);
+        ImageView ivPixArrow        = findViewById(R.id.ivPixArrow);
+
+        rowPix.setOnClickListener(v -> toggleSection(cardPixContent, ivPixArrow));
 
         EditText etPixKey   = findViewById(R.id.etPixKey);
         EditText etPixQrUrl = findViewById(R.id.etPixQrUrl);
@@ -334,13 +353,25 @@ public class ProfileActivity extends BaseActivity
         LinearLayout section = findViewById(R.id.sectionCoupons);
         section.setVisibility(View.VISIBLE);
 
-        android.widget.EditText etCode    = findViewById(R.id.etCouponCode);
-        android.widget.EditText etValue   = findViewById(R.id.etCouponValue);
-        android.widget.EditText etMaxUses = findViewById(R.id.etCouponMaxUses);
-        android.widget.Button btnCreate   = findViewById(R.id.btnCreateCoupon);
+        LinearLayout rowCoupons          = findViewById(R.id.rowCoupons);
+        MaterialCardView cardCouponsContent = findViewById(R.id.cardCouponsContent);
+        ImageView ivCouponsArrow         = findViewById(R.id.ivCouponsArrow);
+        rowCoupons.setOnClickListener(v -> {
+            toggleSection(cardCouponsContent, ivCouponsArrow);
+            if (cardCouponsContent.getVisibility() == View.VISIBLE) {
+                loadCouponList();
+            }
+        });
+
+        EditText etCode    = findViewById(R.id.etCouponCode);
+        EditText etValue   = findViewById(R.id.etCouponValue);
+        EditText etMaxUses = findViewById(R.id.etCouponMaxUses);
+        Button btnCreate   = findViewById(R.id.btnCreateCoupon);
+
+        CouponDAO couponDAO = new CouponDAO();
 
         btnCreate.setOnClickListener(v -> {
-            String code    = etCode.getText().toString().trim().toUpperCase();
+            String code       = etCode.getText().toString().trim().toUpperCase();
             String valueStr   = etValue.getText().toString().trim();
             String maxUsesStr = etMaxUses.getText().toString().trim();
 
@@ -349,29 +380,128 @@ public class ProfileActivity extends BaseActivity
                 return;
             }
 
-            double value;
+            double couponValue;
             int maxUses;
             try {
-                value   = Double.parseDouble(valueStr);
-                maxUses = Integer.parseInt(maxUsesStr);
+                couponValue = Double.parseDouble(valueStr);
+                maxUses     = Integer.parseInt(maxUsesStr);
             } catch (NumberFormatException e) {
                 Toast.makeText(this, "Valor ou quantidade inválidos", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            Coupon coupon = new Coupon(code, value, maxUses);
-            new CouponDAO().insert(coupon, new FirebaseCallback<Void>() {
+            Coupon coupon = new Coupon(code, couponValue, maxUses);
+            couponDAO.insert(coupon, new FirebaseCallback<Void>() {
                 @Override public void onSuccess(Void v) {
                     etCode.setText("");
                     etValue.setText("");
                     etMaxUses.setText("");
                     Toast.makeText(ProfileActivity.this, "Cupom \"" + code + "\" criado!", Toast.LENGTH_SHORT).show();
+                    loadCouponList();
                 }
                 @Override public void onFailure(String error) {
                     Toast.makeText(ProfileActivity.this, "Erro ao criar cupom", Toast.LENGTH_SHORT).show();
                 }
             });
         });
+    }
+
+    private void loadCouponList() {
+        LinearLayout llCouponList = findViewById(R.id.llCouponList);
+        llCouponList.removeAllViews();
+
+        new CouponDAO().findAll(new FirebaseCallback<java.util.List<Coupon>>() {
+            @Override public void onSuccess(java.util.List<Coupon> coupons) {
+                llCouponList.removeAllViews();
+                if (coupons == null || coupons.isEmpty()) {
+                    TextView empty = new TextView(ProfileActivity.this);
+                    empty.setText("Nenhum cupom cadastrado");
+                    empty.setTextColor(0xFF888888);
+                    empty.setTextSize(13f);
+                    empty.setPadding(0, 0, 0, 8);
+                    llCouponList.addView(empty);
+                    return;
+                }
+                for (Coupon coupon : coupons) {
+                    addCouponRow(llCouponList, coupon);
+                }
+            }
+            @Override public void onFailure(String error) {}
+        });
+    }
+
+    private void addCouponRow(LinearLayout parent, Coupon coupon) {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        rowParams.setMargins(0, 0, 0, 8);
+        row.setLayoutParams(rowParams);
+
+        LinearLayout info = new LinearLayout(this);
+        info.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams infoParams = new LinearLayout.LayoutParams(0,
+                LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+        info.setLayoutParams(infoParams);
+
+        TextView tvCode = new TextView(this);
+        tvCode.setText(coupon.getCode());
+        tvCode.setTextColor(0xFF222222);
+        tvCode.setTextSize(14f);
+        tvCode.setTypeface(null, android.graphics.Typeface.BOLD);
+
+        TextView tvDetail = new TextView(this);
+        tvDetail.setText(String.format("R$ %.2f  •  %d/%d usos",
+                coupon.getValue(), coupon.getUsedCount(), coupon.getMaxUses()));
+        tvDetail.setTextColor(0xFF888888);
+        tvDetail.setTextSize(12f);
+
+        info.addView(tvCode);
+        info.addView(tvDetail);
+
+        Button btnDelete = new Button(this);
+        btnDelete.setText("Excluir");
+        btnDelete.setTextSize(12f);
+        btnDelete.setTextColor(0xFFCC2222);
+        btnDelete.setBackgroundTintList(android.content.res.ColorStateList.valueOf(0xFFFFEBEE));
+        btnDelete.setPadding(16, 4, 16, 4);
+        LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        btnParams.setMarginStart(8);
+        btnDelete.setLayoutParams(btnParams);
+
+        btnDelete.setOnClickListener(v -> {
+            new AlertDialog.Builder(this)
+                    .setTitle("Excluir Cupom")
+                    .setMessage("Excluir o cupom \"" + coupon.getCode() + "\"?")
+                    .setPositiveButton("Excluir", (d, w) ->
+                            new CouponDAO().delete(coupon.getCode(), new FirebaseCallback<Void>() {
+                                @Override public void onSuccess(Void ignored) {
+                                    parent.removeView(row);
+                                    Toast.makeText(ProfileActivity.this,
+                                            "Cupom excluído", Toast.LENGTH_SHORT).show();
+                                }
+                                @Override public void onFailure(String error) {
+                                    Toast.makeText(ProfileActivity.this,
+                                            "Erro ao excluir", Toast.LENGTH_SHORT).show();
+                                }
+                            }))
+                    .setNegativeButton("Cancelar", null)
+                    .show();
+        });
+
+        row.addView(info);
+        row.addView(btnDelete);
+        parent.addView(row);
+    }
+
+    private void toggleSection(MaterialCardView contentCard, ImageView arrow) {
+        boolean expanding = contentCard.getVisibility() != View.VISIBLE;
+        contentCard.setVisibility(expanding ? View.VISIBLE : View.GONE);
+        arrow.setRotation(expanding ? 270f : 180f);
     }
 
     private void showDeleteAccountDialog() {
