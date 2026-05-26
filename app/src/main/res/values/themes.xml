@@ -2,4 +2,9 @@
 <style name="Base.Theme.UniEat" parent="Theme.Material3.Light.NoActionBar">
 </style>
 <style name="Theme.UniEat" parent="Base.Theme.UniEat" />
+<style name="Theme.UniEat.Splash" parent="Theme.SplashScreen">
+    <item name="windowSplashScreenBackground">#F7F6F7</item>
+    <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_transparent</item>
+    <item name="postSplashScreenTheme">@style/Theme.UniEat</item>
+</style>
 </resources>
