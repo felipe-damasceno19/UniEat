@@ -45,9 +45,20 @@ public class StudentHomeActivity extends BaseActivity
         NavigationHelper.setupBottomNavigation(this, bottomNav, R.id.nav_home);
 
         FloatingActionButton fabCart = findViewById(R.id.fabCart);
-        fabCart.setOnClickListener(v ->
-                startActivity(new Intent(this, OrderActivity.class))
-        );
+        fabCart.setOnClickListener(v -> {
+            if (!orderPresenter.isCartEmpty()) {
+                startActivity(new Intent(this, OrderActivity.class));
+            } else {
+                String activeOrderId = new com.example.unieat.data.SessionManager(this).getActiveOrderId();
+                if (activeOrderId != null) {
+                    Intent intent = new Intent(this, OrderSuccessActivity.class);
+                    intent.putExtra("order_id", activeOrderId);
+                    startActivity(intent);
+                } else {
+                    startActivity(new Intent(this, OrderActivity.class));
+                }
+            }
+        });
 
         tvCartBadge = findViewById(R.id.tvCartBadge);
     }

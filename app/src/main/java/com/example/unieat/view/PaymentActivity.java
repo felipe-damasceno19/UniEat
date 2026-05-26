@@ -107,6 +107,7 @@ public class PaymentActivity extends BaseActivity {
                 presenter.processPayment(orderId, PaymentMethod.CASH, total,
                     new PaymentPresenter.PaymentView() {
                         @Override public void onPaymentSuccess(Payment p) {
+                            new com.example.unieat.data.SessionManager(PaymentActivity.this).setActiveOrderId(orderId);
                             Toast.makeText(PaymentActivity.this, "Pagamento registrado!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(PaymentActivity.this, OrderSuccessActivity.class);
                             intent.putExtra("dish_id",  getIntent().getStringExtra("dish_id"));
@@ -130,6 +131,7 @@ public class PaymentActivity extends BaseActivity {
                     new PaymentPresenter.PaymentView() {
                         @Override public void onPaymentSuccess(Payment p) {
                             presenter.deductBalance(total);
+                            new com.example.unieat.data.SessionManager(PaymentActivity.this).setActiveOrderId(orderId);
                             Toast.makeText(PaymentActivity.this, "Saldo debitado com sucesso!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(PaymentActivity.this, OrderSuccessActivity.class);
                             intent.putExtra("dish_id",  getIntent().getStringExtra("dish_id"));

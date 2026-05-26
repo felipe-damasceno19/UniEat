@@ -78,8 +78,13 @@ public class SessionManager {
         editor.apply();
     }
 
+    private static final String KEY_ACTIVE_ORDER_ID         = "active_order_id";
     private static final String KEY_SERVICE_FEE            = "service_fee";
     private static final String KEY_SERVICE_FEE_IS_PERCENT = "service_fee_is_percent";
+
+    public String getActiveOrderId()        { return prefs.getString(KEY_ACTIVE_ORDER_ID, null); }
+    public void setActiveOrderId(String id) { editor.putString(KEY_ACTIVE_ORDER_ID, id); editor.apply(); }
+    public void clearActiveOrderId()        { editor.remove(KEY_ACTIVE_ORDER_ID); editor.apply(); }
 
     public double getServiceFee()          { return prefs.getFloat(KEY_SERVICE_FEE, 10f); }
     public boolean isServiceFeePercent()   { return prefs.getBoolean(KEY_SERVICE_FEE_IS_PERCENT, true); }

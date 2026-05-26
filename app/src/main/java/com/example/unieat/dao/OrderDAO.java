@@ -177,6 +177,10 @@ public class OrderDAO {
         FirebaseHelper.orders().removeEventListener(listener);
     }
 
+    public void removeOrderListener(String orderId, ValueEventListener listener) {
+        FirebaseHelper.orders().child(orderId).removeEventListener(listener);
+    }
+
     // helpers
     private void buildOrderFromSnap(DataSnapshot snap, FirebaseCallback<Order> cb) {
         String orderId    = snap.getKey();

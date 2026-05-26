@@ -47,7 +47,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="-60dp"
-                android:src="@android:drawable/checkbox_on_background"
+                android:src="@android:drawable/ic_menu_directions"
                 app:tint="#7B1C1C" />
 
             <!-- Success Message -->
@@ -139,6 +139,7 @@
                     android:gravity="center"
                     android:orientation="vertical">
                     <ImageView
+                        android:id="@+id/ivStepRecebido"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:background="@drawable/shape_icon_circle"
@@ -147,6 +148,7 @@
                         android:src="@android:drawable/ic_menu_myplaces"
                         app:tint="#FFFFFF" />
                     <TextView
+                        android:id="@+id/tvStepRecebido"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -157,6 +159,7 @@
                 </LinearLayout>
 
                 <View
+                    android:id="@+id/vLine1"
                     android:layout_width="30dp"
                     android:layout_height="2dp"
                     android:layout_marginBottom="18dp"
@@ -168,6 +171,7 @@
                     android:gravity="center"
                     android:orientation="vertical">
                     <ImageView
+                        android:id="@+id/ivStepPreparando"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:background="@drawable/shape_icon_circle"
@@ -176,6 +180,7 @@
                         android:src="@android:drawable/ic_menu_sort_by_size"
                         app:tint="#888888" />
                     <TextView
+                        android:id="@+id/tvStepPreparando"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -185,6 +190,7 @@
                 </LinearLayout>
 
                 <View
+                    android:id="@+id/vLine2"
                     android:layout_width="30dp"
                     android:layout_height="2dp"
                     android:layout_marginBottom="18dp"
@@ -196,6 +202,7 @@
                     android:gravity="center"
                     android:orientation="vertical">
                     <ImageView
+                        android:id="@+id/ivStepPronto"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:background="@drawable/shape_icon_circle"
@@ -204,6 +211,7 @@
                         android:src="@android:drawable/ic_popup_reminder"
                         app:tint="#888888" />
                     <TextView
+                        android:id="@+id/tvStepPronto"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -213,6 +221,7 @@
                 </LinearLayout>
 
                 <View
+                    android:id="@+id/vLine3"
                     android:layout_width="30dp"
                     android:layout_height="2dp"
                     android:layout_marginBottom="18dp"
@@ -224,6 +233,7 @@
                     android:gravity="center"
                     android:orientation="vertical">
                     <ImageView
+                        android:id="@+id/ivStepEntregue"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:background="@drawable/shape_icon_circle"
@@ -232,6 +242,7 @@
                         android:src="@android:drawable/ic_menu_send"
                         app:tint="#888888" />
                     <TextView
+                        android:id="@+id/tvStepEntregue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -241,7 +252,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Ver Status do Pedido Button -->
+            <!-- btnTrackOrder mantido apenas por compatibilidade, oculto por padrão -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTrackOrder"
                 android:layout_width="240dp"
@@ -253,6 +264,7 @@
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold"
+                android:visibility="gone"
                 app:cornerRadius="12dp"
                 app:icon="@android:drawable/ic_menu_info_details"
                 app:iconGravity="textStart"

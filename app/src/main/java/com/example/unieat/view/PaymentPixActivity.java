@@ -87,6 +87,7 @@ public class PaymentPixActivity extends BaseActivity {
             presenter.processPayment(orderId, PaymentMethod.PIX, orderAmount,
                 new PaymentPresenter.PaymentView() {
                     @Override public void onPaymentSuccess(com.example.unieat.model.Payment p) {
+                        new com.example.unieat.data.SessionManager(PaymentPixActivity.this).setActiveOrderId(orderId);
                         Toast.makeText(PaymentPixActivity.this, "Pagamento via PIX confirmado!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(PaymentPixActivity.this, OrderSuccessActivity.class);
                         intent.putExtra("order_id",  orderId);

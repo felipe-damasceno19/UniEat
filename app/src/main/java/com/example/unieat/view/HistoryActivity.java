@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unieat.R;
 import com.example.unieat.adapter.HistoryAdapter;
+import com.example.unieat.enums.OrderStatus;
 import com.example.unieat.model.Order;
 import com.example.unieat.model.OrderItem;
 import com.example.unieat.presenter.HistoryPresenter;
@@ -92,7 +93,12 @@ public class HistoryActivity extends BaseActivity implements HistoryPresenter.Hi
 
             @Override
             public void onDetails(Order order) {
-                Intent intent = new Intent(HistoryActivity.this, OrderStatusActivity.class);
+                Intent intent;
+                if (order.getStatus() != OrderStatus.ENTREGUE) {
+                    intent = new Intent(HistoryActivity.this, OrderSuccessActivity.class);
+                } else {
+                    intent = new Intent(HistoryActivity.this, OrderStatusActivity.class);
+                }
                 intent.putExtra("order_id", order.getId());
                 startActivity(intent);
             }
