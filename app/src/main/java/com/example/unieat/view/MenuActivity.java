@@ -100,6 +100,9 @@ public class MenuActivity extends AppCompatActivity implements MenuPresenter.Vie
         if (count > 0) {
             tvCartBadge.setText(String.valueOf(count));
             tvCartBadge.setVisibility(View.VISIBLE);
+        } else if (new SessionManager(this).getActiveOrderId() != null) {
+            tvCartBadge.setText("!");
+            tvCartBadge.setVisibility(View.VISIBLE);
         } else {
             tvCartBadge.setVisibility(View.GONE);
         }

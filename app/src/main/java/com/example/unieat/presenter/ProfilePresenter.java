@@ -43,9 +43,16 @@ public class ProfilePresenter {
     }
 
     public void getTotalOrders(ProfileView view) {
-        orderDAO.findByUserId(sessionManager.getId(), new FirebaseCallback<List<Order>>() {
+        String userId = sessionManager.getId();
+        orderDAO.findAll(new FirebaseCallback<List<Order>>() {
             @Override public void onSuccess(List<Order> orders) {
-                view.onTotalOrdersLoaded(orders.size());
+                int count = 0;
+                if (orders != null) {
+                    for (Order o : orders) {
+                        if (userId.equals(o.getUserId())) count++;
+                    }
+                }
+                view.onTotalOrdersLoaded(count);
             }
             @Override public void onFailure(String error) { view.onError(error); }
         });

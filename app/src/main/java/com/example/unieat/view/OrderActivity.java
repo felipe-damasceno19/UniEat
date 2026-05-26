@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unieat.R;
 import com.example.unieat.adapter.OrderItemAdapter;
+import com.example.unieat.data.SessionManager;
 import com.example.unieat.model.Order;
 import com.example.unieat.model.OrderItem;
 import com.example.unieat.presenter.OrderPresenter;
@@ -50,6 +51,9 @@ public class OrderActivity extends BaseActivity implements OrderPresenter.OrderV
         tvSubtotal = findViewById(R.id.tvSubtotal);
         tvTotal = findViewById(R.id.tvTotal);
         btnGoToPayment = findViewById(R.id.btnGoToPayment);
+
+        TextView tvBalance = findViewById(R.id.tvBalance);
+        tvBalance.setText(String.format("R$ %.2f", new SessionManager(this).getBalance()));
 
         btnGoToPayment.setOnClickListener(v -> {
             if (presenter.isCartEmpty()) {

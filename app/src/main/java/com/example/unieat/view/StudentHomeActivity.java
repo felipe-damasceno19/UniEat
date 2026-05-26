@@ -68,6 +68,9 @@ public class StudentHomeActivity extends BaseActivity
         if (count > 0) {
             tvCartBadge.setText(String.valueOf(count));
             tvCartBadge.setVisibility(View.VISIBLE);
+        } else if (new com.example.unieat.data.SessionManager(this).getActiveOrderId() != null) {
+            tvCartBadge.setText("!");
+            tvCartBadge.setVisibility(View.VISIBLE);
         } else {
             tvCartBadge.setVisibility(View.GONE);
         }
