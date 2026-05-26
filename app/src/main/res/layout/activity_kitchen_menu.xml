@@ -68,7 +68,7 @@
                 android:background="@drawable/shape_toggle_bg"
                 android:drawableStart="@android:drawable/ic_menu_search"
                 android:drawablePadding="12dp"
-                android:hint="Search menu items..."
+                android:hint="Procure itens do cardápio..."
                 android:inputType="text"
                 android:paddingHorizontal="16dp"
                 android:textSize="14sp" />
@@ -93,7 +93,7 @@
                         android:backgroundTint="#FFB84C"
                         android:paddingHorizontal="20dp"
                         android:paddingVertical="10dp"
-                        android:text="All Items"
+                        android:text="Todos os itens"
                         android:textColor="#7B1C1C"
                         android:textStyle="bold" />
 
@@ -106,7 +106,7 @@
                         android:backgroundTint="#F0E8E8"
                         android:paddingHorizontal="20dp"
                         android:paddingVertical="10dp"
-                        android:text="Main Dishes"
+                        android:text="Pratos principais"
                         android:textColor="#666666" />
 
                     <TextView
@@ -118,7 +118,7 @@
                         android:backgroundTint="#F0E8E8"
                         android:paddingHorizontal="20dp"
                         android:paddingVertical="10dp"
-                        android:text="Snacks"
+                        android:text="Lanches"
                         android:textColor="#666666" />
 
                     <TextView
@@ -129,7 +129,7 @@
                         android:backgroundTint="#F0E8E8"
                         android:paddingHorizontal="20dp"
                         android:paddingVertical="10dp"
-                        android:text="Beverages"
+                        android:text="Bebidas"
                         android:textColor="#666666" />
                 </LinearLayout>
             </HorizontalScrollView>
