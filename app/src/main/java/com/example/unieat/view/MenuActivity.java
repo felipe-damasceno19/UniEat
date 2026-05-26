@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -21,8 +22,7 @@ import com.example.unieat.model.Dish;
 import com.example.unieat.presenter.OrderPresenter;
 import com.example.unieat.presenter.student.MenuPresenter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import org.w3c.dom.Text;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +35,7 @@ public class MenuActivity extends AppCompatActivity implements MenuPresenter.Vie
     private DishDAO dishDAO;
     private RecyclerView rvMainDishes, rvSnacks, rvDrinks, rvDesserts;
     private TextView tvBalance;
+    private TextView tvCartBadge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,12 +69,29 @@ public class MenuActivity extends AppCompatActivity implements MenuPresenter.Vie
     protected void onResume() {
         super.onResume();
         tvBalance.setText(String.format("R$ %.2f", new SessionManager(this).getBalance()));
+        updateCartBadge();
         loadData();
     }
 
     private void setupNavigation() {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
         NavigationHelper.setupBottomNavigation(this, bottomNav, R.id.nav_menu);
+
+        FloatingActionButton fabCart = findViewById(R.id.fabCart);
+        tvCartBadge = findViewById(R.id.tvCartBadge);
+        fabCart.setOnClickListener(v ->
+                startActivity(new Intent(this, OrderActivity.class))
+        );
+    }
+
+    private void updateCartBadge() {
+        int count = orderPresenter.getCartItemCount();
+        if (count > 0) {
+            tvCartBadge.setText(String.valueOf(count));
+            tvCartBadge.setVisibility(View.VISIBLE);
+        } else {
+            tvCartBadge.setVisibility(View.GONE);
+        }
     }
 
     private void setupFilters() {
@@ -193,7 +211,8 @@ public class MenuActivity extends AppCompatActivity implements MenuPresenter.Vie
     private void setAdapter(RecyclerView rv, List<Dish> dishes) {
         rv.setAdapter(new DishCardAdapter(this, dishes, dish -> {
             orderPresenter.addItem(dish);
-            startActivity(new Intent(this, OrderActivity.class));
+            updateCartBadge();
+            android.widget.Toast.makeText(this, dish.getName() + " adicionado ao carrinho", android.widget.Toast.LENGTH_SHORT).show();
         }));
     }
 

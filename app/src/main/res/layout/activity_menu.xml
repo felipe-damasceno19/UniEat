@@ -262,6 +262,36 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
+    <!-- Floating Cart Button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabCart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="100dp"
+        android:src="@drawable/shopping_cart"
+        app:backgroundTint="#FFB84C"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="#7B1C1C" />
+
+    <TextView
+        android:id="@+id/tvCartBadge"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:background="@drawable/shape_cart_badge"
+        android:elevation="12dp"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/fabCart"
+        app:layout_constraintEnd_toEndOf="@id/fabCart"
+        android:layout_marginTop="-6dp"
+        android:layout_marginEnd="-6dp" />
+
     <!-- Bottom Navigation Fixa -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"

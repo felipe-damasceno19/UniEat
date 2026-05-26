@@ -55,7 +55,6 @@ public class ProfileActivity extends BaseActivity
 
         loadProfilePicture();
         presenter.getUserEmail(this);
-        presenter.getTotalOrders(this);
 
         if (sessionManager.getUserType() == UserType.COZINHEIRO) {
             setupPixSection();
@@ -67,6 +66,7 @@ public class ProfileActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         tvBalance.setText(String.format("R$ %.2f", presenter.getBalance()));
+        presenter.getTotalOrders(this);
     }
 
     private void setupNavigation() {
