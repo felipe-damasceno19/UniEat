@@ -68,6 +68,7 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
         holder.tvOrderNumber.setText("Pedido " + OrderUtils.formatOrderNumber(order.getId()));
         holder.tvOrderTime.setText(DateUtils.formatDate(order.getTime()));
 
+        // Nome do cliente
         holder.tvCustomerName.setText("Carregando...");
         if (order.getUserId() != null && !order.getUserId().isEmpty()) {
             userDAO.findById(order.getUserId(), new FirebaseCallback<User>() {
@@ -98,6 +99,14 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
             chip.setText(item.getQuantity() + "x " + item.getDish().getName());
             chip.setClickable(false);
             holder.chipGroupItems.addView(chip);
+        }
+
+        String annotation = order.getAnnotation();
+        if (annotation != null && !annotation.isEmpty()) {
+            holder.tvAnnotation.setVisibility(View.VISIBLE);
+            holder.tvAnnotation.setText("Obs: " + annotation);
+        } else {
+            holder.tvAnnotation.setVisibility(View.GONE);
         }
 
         holder.btnOrderAction.setText("Alterar Status");
@@ -176,7 +185,7 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
 
     static class KitchenOrderViewHolder extends RecyclerView.ViewHolder {
         View viewStatusIndicator;
-        TextView tvOrderNumber, tvCustomerName, tvOrderTime, tvStatusBadge;
+        TextView tvOrderNumber, tvCustomerName, tvOrderTime, tvStatusBadge, tvAnnotation;
         ChipGroup chipGroupItems;
         MaterialButton btnOrderAction, btnRejectOrder;
 
@@ -186,6 +195,7 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
             tvOrderNumber       = itemView.findViewById(R.id.tvOrderNumber);
             tvCustomerName      = itemView.findViewById(R.id.tvCustomerName);
             tvOrderTime         = itemView.findViewById(R.id.tvOrderTime);
+            tvAnnotation        = itemView.findViewById(R.id.tvAnnotation);
             tvStatusBadge       = itemView.findViewById(R.id.tvStatusBadge);
             chipGroupItems      = itemView.findViewById(R.id.chipGroupItems);
             btnOrderAction      = itemView.findViewById(R.id.btnOrderAction);

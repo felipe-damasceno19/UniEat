@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardOrder"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        
+
         <View
             android:id="@+id/viewStatusIndicator"
             android:layout_width="4dp"
@@ -104,6 +105,17 @@
                 app:chipSpacingHorizontal="8dp">
                 
             </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                android:id="@+id/tvAnnotation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="13sp"
+                android:textColor="#FF888888"
+                android:fontFamily="sans-serif-medium"
+                android:visibility="gone"
+                tools:text="Obs: sem cebola" />
 
             <LinearLayout
                 android:layout_width="match_parent"
