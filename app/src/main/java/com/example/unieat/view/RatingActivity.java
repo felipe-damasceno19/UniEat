@@ -89,7 +89,7 @@ public class RatingActivity extends BaseActivity implements RatingPresenter.Rati
                             .load(imageUrl)
                             .placeholder(R.drawable.shape_logo_placeholder)
                             .error(R.drawable.shape_logo_placeholder)
-                            .into(findViewById(R.id.imgDishRating));
+                            .into((android.widget.ImageView) findViewById(R.id.imgDishRating));
                 }
             }
             @Override public void onFailure(String error) {}
