@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "unieat.db";
-    private static final int VERSION = 3;
+    private static final int VERSION = 4;
 
     public DatabaseHelper(Context context){
         super(context, DB_NAME, null, VERSION);
@@ -66,6 +66,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "time TEXT,"+
                 "FOREIGN KEY(order_id) REFERENCES orders(id))"
         );
+
+        db.execSQL("CREATE TABLE cart("+
+                "item_id TEXT PRIMARY KEY,"+
+                "dish_id TEXT NOT NULL,"+
+                "dish_name TEXT NOT NULL,"+
+                "dish_price REAL NOT NULL,"+
+                "dish_description TEXT,"+
+                "dish_type TEXT,"+
+                "dish_image TEXT,"+
+                "quantity INTEGER NOT NULL)"
+        );
     }
 
     @Override
@@ -75,6 +86,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS order_items");
         db.execSQL("DROP TABLE IF EXISTS user");
         db.execSQL("DROP TABLE IF EXISTS avaliation");
+        db.execSQL("DROP TABLE IF EXISTS payment");
+        db.execSQL("DROP TABLE IF EXISTS cart");
         onCreate(db);
     }
 

@@ -2,6 +2,7 @@ package com.example.unieat.presenter;
 
 import android.content.Context;
 
+import com.example.unieat.dao.CartDAO;
 import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.dao.OrderDAO;
 import com.example.unieat.data.SessionManager;
@@ -23,28 +24,49 @@ public class OrderPresenter {
     }
 
     private final OrderDAO orderDAO;
+    private final CartDAO cartDAO;
     private final SessionManager sessionManager;
+
     private static final List<OrderItem> cart = new ArrayList<>();
+    private static boolean cartLoaded = false;
 
     public OrderPresenter(Context context) {
         this.orderDAO = new OrderDAO();
+        this.cartDAO = new CartDAO(context);
         this.sessionManager = new SessionManager(context);
+
+        if (!cartLoaded) {
+            cart.clear();
+            cart.addAll(cartDAO.loadCart());
+            cartLoaded = true;
+        }
     }
 
     public void addItem(Dish dish) {
         for (OrderItem item : cart) {
             if (item.getDish().getId().equals(dish.getId())) {
                 item.setQuantity(item.getQuantity() + 1);
+                cartDAO.updateQuantity(item.getId(), item.getQuantity());
                 return;
             }
         }
-        cart.add(new OrderItem(UUID.randomUUID().toString(), 1, dish));
+        OrderItem newItem = new OrderItem(UUID.randomUUID().toString(), 1, dish);
+        cart.add(newItem);
+        cartDAO.saveItem(newItem);
     }
 
-    public void removeItem(OrderItem item)                  { cart.remove(item); }
-    public void changeQuantity(OrderItem item, int quantity) { item.setQuantity(quantity); }
-    public List<OrderItem> getCart()                        { return cart; }
-    public boolean isCartEmpty()                            { return cart.isEmpty(); }
+    public void removeItem(OrderItem item) {
+        cart.remove(item);
+        cartDAO.removeItem(item.getId());
+    }
+
+    public void changeQuantity(OrderItem item, int quantity) {
+        item.setQuantity(quantity);
+        cartDAO.updateQuantity(item.getId(), quantity);
+    }
+
+    public List<OrderItem> getCart()      { return cart; }
+    public boolean isCartEmpty()          { return cart.isEmpty(); }
 
     public int getCartItemCount() {
         int count = 0;
@@ -75,6 +97,8 @@ public class OrderPresenter {
         orderDAO.insert(order, new FirebaseCallback<Order>() {
             @Override public void onSuccess(Order savedOrder) {
                 cart.clear();
+                cartLoaded = false;
+                cartDAO.clearCart();
                 view.onOrderPlaced(savedOrder);
             }
             @Override public void onFailure(String error) {
