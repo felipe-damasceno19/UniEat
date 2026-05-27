@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/nav_kitchen_home"
-        android:title="Home"
-        android:icon="@drawable/ic_kitchen_home" />
-    <item
-        android:id="@+id/nav_kitchen_menu"
-        android:title="Cardápio"
-        android:icon="@drawable/ic_kitchen_menu" />
-    <item
-        android:id="@+id/nav_kitchen_history"
-        android:title="Pedidos"
-        android:icon="@drawable/ic_kitchen_orders" />
-    <item
-        android:id="@+id/nav_kitchen_profile"
-        android:title="Perfil"
-        android:icon="@drawable/ic_nav_perfil" />
+    <item android:id="@+id/nav_kitchen_home" android:title="Home" android:icon="@drawable/ic_kitchen_home" />
+    <item android:id="@+id/nav_kitchen_history" android:title="Pedidos" android:icon="@drawable/ic_kitchen_orders" />
+    <item android:id="@+id/nav_kitchen_menu" android:title="Cardápio" android:icon="@drawable/ic_kitchen_menu" />
+    <item android:id="@+id/nav_kitchen_profile" android:title="Perfil" android:icon="@drawable/ic_nav_perfil" />
 </menu>

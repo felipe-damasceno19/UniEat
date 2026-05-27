@@ -19,7 +19,7 @@
             android:id="@+id/viewStatusIndicator"
             android:layout_width="5dp"
             android:layout_height="match_parent"
-            android:background="#FFB84C" />
+            android:background="#2E7D32" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/tvOrderNumber"
+                    android:id="@+id/tvHistOrderNumber"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -43,15 +43,15 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvStatusBadge"
+                    android:id="@+id/tvHistStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_badge_destaque"
-                    android:backgroundTint="#FFF8E8"
+                    android:backgroundTint="#E8F5E9"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="4dp"
-                    android:text="Pendente"
-                    android:textColor="#7B4A00"
+                    android:text="ENTREGUE"
+                    android:textColor="#2E7D32"
                     android:textSize="11sp"
                     android:textStyle="bold" />
 
@@ -65,7 +65,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/tvPaymentMethod"
+                    android:id="@+id/tvHistPaymentMethod"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_badge_destaque"
@@ -78,70 +78,58 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvOrderTotal"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tvHistTotal"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:layout_marginStart="10dp"
                     android:textColor="#7B1C1C"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
+                <TextView
+                    android:id="@+id/tvHistOrderDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#888888"
+                    android:textSize="12sp" />
+
             </LinearLayout>
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroupItems"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:chipSpacingHorizontal="6dp"
-                app:chipSpacingVertical="4dp" />
-
-            <TextView
-                android:id="@+id/tvAnnotation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:fontFamily="sans-serif"
-                android:textColor="#888888"
-                android:textSize="13sp"
-                android:textStyle="italic"
-                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
+                android:gravity="center_vertical"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnOrderAction"
-                    android:layout_width="0dp"
-                    android:layout_height="46dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:backgroundTint="#7B1C1C"
-                    android:text="Alterar Status"
-                    android:textAllCaps="false"
+                <TextView
+                    android:id="@+id/tvHistAvatar"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="@drawable/shape_avatar_circle"
+                    android:gravity="center"
                     android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:cornerRadius="10dp" />
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnRejectOrder"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                <TextView
+                    android:id="@+id/tvHistCustomerName"
                     android:layout_width="wrap_content"
-                    android:layout_height="46dp"
-                    android:text="Rejeitar"
-                    android:textAllCaps="false"
-                    android:textColor="#CC2222"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:cornerRadius="10dp"
-                    app:strokeColor="#CC2222"
-                    app:strokeWidth="1dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="#333333"
+                    android:textSize="14sp" />
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvHistItems"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="#666666"
+                android:textSize="13sp" />
 
         </LinearLayout>
     </LinearLayout>

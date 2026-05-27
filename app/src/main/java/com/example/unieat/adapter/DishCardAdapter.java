@@ -60,7 +60,8 @@ public class DishCardAdapter extends RecyclerView.Adapter<DishCardAdapter.DishVi
 
         holder.tvName.setText(dish.getName());
         holder.tvPrice.setText(String.format("R$ %.2f", dish.getPrice()));
-        holder.ratingBadge.setVisibility(View.GONE);
+        holder.tvRating.setText("0");
+        holder.ratingBadge.setVisibility(View.VISIBLE);
 
         String imageUrl = dish.getImageName();
         if (imageUrl != null && !imageUrl.isEmpty()) {
@@ -96,14 +97,9 @@ public class DishCardAdapter extends RecyclerView.Adapter<DishCardAdapter.DishVi
                     for (Rating r : ratings) if (r.getRating() != null) sum += r.getRating();
                     double avg = sum / ratings.size();
                     holder.tvRating.setText(String.format(Locale.getDefault(), "%.1f", avg));
-                    holder.ratingBadge.setVisibility(View.VISIBLE);
-                } else {
-                    holder.ratingBadge.setVisibility(View.GONE);
                 }
             }
-            @Override public void onFailure(String error) {
-                holder.ratingBadge.setVisibility(View.GONE);
-            }
+            @Override public void onFailure(String error) {}
         });
     }
 

@@ -2,10 +2,13 @@ package com.example.unieat.presenter.kitchen;
 
 import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.dao.OrderDAO;
+import com.example.unieat.dao.PaymentDAO;
 import com.example.unieat.enums.OrderStatus;
 import com.example.unieat.model.Order;
+import com.example.unieat.model.Payment;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class KitchenHomePresenter {
@@ -16,15 +19,19 @@ public class KitchenHomePresenter {
         void showReadyCount(int count);
         void showRecentOrders(List<Order> orders);
         void showError(String message);
+        void showDailyRevenue(double revenue);
+        void showDeliveredCount(int count);
     }
 
     private final View view;
     private final OrderDAO orderDAO;
+    private final PaymentDAO paymentDAO;
     private ValueEventListener countsListener;
 
     public KitchenHomePresenter(View view) {
         this.view = view;
         this.orderDAO = new OrderDAO();
+        this.paymentDAO = new PaymentDAO();
     }
 
     public void startListening() {
@@ -73,6 +80,37 @@ public class KitchenHomePresenter {
                 tryLoadRecent(counts);
             }
             @Override public void onFailure(String error) { view.showError(error); }
+        });
+
+        loadDailyStats();
+    }
+
+    public void loadDailyStats() {
+        orderDAO.countByStatus(OrderStatus.ENTREGUE, new FirebaseCallback<Integer>() {
+            @Override public void onSuccess(Integer count) {
+                view.showDeliveredCount(count);
+            }
+            @Override public void onFailure(String error) {}
+        });
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        long startOfToday = cal.getTimeInMillis();
+
+        paymentDAO.findAll(new FirebaseCallback<List<Payment>>() {
+            @Override public void onSuccess(List<Payment> payments) {
+                double total = 0;
+                for (Payment p : payments) {
+                    if (p != null && p.getTimeMillis() >= startOfToday) {
+                        total += p.getAmount();
+                    }
+                }
+                view.showDailyRevenue(total);
+            }
+            @Override public void onFailure(String error) {}
         });
     }
 

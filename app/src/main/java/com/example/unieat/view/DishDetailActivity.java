@@ -11,9 +11,12 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.unieat.R;
+import com.example.unieat.dao.FirebaseCallback;
+import com.example.unieat.dao.UserDAO;
 import com.example.unieat.enums.FoodType;
 import com.example.unieat.model.Dish;
 import com.example.unieat.model.Rating;
+import com.example.unieat.model.User;
 import com.example.unieat.presenter.OrderPresenter;
 import com.example.unieat.presenter.student.RatingPresenter;
 import com.google.android.material.button.MaterialButton;
@@ -163,16 +166,50 @@ public class DishDetailActivity extends BaseActivity implements RatingPresenter.
             tvTotalReviews.setText("de " + count + (count == 1 ? " avaliação" : " avaliações"));
 
             LayoutInflater inflater = LayoutInflater.from(this);
+            UserDAO userDAO = new UserDAO();
             for (Rating r : ratings) {
                 View reviewView = inflater.inflate(R.layout.item_review, layoutReviews, false);
-                RatingBar bar        = reviewView.findViewById(R.id.reviewRatingBar);
-                TextView tvComment   = reviewView.findViewById(R.id.tvReviewComment);
+                TextView tvAvatar  = reviewView.findViewById(R.id.tvReviewAvatar);
+                TextView tvName    = reviewView.findViewById(R.id.tvReviewerName);
+                RatingBar bar      = reviewView.findViewById(R.id.reviewRatingBar);
+                TextView tvComment = reviewView.findViewById(R.id.tvReviewComment);
+                TextView tvTags    = reviewView.findViewById(R.id.tvReviewTags);
 
                 if (r.getRating() != null) bar.setRating(r.getRating());
-                if (r.getComment() != null && !r.getComment().isEmpty()) {
+
+                String rawComment = r.getComment() != null ? r.getComment() : "";
+                String[] parts = rawComment.split("\n", 2);
+                String commentText = parts[0].trim();
+                String tagsText = parts.length > 1 ? parts[1].trim() : "";
+
+                if (!commentText.isEmpty()) {
                     tvComment.setVisibility(View.VISIBLE);
-                    tvComment.setText(r.getComment());
+                    tvComment.setText(commentText);
                 }
+                if (!tagsText.isEmpty()) {
+                    tvTags.setVisibility(View.VISIBLE);
+                    tvTags.setText(tagsText);
+                }
+
+                if (r.getUserId() != null) {
+                    userDAO.findById(r.getUserId(), new FirebaseCallback<User>() {
+                        @Override public void onSuccess(User user) {
+                            String displayName = (user != null && user.getName() != null && !user.getName().isEmpty())
+                                    ? user.getName()
+                                    : (user != null && user.getUsername() != null ? user.getUsername() : "Usuário");
+                            tvName.setText(displayName);
+                            tvAvatar.setText(String.valueOf(displayName.charAt(0)).toUpperCase(Locale.getDefault()));
+                        }
+                        @Override public void onFailure(String error) {
+                            tvName.setText("Usuário");
+                            tvAvatar.setText("U");
+                        }
+                    });
+                } else {
+                    tvName.setText("Usuário");
+                    tvAvatar.setText("U");
+                }
+
                 layoutReviews.addView(reviewView);
             }
         } else {
@@ -182,7 +219,9 @@ public class DishDetailActivity extends BaseActivity implements RatingPresenter.
     }
 
     @Override public void onSubmitSuccess() {}
-    @Override public void onSubmitError(String message) {}
+    @Override public void onSubmitError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
     @Override public void onExistingRatingLoaded(Rating rating) {}
     @Override public void onDeleteSuccess() {}
 }

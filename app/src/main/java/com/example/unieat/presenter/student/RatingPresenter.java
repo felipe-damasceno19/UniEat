@@ -71,7 +71,7 @@ public class RatingPresenter {
                 double average = 0;
                 if (!ratings.isEmpty()) {
                     double sum = 0;
-                    for (Rating r : ratings) sum += r.getRating();
+                    for (Rating r : ratings) if (r.getRating() != null) sum += r.getRating();
                     average = sum / ratings.size();
                 }
                 view.onRatingsLoaded(ratings, average);

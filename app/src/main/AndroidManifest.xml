@@ -60,6 +60,9 @@
             android:name=".view.KitchenMenuActivity"
             android:exported="false" />
         <activity
+            android:name=".view.KitchenHistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.StudentHomeActivity"
             android:exported="false" />
         <activity

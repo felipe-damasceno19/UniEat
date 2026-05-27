@@ -23,18 +23,19 @@ public class PaymentDAO {
     }
 
     public void findByOrderId(String orderId, FirebaseCallback<Payment> cb) {
-        FirebaseHelper.payments()
-                .orderByChild("orderId").equalTo(orderId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override public void onDataChange(DataSnapshot snap) {
-                        for (DataSnapshot child : snap.getChildren()) {
-                            cb.onSuccess(snapToPayment(child));
-                            return;
-                        }
-                        cb.onSuccess(null);
+        FirebaseHelper.payments().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override public void onDataChange(DataSnapshot snap) {
+                for (DataSnapshot child : snap.getChildren()) {
+                    Payment p = snapToPayment(child);
+                    if (p != null && orderId.equals(p.getOrderId())) {
+                        cb.onSuccess(p);
+                        return;
                     }
-                    @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
-                });
+                }
+                cb.onSuccess(null);
+            }
+            @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+        });
     }
 
     public void findById(String id, FirebaseCallback<Payment> cb) {

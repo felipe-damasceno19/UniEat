@@ -66,29 +66,36 @@ public class OrderDAO {
     }
 
     public void findByStatus(OrderStatus status, FirebaseCallback<List<Order>> cb) {
-        FirebaseHelper.orders()
-                .orderByChild("orderStatus").equalTo(status.name())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override public void onDataChange(DataSnapshot snap) {
-                        List<DataSnapshot> snaps = new ArrayList<>();
-                        for (DataSnapshot child : snap.getChildren()) snaps.add(child);
-                        buildOrderList(snaps, cb);
-                    }
-                    @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
-                });
+        FirebaseHelper.orders().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override public void onDataChange(DataSnapshot snap) {
+                List<DataSnapshot> snaps = new ArrayList<>();
+                for (DataSnapshot child : snap.getChildren()) {
+                    String s = child.child("orderStatus").getValue(String.class);
+                    if (status.name().equals(s)) snaps.add(child);
+                }
+                buildOrderList(snaps, cb);
+            }
+            @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+        });
     }
 
     public void findRecentOrders(int limit, FirebaseCallback<List<Order>> cb) {
-        FirebaseHelper.orders()
-                .orderByChild("time").limitToLast(limit)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override public void onDataChange(DataSnapshot snap) {
-                        List<DataSnapshot> snaps = new ArrayList<>();
-                        for (DataSnapshot child : snap.getChildren()) snaps.add(child);
-                        buildOrderList(snaps, cb);
-                    }
-                    @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+        FirebaseHelper.orders().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override public void onDataChange(DataSnapshot snap) {
+                List<DataSnapshot> snaps = new ArrayList<>();
+                for (DataSnapshot child : snap.getChildren()) snaps.add(child);
+                snaps.sort((a, b) -> {
+                    Long ta = a.child("time").getValue(Long.class);
+                    Long tb = b.child("time").getValue(Long.class);
+                    if (ta == null) ta = 0L;
+                    if (tb == null) tb = 0L;
+                    return Long.compare(tb, ta);
                 });
+                List<DataSnapshot> limited = new ArrayList<>(snaps.subList(0, Math.min(limit, snaps.size())));
+                buildOrderList(limited, cb);
+            }
+            @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+        });
     }
 
     public void findByUserId(String userId, FirebaseCallback<List<Order>> cb) {

@@ -12,18 +12,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unieat.R;
 import com.example.unieat.dao.FirebaseCallback;
+import com.example.unieat.dao.PaymentDAO;
 import com.example.unieat.dao.UserDAO;
 import com.example.unieat.enums.OrderStatus;
+import com.example.unieat.enums.PaymentMethod;
 import com.example.unieat.model.Order;
 import com.example.unieat.model.OrderItem;
+import com.example.unieat.model.Payment;
 import com.example.unieat.model.User;
-import com.example.unieat.util.DateUtils;
 import com.example.unieat.util.OrderUtils;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.List;
+import java.util.Locale;
 
 public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapter.KitchenOrderViewHolder> {
 
@@ -41,6 +44,7 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
     private final Context context;
     private final OnOrderActionListener listener;
     private final UserDAO userDAO = new UserDAO();
+    private final PaymentDAO paymentDAO = new PaymentDAO();
 
     public KitchenOrderAdapter(Context context, List<Order> orders, OnOrderActionListener listener) {
         this.context  = context;
@@ -65,11 +69,9 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
     public void onBindViewHolder(@NonNull KitchenOrderViewHolder holder, int position) {
         Order order = orders.get(position);
 
-        holder.tvOrderNumber.setText("Pedido " + OrderUtils.formatOrderNumber(order.getId()));
-        holder.tvOrderTime.setText(DateUtils.formatDate(order.getTime()));
+        String orderNum = OrderUtils.formatOrderNumber(order.getId());
+        holder.tvOrderNumber.setText(orderNum + " • ...");
 
-        // Nome do cliente
-        holder.tvCustomerName.setText("Carregando...");
         if (order.getUserId() != null && !order.getUserId().isEmpty()) {
             userDAO.findById(order.getUserId(), new FirebaseCallback<User>() {
                 @Override
@@ -77,18 +79,17 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
                     int current = holder.getBindingAdapterPosition();
                     if (current != RecyclerView.NO_ID && current < orders.size()
                             && orders.get(current).getId().equals(order.getId())) {
-                        holder.tvCustomerName.setText(
-                                user != null && user.getName() != null ? user.getName() : "—"
-                        );
+                        String name = user != null && user.getName() != null ? user.getName() : "—";
+                        holder.tvOrderNumber.setText(orderNum + " • " + name);
                     }
                 }
                 @Override
                 public void onFailure(String error) {
-                    holder.tvCustomerName.setText("—");
+                    holder.tvOrderNumber.setText(orderNum + " • —");
                 }
             });
         } else {
-            holder.tvCustomerName.setText("—");
+            holder.tvOrderNumber.setText(orderNum + " • —");
         }
 
         applyStatusStyle(holder, order.getStatus());
@@ -108,6 +109,51 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
         } else {
             holder.tvAnnotation.setVisibility(View.GONE);
         }
+
+        holder.tvPaymentMethod.setText("—");
+        holder.tvPaymentMethod.setTextColor(0xFF555555);
+        holder.tvPaymentMethod.setBackgroundTintList(
+                android.content.res.ColorStateList.valueOf(0xFFEEEEEE));
+        holder.tvOrderTotal.setText("");
+
+        paymentDAO.findByOrderId(order.getId(), new FirebaseCallback<Payment>() {
+            @Override public void onSuccess(Payment payment) {
+                int pos = holder.getBindingAdapterPosition();
+                if (pos == RecyclerView.NO_POSITION) return;
+                if (payment == null) return;
+
+                String label;
+                int textColor;
+                int bgColor;
+
+                PaymentMethod method = payment.getMethod();
+                if (method == PaymentMethod.PIX) {
+                    label     = "PIX";
+                    textColor = 0xFF1565C0;
+                    bgColor   = 0xFFE3F2FD;
+                } else if (method == PaymentMethod.CASH) {
+                    label     = "Dinheiro";
+                    textColor = 0xFF2E7D32;
+                    bgColor   = 0xFFE8F5E9;
+                } else if (method == PaymentMethod.BALANCE) {
+                    label     = "Saldo";
+                    textColor = 0xFF7B1C1C;
+                    bgColor   = 0xFFFFEEE8;
+                } else {
+                    label     = "—";
+                    textColor = 0xFF555555;
+                    bgColor   = 0xFFEEEEEE;
+                }
+
+                holder.tvPaymentMethod.setText(label);
+                holder.tvPaymentMethod.setTextColor(textColor);
+                holder.tvPaymentMethod.setBackgroundTintList(
+                        android.content.res.ColorStateList.valueOf(bgColor));
+                holder.tvOrderTotal.setText(
+                        String.format(Locale.getDefault(), "R$ %.2f", payment.getAmount()));
+            }
+            @Override public void onFailure(String error) {}
+        });
 
         holder.btnOrderAction.setText("Alterar Status");
         holder.btnOrderAction.setOnClickListener(v -> showStatusDialog(order));
@@ -145,37 +191,37 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
             case PENDENTE:
                 holder.viewStatusIndicator.setBackgroundColor(0xFFFFB84C);
                 holder.tvStatusBadge.setText("NOVO");
-                holder.tvStatusBadge.setTextColor(0xFFFFB84C);
+                holder.tvStatusBadge.setTextColor(0xFF7B4A00);
                 holder.tvStatusBadge.setBackgroundTintList(
-                        android.content.res.ColorStateList.valueOf(0xFFFFF5E1));
+                        android.content.res.ColorStateList.valueOf(0xFFFFF8E8));
                 break;
             case PREPARANDO:
-                holder.viewStatusIndicator.setBackgroundColor(0xFF2196F3);
+                holder.viewStatusIndicator.setBackgroundColor(0xFF1565C0);
                 holder.tvStatusBadge.setText("EM PREPARO");
-                holder.tvStatusBadge.setTextColor(0xFF1A4A7A);
+                holder.tvStatusBadge.setTextColor(0xFF1565C0);
                 holder.tvStatusBadge.setBackgroundTintList(
-                        android.content.res.ColorStateList.valueOf(0xFFD6E4F7));
+                        android.content.res.ColorStateList.valueOf(0xFFE3F0FC));
                 break;
             case PRONTO:
-                holder.viewStatusIndicator.setBackgroundColor(0xFF4CAF50);
+                holder.viewStatusIndicator.setBackgroundColor(0xFF2E7D32);
                 holder.tvStatusBadge.setText("PRONTO");
-                holder.tvStatusBadge.setTextColor(0xFF1A6A45);
+                holder.tvStatusBadge.setTextColor(0xFF2E7D32);
                 holder.tvStatusBadge.setBackgroundTintList(
-                        android.content.res.ColorStateList.valueOf(0xFFD6F5E8));
+                        android.content.res.ColorStateList.valueOf(0xFFE8F5E9));
                 break;
             case REJEITADO:
                 holder.viewStatusIndicator.setBackgroundColor(0xFFCC2222);
                 holder.tvStatusBadge.setText("REJEITADO");
                 holder.tvStatusBadge.setTextColor(0xFFCC2222);
                 holder.tvStatusBadge.setBackgroundTintList(
-                        android.content.res.ColorStateList.valueOf(0xFFFFEBEE));
+                        android.content.res.ColorStateList.valueOf(0xFFFFEAEA));
                 break;
             default:
-                holder.viewStatusIndicator.setBackgroundColor(0xFF888888);
+                holder.viewStatusIndicator.setBackgroundColor(0xFF2E7D32);
                 holder.tvStatusBadge.setText("ENTREGUE");
-                holder.tvStatusBadge.setTextColor(0xFF888888);
+                holder.tvStatusBadge.setTextColor(0xFF2E7D32);
                 holder.tvStatusBadge.setBackgroundTintList(
-                        android.content.res.ColorStateList.valueOf(0xFFEEEEEE));
+                        android.content.res.ColorStateList.valueOf(0xFFE8F5E9));
                 break;
         }
     }
@@ -185,7 +231,8 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
 
     static class KitchenOrderViewHolder extends RecyclerView.ViewHolder {
         View viewStatusIndicator;
-        TextView tvOrderNumber, tvCustomerName, tvOrderTime, tvStatusBadge, tvAnnotation;
+        TextView tvOrderNumber, tvStatusBadge, tvAnnotation;
+        TextView tvPaymentMethod, tvOrderTotal;
         ChipGroup chipGroupItems;
         MaterialButton btnOrderAction, btnRejectOrder;
 
@@ -193,10 +240,10 @@ public class KitchenOrderAdapter extends RecyclerView.Adapter<KitchenOrderAdapte
             super(itemView);
             viewStatusIndicator = itemView.findViewById(R.id.viewStatusIndicator);
             tvOrderNumber       = itemView.findViewById(R.id.tvOrderNumber);
-            tvCustomerName      = itemView.findViewById(R.id.tvCustomerName);
-            tvOrderTime         = itemView.findViewById(R.id.tvOrderTime);
             tvAnnotation        = itemView.findViewById(R.id.tvAnnotation);
             tvStatusBadge       = itemView.findViewById(R.id.tvStatusBadge);
+            tvPaymentMethod     = itemView.findViewById(R.id.tvPaymentMethod);
+            tvOrderTotal        = itemView.findViewById(R.id.tvOrderTotal);
             chipGroupItems      = itemView.findViewById(R.id.chipGroupItems);
             btnOrderAction      = itemView.findViewById(R.id.btnOrderAction);
             btnRejectOrder      = itemView.findViewById(R.id.btnRejectOrder);

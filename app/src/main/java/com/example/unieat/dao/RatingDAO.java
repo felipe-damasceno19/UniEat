@@ -33,35 +33,33 @@ public class RatingDAO {
     }
 
     public void findByDishId(String dishId, FirebaseCallback<List<Rating>> cb) {
-        FirebaseHelper.ratings()
-                .orderByChild("dishId").equalTo(dishId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override public void onDataChange(DataSnapshot snap) {
-                        List<Rating> list = new ArrayList<>();
-                        for (DataSnapshot child : snap.getChildren())
-                            list.add(snapToRating(child));
-                        cb.onSuccess(list);
-                    }
-                    @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
-                });
+        FirebaseHelper.ratings().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override public void onDataChange(DataSnapshot snap) {
+                List<Rating> list = new ArrayList<>();
+                for (DataSnapshot child : snap.getChildren()) {
+                    Rating r = snapToRating(child);
+                    if (r != null && dishId.equals(r.getDishId())) list.add(r);
+                }
+                cb.onSuccess(list);
+            }
+            @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+        });
     }
 
     public void findByDishIdAndUserId(String dishId, String userId, FirebaseCallback<Rating> cb) {
-        FirebaseHelper.ratings()
-                .orderByChild("dishId").equalTo(dishId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override public void onDataChange(DataSnapshot snap) {
-                        for (DataSnapshot child : snap.getChildren()) {
-                            Rating r = snapToRating(child);
-                            if (r != null && userId.equals(r.getUserId())) {
-                                cb.onSuccess(r);
-                                return;
-                            }
-                        }
-                        cb.onSuccess(null);
+        FirebaseHelper.ratings().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override public void onDataChange(DataSnapshot snap) {
+                for (DataSnapshot child : snap.getChildren()) {
+                    Rating r = snapToRating(child);
+                    if (r != null && dishId.equals(r.getDishId()) && userId.equals(r.getUserId())) {
+                        cb.onSuccess(r);
+                        return;
                     }
-                    @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
-                });
+                }
+                cb.onSuccess(null);
+            }
+            @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+        });
     }
 
     public void update(Rating rating, FirebaseCallback<Void> cb) {

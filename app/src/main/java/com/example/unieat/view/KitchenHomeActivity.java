@@ -26,7 +26,16 @@ public class KitchenHomeActivity extends BaseActivity
     private KitchenHomePresenter presenter;
     private OrderStatus currentFilter = null;
 
-    private TextView tvNewCount, tvInPrepCount, tvReadyCount;
+    private TextView tvDailyRevenue;
+    private TextView tvDeliveredCount;
+    private TextView tvActiveBadge;
+    private TextView tvChipNew;
+    private TextView tvChipInPrep;
+    private TextView tvChipReady;
+
+    private int pendingCount = 0;
+    private int preparingCount = 0;
+    private int readyCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +70,12 @@ public class KitchenHomeActivity extends BaseActivity
     private void bindViews() {
         recyclerOrders = findViewById(R.id.recyclerOrders);
         recyclerOrders.setLayoutManager(new LinearLayoutManager(this));
-        tvNewCount = findViewById(R.id.tvNewCount);
-        tvInPrepCount = findViewById(R.id.tvInPrepCount);
-        tvReadyCount = findViewById(R.id.tvReadyCount);
+        tvDailyRevenue = findViewById(R.id.tvDailyRevenue);
+        tvDeliveredCount = findViewById(R.id.tvDeliveredCount);
+        tvActiveBadge = findViewById(R.id.tvActiveBadge);
+        tvChipNew = findViewById(R.id.tvChipNew);
+        tvChipInPrep = findViewById(R.id.tvChipInPrep);
+        tvChipReady = findViewById(R.id.tvChipReady);
     }
 
     private void setupFilters() {
@@ -91,19 +103,40 @@ public class KitchenHomeActivity extends BaseActivity
         NavigationHelper.setupKitchenNavigation(this, bottomNav, R.id.nav_kitchen_home);
     }
 
+    private void updateChips() {
+        tvChipNew.setText(String.format(Locale.getDefault(), "● %02d Novos", pendingCount));
+        tvChipInPrep.setText(String.format(Locale.getDefault(), "● %02d Em Preparo", preparingCount));
+        tvChipReady.setText(String.format(Locale.getDefault(), "● %02d Prontos", readyCount));
+        int total = pendingCount + preparingCount + readyCount;
+        tvActiveBadge.setText(String.format(Locale.getDefault(), "%02d", total));
+    }
+
     @Override
     public void showPendingCount(int count) {
-        tvNewCount.setText(String.format(Locale.getDefault(), "%02d", count));
+        pendingCount = count;
+        updateChips();
     }
 
     @Override
     public void showPreparingCount(int count) {
-        tvInPrepCount.setText(String.format(Locale.getDefault(), "%02d", count));
+        preparingCount = count;
+        updateChips();
     }
 
     @Override
     public void showReadyCount(int count) {
-        tvReadyCount.setText(String.format(Locale.getDefault(), "%02d", count));
+        readyCount = count;
+        updateChips();
+    }
+
+    @Override
+    public void showDailyRevenue(double revenue) {
+        tvDailyRevenue.setText(String.format(Locale.getDefault(), "R$ %.2f", revenue));
+    }
+
+    @Override
+    public void showDeliveredCount(int count) {
+        tvDeliveredCount.setText(String.valueOf(count));
     }
 
     @Override
