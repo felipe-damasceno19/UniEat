@@ -183,4 +183,6 @@ public class DishDetailActivity extends BaseActivity implements RatingPresenter.
 
     @Override public void onSubmitSuccess() {}
     @Override public void onSubmitError(String message) {}
+    @Override public void onExistingRatingLoaded(Rating rating) {}
+    @Override public void onDeleteSuccess() {}
 }

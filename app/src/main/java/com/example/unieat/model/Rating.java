@@ -4,9 +4,8 @@ public class Rating {
 
     private String id;
     private String dishId;
-
+    private String userId;
     private Integer rating;
-
     private String comment;
 
     public Rating() {
@@ -15,6 +14,14 @@ public class Rating {
     public Rating(String id, String dishId, Integer rating, String comment) {
         this.id = id;
         this.dishId = dishId;
+        this.rating = rating;
+        this.comment = comment;
+    }
+
+    public Rating(String id, String dishId, String userId, Integer rating, String comment) {
+        this.id = id;
+        this.dishId = dishId;
+        this.userId = userId;
         this.rating = rating;
         this.comment = comment;
     }
@@ -33,6 +40,14 @@ public class Rating {
 
     public void setDishId(String dishId) {
         this.dishId = dishId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getComment() {

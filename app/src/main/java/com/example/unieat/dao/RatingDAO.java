@@ -46,6 +46,30 @@ public class RatingDAO {
                 });
     }
 
+    public void findByDishIdAndUserId(String dishId, String userId, FirebaseCallback<Rating> cb) {
+        FirebaseHelper.ratings()
+                .orderByChild("dishId").equalTo(dishId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override public void onDataChange(DataSnapshot snap) {
+                        for (DataSnapshot child : snap.getChildren()) {
+                            Rating r = snapToRating(child);
+                            if (r != null && userId.equals(r.getUserId())) {
+                                cb.onSuccess(r);
+                                return;
+                            }
+                        }
+                        cb.onSuccess(null);
+                    }
+                    @Override public void onCancelled(DatabaseError e) { cb.onFailure(e.getMessage()); }
+                });
+    }
+
+    public void update(Rating rating, FirebaseCallback<Void> cb) {
+        FirebaseHelper.ratings().child(rating.getId()).setValue(rating)
+                .addOnSuccessListener(a -> cb.onSuccess(null))
+                .addOnFailureListener(e -> cb.onFailure(e.getMessage()));
+    }
+
     public void delete(String id, FirebaseCallback<Void> cb) {
         FirebaseHelper.ratings().child(id).removeValue()
                 .addOnSuccessListener(a -> cb.onSuccess(null))
