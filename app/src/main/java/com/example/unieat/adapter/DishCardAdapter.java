@@ -1,6 +1,7 @@
 package com.example.unieat.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.dao.RatingDAO;
 import com.example.unieat.model.Dish;
 import com.example.unieat.model.Rating;
+import com.example.unieat.view.DishDetailActivity;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
@@ -73,21 +75,35 @@ public class DishCardAdapter extends RecyclerView.Adapter<DishCardAdapter.DishVi
 
         holder.btnOrder.setOnClickListener(v -> listener.onOrderClick(dish));
 
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DishDetailActivity.class);
+            intent.putExtra("dish_id", dish.getId());
+            intent.putExtra("dish_name", dish.getName());
+            intent.putExtra("dish_price", dish.getPrice());
+            intent.putExtra("dish_description", dish.getDescription());
+            intent.putExtra("dish_image", dish.getImageName());
+            intent.putExtra("dish_type", dish.getType() != null ? dish.getType().name() : "");
+            context.startActivity(intent);
+        });
+
         ratingDAO.findByDishId(dish.getId(), new FirebaseCallback<List<Rating>>() {
             @Override public void onSuccess(List<Rating> ratings) {
                 int adapterPos = holder.getBindingAdapterPosition();
                 if (adapterPos == RecyclerView.NO_POSITION) return;
 
-                double avg = 0.0;
                 if (ratings != null && !ratings.isEmpty()) {
                     double sum = 0;
                     for (Rating r : ratings) if (r.getRating() != null) sum += r.getRating();
-                    avg = sum / ratings.size();
+                    double avg = sum / ratings.size();
+                    holder.tvRating.setText(String.format(Locale.getDefault(), "%.1f", avg));
+                    holder.ratingBadge.setVisibility(View.VISIBLE);
+                } else {
+                    holder.ratingBadge.setVisibility(View.GONE);
                 }
-                holder.tvRating.setText(String.format(Locale.getDefault(), "%.1f", avg));
-                holder.ratingBadge.setVisibility(View.VISIBLE);
             }
-            @Override public void onFailure(String error) {}
+            @Override public void onFailure(String error) {
+                holder.ratingBadge.setVisibility(View.GONE);
+            }
         });
     }
 

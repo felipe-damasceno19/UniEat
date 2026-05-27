@@ -1,5 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 <style name="Base.Theme.UniEat" parent="Theme.Material3.Light.NoActionBar">
+    <item name="colorSurface">#FFFFFF</item>
+    <item name="colorSurfaceVariant">#F5F5F5</item>
+    <item name="colorSurfaceContainer">#FFFFFF</item>
+    <item name="colorSurfaceContainerHigh">#FFFFFF</item>
+    <item name="colorSurfaceContainerHighest">#FFFFFF</item>
 </style>
 <style name="Theme.UniEat" parent="Base.Theme.UniEat" />
 <style name="Theme.UniEat.Splash" parent="Theme.SplashScreen">
