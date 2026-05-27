@@ -201,14 +201,19 @@
                         android:textColor="#999999"
                         android:textSize="12sp" />
 
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/chipGroup"
+                    <HorizontalScrollView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
+                        android:scrollbars="none">
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/chipGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         app:chipSpacingHorizontal="6dp"
-                        app:chipSpacingVertical="6dp"
                         app:selectionRequired="false"
+                        app:singleLine="true"
                         app:singleSelection="false">
 
                         <com.google.android.material.chip.Chip
@@ -284,6 +289,7 @@
                             app:checkedIconTint="#7B1C1C" />
 
                     </com.google.android.material.chip.ChipGroup>
+                    </HorizontalScrollView>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
