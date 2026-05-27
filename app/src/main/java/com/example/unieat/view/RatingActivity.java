@@ -6,24 +6,35 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.unieat.R;
+import com.example.unieat.dao.DishDAO;
+import com.example.unieat.dao.FirebaseCallback;
+import com.example.unieat.model.Dish;
 import com.example.unieat.model.Rating;
 import com.example.unieat.presenter.student.RatingPresenter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class RatingActivity extends BaseActivity
-        implements RatingPresenter.RatingView {
+public class RatingActivity extends BaseActivity implements RatingPresenter.RatingView {
 
     private RatingPresenter presenter;
     private RatingBar ratingBar;
     private TextInputEditText etComment;
     private MaterialButton btnSubmit;
-
+    private TextView tvRatingLabel;
+    private ChipGroup chipGroup;
     private String dishId;
+
+    private static final String[] STAR_LABELS = {
+            "", "Ruim", "Regular", "Bom", "Muito bom", "Excelente!"
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,22 +46,54 @@ public class RatingActivity extends BaseActivity
 
         setupNavigation();
         setupViews();
+        loadDishInfo();
     }
 
     private void setupNavigation() {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
         NavigationHelper.setupBottomNavigation(this, bottomNav, -1);
+
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
     }
 
     private void setupViews() {
-        ratingBar = findViewById(R.id.ratingBar);
-        etComment = findViewById(R.id.etComment);
-        btnSubmit = findViewById(R.id.btnSubmit);
+        ratingBar     = findViewById(R.id.ratingBar);
+        etComment     = findViewById(R.id.etComment);
+        btnSubmit     = findViewById(R.id.btnSubmit);
+        tvRatingLabel = findViewById(R.id.tvRatingLabel);
+        chipGroup     = findViewById(R.id.chipGroup);
+
+        ratingBar.setOnRatingBarChangeListener((bar, rating, fromUser) -> {
+            int stars = (int) rating;
+            tvRatingLabel.setText(stars > 0 ? STAR_LABELS[stars] : "");
+        });
 
         btnSubmit.setOnClickListener(v -> submitRating());
 
-        TextView tvSkip = findViewById(R.id.tvSkip);
-        tvSkip.setOnClickListener(v -> navigateToHome());
+        findViewById(R.id.tvSkip).setOnClickListener(v -> navigateToHome());
+    }
+
+    private void loadDishInfo() {
+        if (dishId == null || dishId.isEmpty()) return;
+
+        new DishDAO().findById(dishId, new FirebaseCallback<Dish>() {
+            @Override public void onSuccess(Dish dish) {
+                if (dish == null) return;
+
+                TextView tvName = findViewById(R.id.tvDishNameRating);
+                tvName.setText(dish.getName());
+
+                String imageUrl = dish.getImageName();
+                if (imageUrl != null && !imageUrl.isEmpty()) {
+                    Glide.with(RatingActivity.this)
+                            .load(imageUrl)
+                            .placeholder(R.drawable.shape_logo_placeholder)
+                            .error(R.drawable.shape_logo_placeholder)
+                            .into(findViewById(R.id.imgDishRating));
+                }
+            }
+            @Override public void onFailure(String error) {}
+        });
     }
 
     private void submitRating() {
@@ -60,9 +103,25 @@ public class RatingActivity extends BaseActivity
         }
 
         int rating = (int) ratingBar.getRating();
+        if (rating == 0) {
+            Toast.makeText(this, "Selecione uma nota antes de enviar", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String comment = etComment.getText() != null
                 ? etComment.getText().toString().trim()
                 : "";
+
+        List<String> selectedTags = new ArrayList<>();
+        for (int i = 0; i < chipGroup.getChildCount(); i++) {
+            Chip chip = (Chip) chipGroup.getChildAt(i);
+            if (chip.isChecked()) selectedTags.add(chip.getText().toString());
+        }
+
+        if (!selectedTags.isEmpty()) {
+            String tags = String.join(" · ", selectedTags);
+            comment = comment.isEmpty() ? tags : comment + "\n" + tags;
+        }
 
         btnSubmit.setEnabled(false);
         presenter.submitRating(dishId, rating, comment);
@@ -88,6 +147,5 @@ public class RatingActivity extends BaseActivity
     }
 
     @Override
-    public void onRatingsLoaded(List<Rating> ratings, double average) {
-    }
+    public void onRatingsLoaded(List<Rating> ratings, double average) {}
 }
