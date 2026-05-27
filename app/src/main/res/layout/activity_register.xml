@@ -174,46 +174,6 @@
                             android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="Tipo de Perfil"
-                        android:textColor="#666666"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/shape_toggle_bg"
-                        android:orientation="horizontal"
-                        android:padding="2dp">
-
-                        <Button
-                            android:id="@+id/btnRoleStudent"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:backgroundTint="#7B1C1C"
-                            android:text="Aluno"
-                            android:textAllCaps="false"
-                            android:textColor="#FFFFFF"
-                            app:cornerRadius="8dp" />
-
-                        <Button
-                            android:id="@+id/btnRoleKitchen"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:backgroundTint="#EEEEEE"
-                            android:text="Cozinheiro"
-                            android:textAllCaps="false"
-                            android:textColor="#7B1C1C"
-                            app:cornerRadius="8dp" />
-                    </LinearLayout>
-
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnRegister"
                         android:layout_width="match_parent"

@@ -1,8 +1,6 @@
 package com.example.unieat.view;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,14 +14,9 @@ import com.google.android.material.textfield.TextInputEditText;
 public class RegisterActivity extends BaseActivity implements RegisterPresenter.View {
 
     private TextInputEditText etName, etUsername, etEmail, etPassword;
-    private Button btnRoleStudent, btnRoleKitchen, btnRegister;
+    private Button btnRegister;
     private TextView tvBackToLogin;
-    private UserType selectedType = UserType.ALUNO;
     private RegisterPresenter presenter;
-
-    private final int colorRed      = Color.parseColor("#7B1C1C");
-    private final int colorWhite    = Color.WHITE;
-    private final int colorInactive = Color.parseColor("#F0E8E8");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +26,6 @@ public class RegisterActivity extends BaseActivity implements RegisterPresenter.
         presenter = new RegisterPresenter(this);
 
         bindViews();
-        setupToggle();
         setupRegister();
 
         tvBackToLogin.setOnClickListener(v -> finish());
@@ -44,28 +36,8 @@ public class RegisterActivity extends BaseActivity implements RegisterPresenter.
         etUsername    = findViewById(R.id.etUsername);
         etEmail       = findViewById(R.id.etEmail);
         etPassword    = findViewById(R.id.etPassword);
-        btnRoleStudent = findViewById(R.id.btnRoleStudent);
-        btnRoleKitchen = findViewById(R.id.btnRoleKitchen);
         btnRegister   = findViewById(R.id.btnRegister);
         tvBackToLogin = findViewById(R.id.tvBackToLogin);
-    }
-
-    private void setupToggle() {
-        btnRoleStudent.setOnClickListener(v -> {
-            selectedType = UserType.ALUNO;
-            btnRoleStudent.setBackgroundTintList(ColorStateList.valueOf(colorRed));
-            btnRoleStudent.setTextColor(colorWhite);
-            btnRoleKitchen.setBackgroundTintList(ColorStateList.valueOf(colorInactive));
-            btnRoleKitchen.setTextColor(colorRed);
-        });
-
-        btnRoleKitchen.setOnClickListener(v -> {
-            selectedType = UserType.COZINHEIRO;
-            btnRoleKitchen.setBackgroundTintList(ColorStateList.valueOf(colorRed));
-            btnRoleKitchen.setTextColor(colorWhite);
-            btnRoleStudent.setBackgroundTintList(ColorStateList.valueOf(colorInactive));
-            btnRoleStudent.setTextColor(colorRed);
-        });
     }
 
     private void setupRegister() {
@@ -76,7 +48,7 @@ public class RegisterActivity extends BaseActivity implements RegisterPresenter.
             String password = etPassword.getText().toString().trim();
 
             btnRegister.setEnabled(false);
-            presenter.register(name, username, email, password, selectedType);
+            presenter.register(name, username, email, password, UserType.ALUNO);
         });
     }
 
