@@ -11,7 +11,9 @@ import android.widget.Toast;
 
 import com.example.unieat.R;
 import com.example.unieat.enums.PaymentMethod;
+import com.example.unieat.model.Order;
 import com.example.unieat.model.Payment;
+import com.example.unieat.presenter.OrderPresenter;
 import com.example.unieat.presenter.student.PaymentPresenter;
 import com.google.android.material.card.MaterialCardView;
 
@@ -25,7 +27,9 @@ public class PaymentActivity extends BaseActivity {
     private PaymentMethod selectedMethod = PaymentMethod.PIX;
 
     private PaymentPresenter presenter;
+    private OrderPresenter orderPresenter;
     private double orderAmount;
+    private String annotation;
 
     private int colorSelected, colorDefault;
     private int iconBgSelected, iconBgDefault;
@@ -36,8 +40,10 @@ public class PaymentActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
 
-        presenter   = new PaymentPresenter(this);
-        orderAmount = getIntent().getDoubleExtra("order_amount", 0.0);
+        presenter      = new PaymentPresenter(this);
+        orderPresenter = new OrderPresenter(this);
+        orderAmount    = getIntent().getDoubleExtra("order_amount", 0.0);
+        annotation     = getIntent().getStringExtra("annotation");
 
         initViews();
         setupColors();
@@ -93,58 +99,70 @@ public class PaymentActivity extends BaseActivity {
         cardBalance.setOnClickListener(v -> selectBalance());
 
         btnConfirmOrder.setOnClickListener(v -> {
-            double total   = presenter.calculateTotal(orderAmount);
-            String orderId = getIntent().getStringExtra("order_id");
+            double total = presenter.calculateTotal(orderAmount);
 
             if (selectedMethod == PaymentMethod.PIX) {
                 Intent intent = new Intent(this, PaymentPixActivity.class);
                 intent.putExtra("order_amount", total);
-                intent.putExtra("order_id", orderId);
-                intent.putExtra("dish_id", getIntent().getStringExtra("dish_id"));
+                intent.putExtra("annotation", annotation);
                 startActivity(intent);
             } else if (selectedMethod == PaymentMethod.CASH) {
                 btnConfirmOrder.setEnabled(false);
-                presenter.processPayment(orderId, PaymentMethod.CASH, total,
-                    new PaymentPresenter.PaymentView() {
-                        @Override public void onPaymentSuccess(Payment p) {
-                            new com.example.unieat.data.SessionManager(PaymentActivity.this).setActiveOrderId(orderId);
-                            Toast.makeText(PaymentActivity.this, "Pagamento registrado!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(PaymentActivity.this, OrderSuccessActivity.class);
-                            intent.putExtra("dish_id",  getIntent().getStringExtra("dish_id"));
-                            intent.putExtra("order_id", orderId);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            finish();
-                        }
-                        @Override public void onPaymentError(String message) {
-                            btnConfirmOrder.setEnabled(true);
-                            Toast.makeText(PaymentActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                orderPresenter.placeOrder(annotation, new OrderPresenter.OrderView() {
+                    @Override public void onOrderPlaced(Order order) {
+                        presenter.processPayment(order.getId(), PaymentMethod.CASH, total,
+                            new PaymentPresenter.PaymentView() {
+                                @Override public void onPaymentSuccess(Payment p) {
+                                    new com.example.unieat.data.SessionManager(PaymentActivity.this).setActiveOrderId(order.getId());
+                                    Toast.makeText(PaymentActivity.this, "Pagamento registrado!", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(PaymentActivity.this, OrderSuccessActivity.class);
+                                    intent.putExtra("order_id", order.getId());
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                                @Override public void onPaymentError(String message) {
+                                    btnConfirmOrder.setEnabled(true);
+                                    Toast.makeText(PaymentActivity.this, message, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                    }
+                    @Override public void onOrderError(String message) {
+                        btnConfirmOrder.setEnabled(true);
+                        Toast.makeText(PaymentActivity.this, "Erro ao realizar pedido: " + message, Toast.LENGTH_SHORT).show();
+                    }
+                });
             } else {
                 if (!presenter.hasSufficientBalance(total)) {
                     Toast.makeText(this, "Saldo insuficiente", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 btnConfirmOrder.setEnabled(false);
-                presenter.processPayment(orderId, PaymentMethod.BALANCE, total,
-                    new PaymentPresenter.PaymentView() {
-                        @Override public void onPaymentSuccess(Payment p) {
-                            presenter.deductBalance(total);
-                            new com.example.unieat.data.SessionManager(PaymentActivity.this).setActiveOrderId(orderId);
-                            Toast.makeText(PaymentActivity.this, "Saldo debitado com sucesso!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(PaymentActivity.this, OrderSuccessActivity.class);
-                            intent.putExtra("dish_id",  getIntent().getStringExtra("dish_id"));
-                            intent.putExtra("order_id", orderId);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            finish();
-                        }
-                        @Override public void onPaymentError(String message) {
-                            btnConfirmOrder.setEnabled(true);
-                            Toast.makeText(PaymentActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                orderPresenter.placeOrder(annotation, new OrderPresenter.OrderView() {
+                    @Override public void onOrderPlaced(Order order) {
+                        presenter.processPayment(order.getId(), PaymentMethod.BALANCE, total,
+                            new PaymentPresenter.PaymentView() {
+                                @Override public void onPaymentSuccess(Payment p) {
+                                    presenter.deductBalance(total);
+                                    new com.example.unieat.data.SessionManager(PaymentActivity.this).setActiveOrderId(order.getId());
+                                    Toast.makeText(PaymentActivity.this, "Saldo debitado com sucesso!", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(PaymentActivity.this, OrderSuccessActivity.class);
+                                    intent.putExtra("order_id", order.getId());
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                                @Override public void onPaymentError(String message) {
+                                    btnConfirmOrder.setEnabled(true);
+                                    Toast.makeText(PaymentActivity.this, message, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                    }
+                    @Override public void onOrderError(String message) {
+                        btnConfirmOrder.setEnabled(true);
+                        Toast.makeText(PaymentActivity.this, "Erro ao realizar pedido: " + message, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }

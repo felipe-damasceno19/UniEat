@@ -13,19 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.unieat.R;
 import com.example.unieat.adapter.OrderItemAdapter;
 import com.example.unieat.data.SessionManager;
-import com.example.unieat.model.Order;
 import com.example.unieat.model.OrderItem;
 import com.example.unieat.presenter.OrderPresenter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class OrderActivity extends BaseActivity implements OrderPresenter.OrderView {
+public class OrderActivity extends BaseActivity {
 
     private OrderPresenter presenter;
     private OrderItemAdapter adapter;
     private TextView tvSubtotal, tvTotal;
     private Button btnGoToPayment;
     private double orderAmount;
-    private String annotation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,32 +59,16 @@ public class OrderActivity extends BaseActivity implements OrderPresenter.OrderV
                 return;
             }
 
-            annotation = ((EditText) findViewById(R.id.etAnnotation))
+            String annotation = ((EditText) findViewById(R.id.etAnnotation))
                     .getText().toString().trim();
             orderAmount = presenter.calculateTotal();
 
-            btnGoToPayment.setEnabled(false);
-            presenter.placeOrder(annotation, this);
+            Intent intent = new Intent(this, PaymentActivity.class);
+            intent.putExtra("order_amount", orderAmount);
+            intent.putExtra("annotation", annotation);
+            startActivity(intent);
+            finish();
         });
-    }
-
-    @Override
-    public void onOrderPlaced(Order order) {
-        Intent intent = new Intent(this, PaymentActivity.class);
-        intent.putExtra("order_amount", orderAmount);
-        intent.putExtra("order_id", order.getId());
-
-        if (!order.getItems().isEmpty()) {
-            intent.putExtra("dish_id", order.getItems().get(0).getDish().getId());
-        }
-        startActivity(intent);
-        finish();
-    }
-
-    @Override
-    public void onOrderError(String message) {
-        btnGoToPayment.setEnabled(true);
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     private void setupRecyclerView() {
