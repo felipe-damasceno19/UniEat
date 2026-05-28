@@ -13,7 +13,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public class RegisterActivity extends BaseActivity implements RegisterPresenter.View {
 
-    private TextInputEditText etName, etUsername, etEmail, etPassword;
+    private TextInputEditText etName, etUsername, etEmail, etPassword, etConfirmPassword;
     private Button btnRegister;
     private TextView tvBackToLogin;
     private RegisterPresenter presenter;
@@ -32,20 +32,27 @@ public class RegisterActivity extends BaseActivity implements RegisterPresenter.
     }
 
     private void bindViews() {
-        etName        = findViewById(R.id.etName);
-        etUsername    = findViewById(R.id.etUsername);
-        etEmail       = findViewById(R.id.etEmail);
-        etPassword    = findViewById(R.id.etPassword);
-        btnRegister   = findViewById(R.id.btnRegister);
-        tvBackToLogin = findViewById(R.id.tvBackToLogin);
+        etName           = findViewById(R.id.etName);
+        etUsername       = findViewById(R.id.etUsername);
+        etEmail          = findViewById(R.id.etEmail);
+        etPassword       = findViewById(R.id.etPassword);
+        etConfirmPassword = findViewById(R.id.etConfirmPassword);
+        btnRegister      = findViewById(R.id.btnRegister);
+        tvBackToLogin    = findViewById(R.id.tvBackToLogin);
     }
 
     private void setupRegister() {
         btnRegister.setOnClickListener(v -> {
-            String name     = etName.getText().toString().trim();
-            String username = etUsername.getText().toString().trim();
-            String email    = etEmail.getText().toString().trim();
-            String password = etPassword.getText().toString().trim();
+            String name            = etName.getText().toString().trim();
+            String username        = etUsername.getText().toString().trim();
+            String email           = etEmail.getText().toString().trim();
+            String password        = etPassword.getText().toString().trim();
+            String confirmPassword = etConfirmPassword.getText().toString().trim();
+
+            if (!password.equals(confirmPassword)) {
+                Toast.makeText(this, "As senhas não coincidem", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             btnRegister.setEnabled(false);
             presenter.register(name, username, email, password, UserType.ALUNO);
