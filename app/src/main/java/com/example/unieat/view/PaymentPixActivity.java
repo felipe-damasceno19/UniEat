@@ -14,7 +14,7 @@ import com.example.unieat.R;
 import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.dao.SettingsDAO;
 import com.example.unieat.enums.PaymentMethod;
-import com.example.unieat.presenter.PaymentPresenter;
+import com.example.unieat.presenter.student.PaymentPresenter;
 import android.widget.Toast;
 
 public class PaymentPixActivity extends BaseActivity {

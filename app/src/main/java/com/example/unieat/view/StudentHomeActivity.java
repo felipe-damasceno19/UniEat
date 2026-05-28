@@ -15,7 +15,7 @@ import com.example.unieat.adapter.DishCardAdapter;
 import com.example.unieat.model.Banner;
 import com.example.unieat.model.Dish;
 import com.example.unieat.presenter.OrderPresenter;
-import com.example.unieat.presenter.StudentHomePresenter;
+import com.example.unieat.presenter.student.StudentHomePresenter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 

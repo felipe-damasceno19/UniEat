@@ -80,7 +80,7 @@
                     android:id="@+id/tvWelcomeName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Olá! 👋"
+                    android:text="Olá! "
                     android:textColor="#000000"
                     android:textSize="28sp"
                     android:textStyle="bold" />
@@ -133,14 +133,6 @@
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:text="Ver todos"
-                    android:textColor="#7B1C1C"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
             </RelativeLayout>
 
             <androidx.recyclerview.widget.RecyclerView

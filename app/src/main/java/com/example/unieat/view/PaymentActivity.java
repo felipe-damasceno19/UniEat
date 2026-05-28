@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.example.unieat.R;
 import com.example.unieat.enums.PaymentMethod;
 import com.example.unieat.model.Payment;
-import com.example.unieat.presenter.PaymentPresenter;
+import com.example.unieat.presenter.student.PaymentPresenter;
 import com.google.android.material.card.MaterialCardView;
 
 public class PaymentActivity extends BaseActivity {

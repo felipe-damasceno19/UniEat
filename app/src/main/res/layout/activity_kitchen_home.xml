@@ -39,12 +39,6 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/imgNotification"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:src="@drawable/ic_bell"
-            app:tint="#333333" />
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView

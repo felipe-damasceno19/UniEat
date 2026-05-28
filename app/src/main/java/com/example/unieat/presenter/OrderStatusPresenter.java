@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.example.unieat.dao.FirebaseCallback;
 import com.example.unieat.dao.OrderDAO;
+import com.example.unieat.data.FirebaseHelper;
 import com.example.unieat.enums.OrderStatus;
 import com.example.unieat.model.Order;
 import com.example.unieat.util.DateUtils;
@@ -44,7 +45,7 @@ public class OrderStatusPresenter {
     public void stopListening(String orderId) {
         if (activeListener != null) {
             orderDAO.findById(orderId, FirebaseCallback.ignore());
-            com.example.unieat.data.FirebaseHelper.orders()
+            FirebaseHelper.orders()
                     .child(orderId)
                     .removeEventListener(activeListener);
             activeListener = null;
