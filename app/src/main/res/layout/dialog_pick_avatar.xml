@@ -133,4 +133,25 @@
             android:focusable="true" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="12dp">
+
+        <ImageView
+            android:id="@+id/avatar9"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:layout_margin="6dp"
+            android:src="@drawable/profile_9"
+            android:scaleType="centerCrop"
+            android:background="@drawable/shape_profile_avatar"
+            android:clipToOutline="true"
+            android:outlineProvider="background"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
 </LinearLayout>

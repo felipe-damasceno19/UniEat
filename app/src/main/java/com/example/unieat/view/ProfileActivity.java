@@ -35,7 +35,8 @@ public class ProfileActivity extends BaseActivity
 
     private static final int[] AVATAR_IDS = {
         R.id.avatar1, R.id.avatar2, R.id.avatar3, R.id.avatar4,
-        R.id.avatar5, R.id.avatar6, R.id.avatar7, R.id.avatar8
+        R.id.avatar5, R.id.avatar6, R.id.avatar7, R.id.avatar8,
+        R.id.avatar9
     };
 
     private ProfilePresenter presenter;
@@ -282,6 +283,7 @@ public class ProfileActivity extends BaseActivity
             case 6: return R.drawable.profile_6;
             case 7: return R.drawable.profile_7;
             case 8: return R.drawable.profile_8;
+            case 9: return R.drawable.profile_9;
             default: return R.drawable.profile_1;
         }
     }
