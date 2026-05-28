@@ -106,6 +106,13 @@ public class StudentHomePresenter {
         });
     }
 
+    public void searchDishes(String query) {
+        dishDAO.searchByName(query, new FirebaseCallback<List<Dish>>() {
+            @Override public void onSuccess(List<Dish> dishes) { view.onFeaturedDishesLoaded(dishes); }
+            @Override public void onFailure(String error) { view.onError("Erro na busca: " + error); }
+        });
+    }
+
     public void stopListeningDishes() {
         if (dishListener != null) {
             dishDAO.removeListener(dishListener);

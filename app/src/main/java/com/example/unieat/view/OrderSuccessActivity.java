@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.unieat.R;
 import com.example.unieat.dao.FirebaseCallback;
@@ -15,13 +16,17 @@ import com.example.unieat.dao.OrderDAO;
 import com.example.unieat.data.SessionManager;
 import com.example.unieat.enums.OrderStatus;
 import com.example.unieat.model.Order;
+import com.example.unieat.model.OrderItem;
 import com.example.unieat.util.OrderUtils;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.List;
 
 public class OrderSuccessActivity extends BaseActivity {
 
     private String orderId;
-    private String dishId;
+    private Order currentOrder;
     private OrderDAO orderDAO;
     private ValueEventListener statusListener;
     private SessionManager sessionManager;
@@ -37,7 +42,6 @@ public class OrderSuccessActivity extends BaseActivity {
         setContentView(R.layout.activity_order_success);
 
         orderId = getIntent().getStringExtra("order_id");
-        dishId  = getIntent().getStringExtra("dish_id");
         sessionManager = new SessionManager(this);
         orderDAO = new OrderDAO();
 
@@ -83,12 +87,7 @@ public class OrderSuccessActivity extends BaseActivity {
         });
 
         Button btnRate = findViewById(R.id.btnRate);
-        btnRate.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RatingActivity.class);
-            intent.putExtra("dish_id", dishId);
-            startActivity(intent);
-            finish();
-        });
+        btnRate.setOnClickListener(v -> openRatingForOrder(currentOrder));
 
         Button btnTrackOrder = findViewById(R.id.btnTrackOrder);
         btnTrackOrder.setVisibility(View.VISIBLE);
@@ -104,6 +103,7 @@ public class OrderSuccessActivity extends BaseActivity {
         statusListener = orderDAO.listenToOrder(orderId, new FirebaseCallback<Order>() {
             @Override public void onSuccess(Order order) {
                 if (order == null) return;
+                currentOrder = order;
                 updateStepper(order.getStatus());
                 if (order.getStatus() == OrderStatus.ENTREGUE || order.getStatus() == OrderStatus.REJEITADO) {
                     sessionManager.clearActiveOrderId();
@@ -111,6 +111,34 @@ public class OrderSuccessActivity extends BaseActivity {
             }
             @Override public void onFailure(String error) {}
         });
+    }
+
+    private void openRatingForOrder(Order order) {
+        if (order == null || order.getItems() == null || order.getItems().isEmpty()) {
+            Toast.makeText(this, "Nenhum item encontrado no pedido", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        List<OrderItem> items = order.getItems();
+        if (items.size() == 1) {
+            launchRating(items.get(0).getDish().getId());
+        } else {
+            String[] names = new String[items.size()];
+            for (int i = 0; i < items.size(); i++) {
+                OrderItem item = items.get(i);
+                names[i] = item.getDish() != null ? item.getDish().getName() : "Prato";
+            }
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Qual item deseja avaliar?")
+                    .setItems(names, (dialog, which) -> launchRating(items.get(which).getDish().getId()))
+                    .show();
+        }
+    }
+
+    private void launchRating(String dishId) {
+        Intent intent = new Intent(this, RatingActivity.class);
+        intent.putExtra("dish_id", dishId);
+        startActivity(intent);
+        finish();
     }
 
     private void updateStepper(OrderStatus status) {

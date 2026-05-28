@@ -27,6 +27,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     public interface OnHistoryClickListener {
         void onReorder(Order order);
         void onDetails(Order order);
+        void onRate(Order order);
     }
 
     private final List<Order> orders;
@@ -79,6 +80,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
         holder.btnReorder.setOnClickListener(v -> listener.onReorder(order));
         holder.btnDetails.setOnClickListener(v -> listener.onDetails(order));
+
+        if (order.getStatus() == OrderStatus.ENTREGUE) {
+            holder.btnRate.setVisibility(View.VISIBLE);
+            holder.btnRate.setOnClickListener(v -> listener.onRate(order));
+        } else {
+            holder.btnRate.setVisibility(View.GONE);
+        }
     }
 
     private String buildItemsSummary(List<OrderItem> items) {
@@ -125,6 +133,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         ImageView imgDish;
         TextView tvOrderId, tvOrderDate, tvOrderStatus, tvOrderItems, tvOrderTotal;
         Button btnReorder, btnDetails;
+        com.google.android.material.button.MaterialButton btnRate;
 
         HistoryViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -136,6 +145,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             tvOrderTotal = itemView.findViewById(R.id.tvOrderTotal);
             btnReorder = itemView.findViewById(R.id.btnReorder);
             btnDetails = itemView.findViewById(R.id.btnDetails);
+            btnRate = itemView.findViewById(R.id.btnRate);
         }
     }
 }

@@ -6,6 +6,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -102,7 +104,39 @@ public class HistoryActivity extends BaseActivity implements HistoryPresenter.Hi
                 intent.putExtra("order_id", order.getId());
                 startActivity(intent);
             }
+
+            @Override
+            public void onRate(Order order) {
+                openRatingForOrder(order);
+            }
         }));
+    }
+
+    private void openRatingForOrder(Order order) {
+        if (order == null || order.getItems() == null || order.getItems().isEmpty()) {
+            Toast.makeText(this, "Nenhum item encontrado no pedido", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        List<OrderItem> items = order.getItems();
+        if (items.size() == 1) {
+            launchRating(items.get(0).getDish().getId());
+        } else {
+            String[] names = new String[items.size()];
+            for (int i = 0; i < items.size(); i++) {
+                OrderItem item = items.get(i);
+                names[i] = item.getDish() != null ? item.getDish().getName() : "Prato";
+            }
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Qual item deseja avaliar?")
+                    .setItems(names, (dialog, which) -> launchRating(items.get(which).getDish().getId()))
+                    .show();
+        }
+    }
+
+    private void launchRating(String dishId) {
+        Intent intent = new Intent(this, RatingActivity.class);
+        intent.putExtra("dish_id", dishId);
+        startActivity(intent);
     }
 
     @Override

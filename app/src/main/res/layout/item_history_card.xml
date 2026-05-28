@@ -115,14 +115,29 @@
                 android:id="@+id/btnDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="8dp"
                 android:backgroundTint="#EEEEEE"
-                android:paddingHorizontal="16dp"
+                android:paddingHorizontal="12dp"
                 android:text="Detalhes"
                 android:textAllCaps="false"
                 android:textColor="#666666"
                 android:textSize="12sp"
                 app:cornerRadius="8dp" />
         </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRate"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:text="Avaliar"
+            android:textAllCaps="false"
+            android:textColor="#7B1C1C"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:cornerRadius="8dp"
+            app:strokeColor="#7B1C1C"
+            app:strokeWidth="1dp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
