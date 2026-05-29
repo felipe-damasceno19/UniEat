@@ -13,8 +13,9 @@ Aplicativo Android para pedidos de refeições em cantinas universitárias. Estu
 
 <p align="center">
   <img src="screenshots/login.png" width="22%" />
-  <img src="screenshots/cardapio.png" width="22%" />
   <img src="screenshots/carrinho.png" width="22%" />
+  <img src="screenshots/cardapio.png" width="22%" />
+
   <img src="screenshots/cozinha.png" width="22%" />
 </p>
 
