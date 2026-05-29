@@ -1,6 +1,22 @@
 # UniEat
 
+![Android](https://img.shields.io/badge/Platform-Android-green?logo=android)
+![Java](https://img.shields.io/badge/Language-Java%2011-orange?logo=openjdk)
+![Firebase](https://img.shields.io/badge/Backend-Firebase-yellow?logo=firebase)
+![Status](https://img.shields.io/badge/Status-Concluído-brightgreen)
+
 Aplicativo Android para pedidos de refeições em cantinas universitárias. Estudantes navegam pelo cardápio, fazem pedidos e acompanham o status em tempo real. A equipe da cozinha gerencia pratos, recebe e avança os pedidos pelo fluxo de preparo.
+
+---
+
+## Screenshots
+
+<p align="center">
+  <img src="screenshots/login.png" width="22%" />
+  <img src="screenshots/cardapio.png" width="22%" />
+  <img src="screenshots/carrinho.png" width="22%" />
+  <img src="screenshots/cozinha.png" width="22%" />
+</p>
 
 ---
 
@@ -18,7 +34,7 @@ Aplicativo Android para pedidos de refeições em cantinas universitárias. Estu
 
 **Cozinha**
 - Dashboard com contagem de pedidos por status
-- Avanço do status do pedido: `Pendente → Preparando → Pronto → Entregue`
+- Avanço do status: `Pendente → Preparando → Pronto → Entregue`
 - Gerenciamento de pratos (nome, preço, tipo, disponibilidade)
 - Visualização de todos os pedidos
 
@@ -26,14 +42,14 @@ Aplicativo Android para pedidos de refeições em cantinas universitárias. Estu
 
 ## Tecnologias
 
-| Camada | Tecnologia |
-|---|---|
-| Linguagem | Java 11 |
-| Plataforma | Android (minSdk 28 / targetSdk 36) |
-| Arquitetura | MVP (Model-View-Presenter) |
-| Backend | Firebase Realtime Database |
-| UI | View Binding, Material Design 3 |
-| CI/CD | GitHub Actions |
+| Camada       | Tecnologia                          |
+|--------------|-------------------------------------|
+| Linguagem    | Java 11                             |
+| Plataforma   | Android (minSdk 28 / targetSdk 36)  |
+| Arquitetura  | MVP (Model-View-Presenter)          |
+| Backend      | Firebase Realtime Database          |
+| UI           | View Binding, Material Design 3     |
+| CI/CD        | GitHub Actions                      |
 
 ---
 
@@ -55,12 +71,10 @@ cd UniEat
 ```
 
 **2. Configure o Firebase**
-
 - Crie um projeto no [Firebase Console](https://console.firebase.google.com/)
 - Adicione um app Android com o pacote `com.example.unieat`
-- Baixe o `google-services.json` gerado e coloque em `app/google-services.json`
-- No Firebase Console, habilite o **Realtime Database**
-- Em **Realtime Database → Regras**, cole as regras abaixo e publique:
+- Baixe o `google-services.json` e coloque em `app/google-services.json`
+- Habilite o **Realtime Database** e publique as regras abaixo:
 
 ```json
 {
@@ -77,7 +91,7 @@ cd UniEat
 }
 ```
 
-> As regras acima são para desenvolvimento. Em produção, restrinja o acesso por autenticação.
+> ⚠️ Regras abertas para desenvolvimento. Em produção, restrinja o acesso por autenticação.
 
 **3. Abra no Android Studio**
 
@@ -87,24 +101,23 @@ Abra a pasta raiz do projeto. O Gradle sincroniza automaticamente as dependênci
 
 Conecte um dispositivo físico ou emulador (API 28+) e pressione **Run**.
 
-> O app popula automaticamente dados de teste no primeiro login (usuários e pratos de exemplo).
+> O app popula automaticamente dados de teste no primeiro login via `DataSeeder`.
 
 ---
 
 ## Contas de teste
 
-| Tipo | Email | Senha |
-|---|---|---|
-| Estudante | `felipe@email.com` | `felipe321` |
-| Cozinha | `cozinha@email.com` | `123456` |
+| Tipo      | Email                  | Senha      |
+|-----------|------------------------|------------|
+| Estudante | `estudante@unieat.com` | `unieat123` |
+| Cozinha   | `cozinha@unieat.com`   | `cozinha123` |
 
-> Esses dados são inseridos pelo `DataSeeder` na primeira execução.
+> Inseridos automaticamente pelo `DataSeeder` na primeira execução.
 
 ---
 
 ## Estrutura do projeto
 
-```
 app/src/main/java/com/example/unieat/
 ├── adapter/      # Adapters de RecyclerView
 ├── dao/          # Acesso ao Firebase (UserDAO, DishDAO, OrderDAO, ...)
@@ -116,7 +129,6 @@ app/src/main/java/com/example/unieat/
 │   └── student/  # MenuPresenter, RatingPresenter
 ├── util/         # DateUtils, OrderUtils
 └── view/         # Activities (UI)
-```
 
 ---
 
@@ -130,6 +142,13 @@ O pipeline do GitHub Actions executa a cada push em `main` ou `develop`:
 
 ---
 
+## Autores
+
+- [Felipe Damasceno](https://github.com/felipe-damasceno19)
+- [Gabriel Siqueira](https://github.com/gabsiq73) 
+
+---
+
 ## Licença
 
-Projeto acadêmico. Todos os direitos reservados aos autores.
+Projeto desenvolvido para fins acadêmicos e de portfólio.
